@@ -137,7 +137,7 @@
 											"top": 1263,
 											"width": 250.72314453125,
 											"height": 13,
-											"text": "User"
+											"text": "model.User"
 										},
 										{
 											"_type": "LabelView",
@@ -321,7 +321,7 @@
 											"top": 1376,
 											"width": 250.72314453125,
 											"height": 13,
-											"text": "-gender: Gender",
+											"text": "-gender: model.Gender",
 											"horizontalAlignment": 0
 										},
 										{
@@ -339,7 +339,7 @@
 											"top": 1391,
 											"width": 250.72314453125,
 											"height": 13,
-											"text": "-language: Language",
+											"text": "-language: model.Language",
 											"horizontalAlignment": 0
 										}
 									],
@@ -520,7 +520,7 @@
 											"top": 1519,
 											"width": 250.72314453125,
 											"height": 13,
-											"text": "+changeLanguage(User.Language ul): void",
+											"text": "+changeLanguage(model.User.model.Language ul): void",
 											"horizontalAlignment": 0
 										}
 									],
@@ -636,7 +636,7 @@
 											"top": 1007,
 											"width": 117.34619140625,
 											"height": 13,
-											"text": "Gender"
+											"text": "model.Gender"
 										},
 										{
 											"_type": "LabelView",
@@ -650,7 +650,7 @@
 											"top": 1022,
 											"width": 117.34619140625,
 											"height": 13,
-											"text": "(from User)"
+											"text": "(from model.User)"
 										},
 										{
 											"_type": "LabelView",
@@ -983,7 +983,7 @@
 											"top": 1303,
 											"width": 281.73779296875,
 											"height": 13,
-											"text": "Employee"
+											"text": "model.Employee"
 										},
 										{
 											"_type": "LabelView",
@@ -1509,7 +1509,7 @@
 											"top": 1437,
 											"width": 161.037109375,
 											"height": 13,
-											"text": "+manageUser(User u): void",
+											"text": "+manageUser(model.User u): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3387,7 +3387,7 @@
 											"top": 1440,
 											"width": 153.81982421875,
 											"height": 13,
-											"text": "+updateUser(User u): void",
+											"text": "+updateUser(model.User u): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3405,7 +3405,7 @@
 											"top": 1455,
 											"width": 153.81982421875,
 											"height": 13,
-											"text": "+deleteUser(User u): void",
+											"text": "+deleteUser(model.User u): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -3423,7 +3423,7 @@
 											"top": 1470,
 											"width": 153.81982421875,
 											"height": 13,
-											"text": "+addUser(User u): void",
+											"text": "+addUser(model.User u): void",
 											"horizontalAlignment": 0
 										}
 									],
@@ -15505,7 +15505,7 @@
 											"top": 942,
 											"width": 122.037109375,
 											"height": 13,
-											"text": "-address: User",
+											"text": "-address: model.User",
 											"horizontalAlignment": 0
 										},
 										{
@@ -15595,7 +15595,7 @@
 											"top": 1010,
 											"width": 122.037109375,
 											"height": 13,
-											"text": "+getAddress(): User",
+											"text": "+getAddress(): model.User",
 											"horizontalAlignment": 0
 										}
 									],
@@ -15839,7 +15839,7 @@
 											"top": 2139,
 											"width": 167.537109375,
 											"height": 13,
-											"text": "-author: User",
+											"text": "-author: model.User",
 											"horizontalAlignment": 0
 										},
 										{
@@ -17360,7 +17360,7 @@
 											"top": 1022,
 											"width": 140.064453125,
 											"height": 13,
-											"text": "+wrappee: User",
+											"text": "+wrappee: model.User",
 											"horizontalAlignment": 0
 										}
 									],
@@ -17396,7 +17396,7 @@
 											"top": 1045,
 											"width": 140.064453125,
 											"height": 13,
-											"text": "+UserDecorator(User u)",
+											"text": "+UserDecorator(model.User u)",
 											"horizontalAlignment": 0
 										},
 										{
@@ -19227,7 +19227,7 @@
 											"top": 2326,
 											"width": 92.4189453125,
 											"height": 13,
-											"text": "-author: User",
+											"text": "-author: model.User",
 											"horizontalAlignment": 0
 										},
 										{
@@ -19927,7 +19927,7 @@
 											"top": 1973,
 											"width": 244.8642578125,
 											"height": 13,
-											"text": "-subscribers: List<User>",
+											"text": "-subscribers: List<model.User>",
 											"horizontalAlignment": 0
 										}
 									],
@@ -19963,7 +19963,7 @@
 											"top": 1996,
 											"width": 244.8642578125,
 											"height": 13,
-											"text": "+addSubscriber(User u): void",
+											"text": "+addSubscriber(model.User u): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -19981,7 +19981,7 @@
 											"top": 2011,
 											"width": 244.8642578125,
 											"height": 13,
-											"text": "+removeSubscriber(User u): void",
+											"text": "+removeSubscriber(model.User u): void",
 											"horizontalAlignment": 0
 										},
 										{
@@ -20017,7 +20017,7 @@
 											"top": 2041,
 											"width": 244.8642578125,
 											"height": 13,
-											"text": "+getSubscribers(): List<User>",
+											"text": "+getSubscribers(): List<model.User>",
 											"horizontalAlignment": 0
 										},
 										{
@@ -21634,7 +21634,7 @@
 											"top": 1036,
 											"width": 87.72802734375,
 											"height": 13,
-											"text": "Language"
+											"text": "model.Language"
 										},
 										{
 											"_type": "LabelView",
@@ -21648,7 +21648,7 @@
 											"top": 1051,
 											"width": 87.72802734375,
 											"height": 13,
-											"text": "(from User)"
+											"text": "(from model.User)"
 										},
 										{
 											"_type": "LabelView",
@@ -23014,7 +23014,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "User",
+					"name": "model.User",
 					"ownedElements": [
 						{
 							"_type": "UMLEnumeration",
@@ -23022,7 +23022,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGdr6M/ay0zpEs="
 							},
-							"name": "Gender",
+							"name": "model.Gender",
 							"ownedElements": [
 								{
 									"_type": "UMLAssociation",
@@ -23114,7 +23114,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGdr6M/ay0zpEs="
 							},
-							"name": "Language",
+							"name": "model.Language",
 							"literals": [
 								{
 									"_type": "UMLEnumerationLiteral",
@@ -23243,7 +23243,7 @@
 							},
 							"name": "language",
 							"visibility": "private",
-							"type": "Language"
+							"type": "model.Language"
 						}
 					],
 					"operations": [
@@ -23405,7 +23405,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdupBncjR5sIQ="
 									},
-									"name": "User.Language ul",
+									"name": "model.User.model.Language ul",
 									"type": ""
 								},
 								{
@@ -23436,7 +23436,7 @@
 					"_parent": {
 						"$ref": "AAAAAAFF+qBWK6M3Z8Y="
 					},
-					"name": "Employee",
+					"name": "model.Employee",
 					"ownedElements": [
 						{
 							"_type": "UMLGeneralization",
@@ -23687,7 +23687,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdr8r/KjFOJUs="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								},
 								{
@@ -24423,7 +24423,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdr+DjUjQALbo="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								}
 							]
@@ -24442,7 +24442,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdr+EbgjQMbM8="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								},
 								{
@@ -24470,7 +24470,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdr+GMOzQeuh8="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								},
 								{
@@ -27951,7 +27951,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGdukb+4IXZXoI="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								}
 							]
@@ -28515,7 +28515,7 @@
 							},
 							"name": "subscribers",
 							"visibility": "private",
-							"type": "List<User>"
+							"type": "List<model.User>"
 						}
 					],
 					"operations": [
@@ -28533,7 +28533,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGduoAqyTUpvaw="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								},
 								{
@@ -28561,7 +28561,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGduoCNwjfy1+g="
 									},
-									"name": "User u",
+									"name": "model.User u",
 									"type": ""
 								},
 								{
@@ -28617,7 +28617,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGduoGL4U97MGM="
 									},
-									"type": "List<User>",
+									"type": "List<model.User>",
 									"direction": "return"
 								}
 							]
