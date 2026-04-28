@@ -5,11 +5,10 @@ import java.util.ArrayList;
 
 public class Transcript {
 
-    // Вспомогательный класс для хранения записи в транскрипте
     public static class TranscriptEntry {
         public Course course;
         public Mark mark;
-        public String semester; // Можно заменить на Enum Semester, если он у тебя есть
+        public String semester; 
 
         public TranscriptEntry(Course course, Mark mark, String semester) {
             this.course = course;

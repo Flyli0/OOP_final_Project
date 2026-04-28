@@ -6,10 +6,10 @@ public class Lesson {
 
     private String title;
     private String room;
-    private LessonType type; // Теперь он берет этот тип из файла LessonType.java, который ты создала
+    private LessonType type; 
     private Teacher instructor;
     private Course course;
-    private Date time; // Заменили несуществующий DateTime на стандартный Date
+    private Date time; 
 
     public Lesson() {
     }

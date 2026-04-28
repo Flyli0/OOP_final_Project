@@ -6,7 +6,7 @@ import java.sql.Date;
 
 public class Teacher extends Employee {
 
-    private TeacherTitle title; // Используем глобальный Enum из твоего списка
+    private TeacherTitle title; 
     private List<ScheduleEntry> schedule;
 
     public Teacher(String name, String surname, double salary, Date hireDate, TeacherTitle title) {

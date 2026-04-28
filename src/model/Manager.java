@@ -4,7 +4,7 @@ import java.sql.Date;
 
 public class Manager extends Employee {
 
-    private ManagerType type; // Используем тот Enum, который мы создали вручную
+    private ManagerType type;
     // private NewsService ns; // Пока оставим закомментированным, чтобы не было ошибки из-за сервисов
 
     public Manager(String name, String surname, double salary, Date hireDate, ManagerType type) {
@@ -13,7 +13,7 @@ public class Manager extends Employee {
     }
 
     public void assignCourse(Teacher t, Course c) {
-        // TODO: логика назначения курса
+
     }
 
     public void approveRegistration(Student s) {

@@ -6,7 +6,7 @@ public class Course {
 
     private String name;
     private String id;
-    private School school; // Раскомментировали, так как School теперь существует
+    private School school; 
     private int credits;
     private List<Teacher> teachers;
     private CourseType type;

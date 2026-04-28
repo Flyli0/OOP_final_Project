@@ -7,7 +7,7 @@ public class News {
 
     private int id;
     private String header;
-    private String topic; // Добавлено специально под требования ТЗ
+    private String topic; 
     private String content;
     private User author;
     private boolean isPinned;
@@ -19,7 +19,6 @@ public class News {
         this.topic = topic;
         this.content = content;
         this.author = author;
-        // По ТЗ: если топик "Research", новость автоматически закрепляется
         this.isPinned = topic.equalsIgnoreCase("Research");
         this.comments = new ArrayList<>();
     }
