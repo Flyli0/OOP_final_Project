@@ -17,8 +17,8 @@ public class ResearcherDecorator extends UserDecorator implements Researcher {
     }
 
     @Override
-    public void conductResearch(String content, String title) {
-    	ResearchPaper res = new ResearchPaper(title, this.getName(), 5, content);
+    public void conductResearch(String content, String title, int pages) {
+    	ResearchPaper res = new ResearchPaper(title, this.getName(), 5, content, pages);
     	papers.add(res);
     }
 

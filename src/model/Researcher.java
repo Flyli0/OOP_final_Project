@@ -6,7 +6,7 @@ public interface Researcher {
 
     double calculateH();
 
-    void conductResearch(String content, String title);
+    void conductResearch(String content, String title, int pages);
 
     void printPapers();
 }
