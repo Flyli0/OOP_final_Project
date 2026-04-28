@@ -3,6 +3,8 @@ package service;
 import java.io.*;
 import java.util.*;
 
+import model.Student;
+
 /**
  * 
  */
@@ -31,18 +33,16 @@ public class EnrollmentService {
      * @param Student s 
      * @return
      */
-    public void enrollStudent(void Student s) {
+    public void enrollStudent(Student s) {
         // TODO implement here
-        return null;
     }
 
     /**
      * @param Student s 
      * @return
      */
-    public void removeStudent(void Student s) {
+    public void removeStudent( Student s) {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -50,7 +50,6 @@ public class EnrollmentService {
      */
     public void seeTeachers() {
         // TODO implement here
-        return null;
     }
 
 }

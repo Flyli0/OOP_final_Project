@@ -3,6 +3,8 @@ package service;
 import java.io.*;
 import java.util.*;
 
+import model.User;
+
 /**
  * 
  */
@@ -19,27 +21,27 @@ public class UsersManageService {
      * @param User u 
      * @return
      */
-    public void updateUser(void User u) {
+    public void updateUser( User u) {
         // TODO implement here
-        return null;
     }
 
     /**
      * @param User u 
      * @return
      */
-    public void deleteUser(void User u) {
+    public void deleteUser( User u) {
         // TODO implement here
-        return null;
+    
+        
     }
 
     /**
      * @param User u 
      * @return
      */
-    public void addUser(void User u) {
+    public void addUser( User u ) {
         // TODO implement here
-        return null;
+        
     }
 
 }

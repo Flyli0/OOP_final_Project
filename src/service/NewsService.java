@@ -3,6 +3,8 @@ package service;
 import java.io.*;
 import java.util.*;
 
+import model.News;
+
 /**
  * 
  */
@@ -39,9 +41,8 @@ public class NewsService {
      * @param String s 
      * @return
      */
-    public void addComment(void News n, void String s) {
+    public void addComment(News n, String s) {
         // TODO implement here
-        return null;
     }
 
 }
