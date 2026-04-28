@@ -4,10 +4,10 @@ public class MasterStudent extends GraduateStudent {
 
     private boolean thesisRequired;
 
-    public MasterStudent() {
-        super();
-        this.thesisRequired = true; // По умолчанию для магистрантов диссертация нужна
-    }
+    public MasterStudent(String name, String surname ) {
+        super(name, surname);
+        this.thesisRequired = true;     
+        }
 
     public void setThesisRequirement(boolean thesisRequired) {
         this.thesisRequired = thesisRequired;

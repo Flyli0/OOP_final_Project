@@ -14,7 +14,7 @@ public class Report {
     public Report(int id, String content) {
         this.id = id;
         this.content = content;
-        this.date = new Date(); // Ставим текущую дату создания отчета
+        this.date = new Date();
         this.marks = new HashMap<>();
     }
 

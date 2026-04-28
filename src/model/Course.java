@@ -6,7 +6,7 @@ public class Course {
 
     private String name;
     private String id;
-    private School school; // Раскомментировали, так как School теперь существует
+    private School school; 
     private int credits;
     private List<Teacher> teachers;
     private CourseType type;
@@ -14,17 +14,23 @@ public class Course {
 
     public Course() {
     }
+    
+    public String getCourseName() {
+    	return this.name;
+    }
 
-    public void addTeacher() {
-        // Убрали ошибочный return null;
+    public void addTeacher(Teacher t) {
+        this.teachers.add(t);
     }
 
     public void viewTeachers() {
-        // Убрали ошибочный return null;
+        for(Teacher t :teachers) {
+        	System.out.println(t);
+        }
     }
 
     public List<Teacher> getTeachers() {
-        return teachers;
+        return this.teachers;
     }
 
     public enum CourseType {

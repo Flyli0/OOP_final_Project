@@ -5,7 +5,6 @@ public class Comment {
     private User author;
     private String content;
 
-    // Добавил нормальный конструктор, чтобы можно было создавать комментарии
     public Comment(User author, String content) {
         this.author = author;
         this.content = content;
@@ -17,5 +16,9 @@ public class Comment {
 
     public String getContent() {
         return content;
+    }
+    
+    public void setContent(String content) {
+    	this.content = content;
     }
 }

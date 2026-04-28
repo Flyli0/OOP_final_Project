@@ -16,7 +16,7 @@ public class Student extends User {
         this.courses = new ArrayList<>();
         this.schedule = new ArrayList<>();
         this.creditsGot = 0;
-        this.transcript = new Transcript(); // Создаем пустой транскрипт при регистрации
+        this.transcript = new Transcript();
     }
 
     public List<Course> getCourses() {
@@ -47,7 +47,8 @@ public class Student extends User {
         // TODO: логика создания расписания
     }
 
-    
-
-
+	@Override
+	public String toString() {
+		return "Student: " + super.getFirstName() + ' ' + super.getLastName();
+	}
 }

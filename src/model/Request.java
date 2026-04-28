@@ -4,14 +4,14 @@ import java.util.Date;
 
 public class Request {
 
-    private RequestStatus status; // Используем наш глобальный Enum
+    private RequestStatus status; 
     private String info;
     private Date receivingDate;
 
     public Request(String info) {
         this.info = info;
-        this.receivingDate = new Date(); // Дата создания запроса
-        this.status = RequestStatus.VIEWED; // Начальный статус по ТЗ
+        this.receivingDate = new Date(); 
+        this.status = RequestStatus.VIEWED;
     }
 
     public void setStatus(RequestStatus status) {

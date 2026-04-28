@@ -9,11 +9,11 @@ public abstract class GraduateStudent extends Student {
     private String thesisTitle;
     private String researchTopic;
     public List<ResearchPaper> publishedWorks;
-    private ResearchProjet research;
+    private ResearchProject research;
     private Researcher researchSupervisor;
 
-    public GraduateStudent() {
-        // Инициализируем список, чтобы избежать ошибки NullPointerException
+    public GraduateStudent(String name, String surname) {
+        super(name, surname);
         this.publishedWorks = new ArrayList<>();
     }
 

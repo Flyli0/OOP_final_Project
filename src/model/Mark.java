@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public class Mark {
+public class Mark{
 
     private double value;
     private Date date;
@@ -35,4 +35,4 @@ public class Mark {
                 ", date=" + date +
                 '}';
     }
-}}
+}

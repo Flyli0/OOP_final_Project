@@ -3,7 +3,7 @@ package service;
 import java.io.*;
 import java.util.*;
 
-import model.ResearchProjet;
+import model.ResearchProject;
 import model.User;
 
 /**
@@ -20,7 +20,7 @@ public class ResearchJournalObserver {
     /**
      * 
      */
-    private List<ResearchProjet> researchProjects;
+    private List<ResearchProject> researchProjects;
 
     /**
      * 
@@ -66,7 +66,7 @@ public class ResearchJournalObserver {
      * @param ResearchProjet rp 
      * @return
      */
-    public void addResearch(ResearchProjet rp) {
+    public void addResearch(ResearchProject rp) {
         
     
     }
