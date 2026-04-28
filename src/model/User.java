@@ -1,8 +1,8 @@
 package model;
 
-import java.util.Date; // Исправили импорт на универсальный util.Date
+import java.util.Date;
 
-public abstract class User implements ImUser { // Добавили связь с интерфейсом
+public abstract class User implements ImUser { 
 
     private String name;
     private String surname;
@@ -18,7 +18,7 @@ public abstract class User implements ImUser { // Добавили связь с
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
-        this.id = ++idCounter; // Сначала увеличиваем, потом присваиваем
+        this.id = ++idCounter;
     }
 
     @Override
@@ -31,11 +31,9 @@ public abstract class User implements ImUser { // Добавили связь с
         return name + " " + surname;
     }
 
-    // Добавляем отдельные геттеры, они понадобятся для логина и отчетов
     public String getFirstName() { return name; }
     public String getLastName() { return surname; }
 
-    @Override
     public String getLogin() {
         return login;
     }

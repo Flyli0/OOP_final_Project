@@ -3,16 +3,18 @@ package model;
 import java.util.List;
 import java.util.ArrayList;
 
-public class ResearchProjet {
+public class ResearchProject {
 
     private int numOfPages;
     private String topic;
     private List<Researcher> participants;
+    private ArrayList<ResearchPaper> content;
 
-    public ResearchProjet(String topic, int numOfPages) {
+    public ResearchProject(String topic, int numOfPages) {
         this.topic = topic;
         this.numOfPages = numOfPages;
-        this.participants = new ArrayList<>(); // Обязательно инициализируем список
+        this.participants = new ArrayList<>(); 
+        
     }
 
     public void addParticipant(Researcher researcher) {
@@ -31,6 +33,10 @@ public class ResearchProjet {
 
     public List<Researcher> getParticipants() {
         return participants;
+    }
+    
+    public void addPaper(ResearchPaper rp) {
+    	this.content.add(rp);
     }
 
     @Override

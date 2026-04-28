@@ -19,7 +19,6 @@ public class ScheduleEntry {
     }
 
     public Course getCourse() {
-        // Берем курс напрямую из урока, чтобы данные не дублировались
         return (lesson != null) ? lesson.getCourse() : null;
     }
 

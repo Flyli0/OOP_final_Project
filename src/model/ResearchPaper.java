@@ -4,22 +4,28 @@ import java.util.Date;
 
 public class ResearchPaper {
 
-    private String title; // ВОТ ЭТА СТРОЧКА БЫЛА ПРОПУЩЕНА!
+    private String title;
     private String authors;
+    private String content;
     private int citations;
     private Date publicationDate;
-    private int pages;
 
-    public ResearchPaper(String title, String authors, int citations, Date publicationDate, int pages) {
+    public ResearchPaper(String title, String authors, int citations, Date publicationDate, String content) {
         this.title = title;
         this.authors = authors;
         this.citations = citations;
         this.publicationDate = publicationDate;
-        this.pages = pages;
+    }
+    
+    public ResearchPaper(String title, String authors, int citations, String content) {
+    	this.title = title;
+        this.authors = authors;
+        this.citations = citations;
+        this.content = content;
+        this.publicationDate = new Date();
     }
 
     public String getCitation(CitationFormat format) {
-        // Если APA горит красным, проверь файл CitationFormat.java — там должен быть вариант APA
         if (format == CitationFormat.APA) {
             return authors + ". (" + publicationDate + "). " + title + ".";
         }
@@ -32,6 +38,10 @@ public class ResearchPaper {
 
     public int getCitations() {
         return citations;
+    }
+    
+    public String getContent() {
+    	return this.content;
     }
 
     public Date getPublicationDate() {
