@@ -20,6 +20,14 @@ public abstract class User implements ImUser {
         this.surname = surname;
         this.id = ++idCounter;
     }
+    
+    public User(String name, String surname, String login, String password) {
+    	this.name = name;
+        this.surname = surname;
+        this.id = ++idCounter;
+        this.login = login;
+        this.password = password;
+    }
 
     @Override
     public int getId() {
