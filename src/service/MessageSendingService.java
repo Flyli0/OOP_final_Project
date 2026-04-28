@@ -3,6 +3,8 @@ package service;
 import java.io.*;
 import java.util.*;
 
+import model.Message;
+
 /**
  * 
  */
@@ -22,7 +24,6 @@ public class MessageSendingService {
     /**
      * 
      */
-    public void Attribute1;
 
 
     /**
@@ -30,25 +31,24 @@ public class MessageSendingService {
      */
     public void sendMessage() {
         // TODO implement here
-        return null;
     }
 
     /**
      * @param String 
      * @return
      */
-    public void redactMessagee(content String) {
+    public void redactMessagee( String content) {
         // TODO implement here
-        return null;
+        
     }
 
     /**
      * @param int 
      * @return
      */
-    public void deleteMessage(id int) {
+    public void deleteMessage(int id) {
         // TODO implement here
-        return null;
+        
     }
 
 }

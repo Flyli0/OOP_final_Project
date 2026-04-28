@@ -19,7 +19,6 @@ public class ReportGenerationService {
      */
     public void sendReport() {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -27,7 +26,6 @@ public class ReportGenerationService {
      */
     public void createReport() {
         // TODO implement here
-        return null;
     }
 
     /**
@@ -35,7 +33,6 @@ public class ReportGenerationService {
      */
     public void deleteReport() {
         // TODO implement here
-        return null;
     }
 
 }

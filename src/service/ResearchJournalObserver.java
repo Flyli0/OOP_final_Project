@@ -3,6 +3,9 @@ package service;
 import java.io.*;
 import java.util.*;
 
+import model.ResearchProjet;
+import model.User;
+
 /**
  * 
  */
@@ -17,7 +20,7 @@ public class ResearchJournalObserver {
     /**
      * 
      */
-    private List<ResearchProject> researchProjects;
+    private List<ResearchProjet> researchProjects;
 
     /**
      * 
@@ -28,27 +31,27 @@ public class ResearchJournalObserver {
      * @param User u 
      * @return
      */
-    public void addSubscriber(void User u) {
+    public void addSubscriber(User u) {
         // TODO implement here
-        return null;
+    
     }
 
     /**
      * @param User u 
      * @return
      */
-    public void removeSubscriber(void User u) {
+    public void removeSubscriber(User u) {
         // TODO implement here
-        return null;
+    
     }
 
     /**
      * @param String message 
      * @return
      */
-    public void notify(void String message) {
+    public void notify( String message) {
         // TODO implement here
-        return null;
+        
     }
 
     /**
@@ -60,12 +63,12 @@ public class ResearchJournalObserver {
     }
 
     /**
-     * @param ResearchProject rp 
+     * @param ResearchProjet rp 
      * @return
      */
-    public void addResearch(void ResearchProject rp) {
-        // TODO implement here
-        return null;
+    public void addResearch(ResearchProjet rp) {
+        
+    
     }
 
 }
