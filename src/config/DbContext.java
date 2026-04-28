@@ -26,7 +26,7 @@ public class DbContext {
 		path = new File("src/data").getAbsolutePath();
 		User admin = new Admin("John","Doe", 0.0, (java.sql.Date) new Date() ,"Qwerty", "1234");
 		users.add(admin);
-		this.save();
+		DbContext.save();
 	}
 	
 	public static DbContext getInstance() {

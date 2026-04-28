@@ -2,7 +2,7 @@ package model;
 
 import java.util.Date;
 
-public abstract class User implements ImUser { 
+public class User implements ImUser { 
 
     private String name;
     private String surname;
@@ -14,7 +14,12 @@ public abstract class User implements ImUser {
 
     private static int idCounter = 0;
     private int id;
-
+    
+    public User(String login, String password, int a) {
+    	this.login = login;
+    	this.password = password;
+    }
+    
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
@@ -72,6 +77,4 @@ public abstract class User implements ImUser {
         return Integer.hashCode(id);
     }
 
-    @Override
-    public abstract String toString();
 }
