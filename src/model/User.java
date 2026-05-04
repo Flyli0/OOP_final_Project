@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class User implements ImUser { 
+public class User implements ImUser, Serializable { 
 
     private String name;
     private String surname;

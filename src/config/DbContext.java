@@ -1,4 +1,4 @@
-	package config;
+package config;
 import model.User;
 import model.Admin;
 import java.io.FileInputStream;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.io.File;
 import model.Course; 
@@ -22,11 +22,16 @@ public class DbContext {
 	
 	private DbContext() {
 		courses = new ArrayList<Course>();
-		users = new ArrayList<User>();
 		path = new File("src/data").getAbsolutePath();
-		User admin = new Admin("John","Doe", 0.0, (java.sql.Date) new Date() ,"Qwerty", "1234");
-		users.add(admin);
-		DbContext.save();
+		users = new ArrayList<User>();
+		users = (List<User>) DbContext.loadUsers();
+		System.out.println(users);
+		if(users == null) {
+			users = new ArrayList<User>();
+			User admin = new Admin("John","Doe", 0.0, new Date(System.currentTimeMillis()	) ,"Qwerty", "1234");
+			users.add(admin);
+			DbContext.saveUsers();
+		}
 	}
 	
 	public static DbContext getInstance() {
@@ -68,16 +73,14 @@ public class DbContext {
 		return null;
 	}
 	
-	public static boolean save() {
+	public static boolean saveUsers() {
 		DbContext.serialize(users, "users");
-		DbContext.serialize(courses, "courses");
 		return true;
 	}
 	
-	public static boolean load() {
-		DbContext.deserialize("users");
-		DbContext.deserialize("courses");
-		return true;
+	public static Object loadUsers() {
+		Object ret = DbContext.deserialize("users");
+		return ret;
 	}
 	
 	public List<User> allUsers(){
@@ -85,7 +88,8 @@ public class DbContext {
 	}
 	
 	public void addUser(User u){
-		this.users.add(u);
+		DbContext.users.add(u);
+		DbContext.saveUsers();
 	}
 	
 	public List<Course> allCourses(){
