@@ -5,8 +5,8 @@ public class PhDStudent extends GraduateStudent {
     private String dissertationTopic;
     private boolean qualifyingExamPassed;
 
-    public PhDStudent(String name, String surname) {
-        super(name, surname);
+    public PhDStudent(String login, String password) {
+        super(login, password);
         this.qualifyingExamPassed = false; 
     }
     

@@ -12,8 +12,8 @@ public abstract class GraduateStudent extends Student {
     private ResearchProject research;
     private Researcher researchSupervisor;
 
-    public GraduateStudent(String name, String surname) {
-        super(name, surname);
+    public GraduateStudent(String login, String password) {
+        super(password, password, 0);
         this.publishedWorks = new ArrayList<>();
     }
 

@@ -9,10 +9,14 @@ public class TechSupportSpecialist extends Employee {
     private String report;
     private List<Request> pendingRequests;
 
-    public TechSupportSpecialist(String name, String surname, double salary, Date hireDate) {
-        super(name, surname, salary, hireDate);
-        this.pendingRequests = new ArrayList<>();
+    public TechSupportSpecialist(String name, String surname, double salary, Date hireDate, String login, String password) {
+        super(name, surname, salary, hireDate, login, password);
+        this.pendingRequests = new ArrayList<Request>();
         this.report = "";
+    }
+    
+    public TechSupportSpecialist(String login, String password) {
+    	super(login,password);
     }
 
     public void updateReport(String newInfo) {

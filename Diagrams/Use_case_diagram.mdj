@@ -17413,6 +17413,37 @@
 							"propertyLabel": {
 								"$ref": "AAAAAAGdxTsKWq7b/nI="
 							}
+						},
+						{
+							"_type": "UMLNoteView",
+							"_id": "AAAAAAGd2PsQiMn7r1k=",
+							"_parent": {
+								"$ref": "AAAAAAGdsP6mlluwkOY="
+							},
+							"font": "Arial;13;0",
+							"parentStyle": false,
+							"left": 871,
+							"top": 1280,
+							"width": 100,
+							"height": 77,
+							"text": "It can be sorted by date, number of papers and citations"
+						},
+						{
+							"_type": "UMLNoteLinkView",
+							"_id": "AAAAAAGd2PsQn8q4ssA=",
+							"_parent": {
+								"$ref": "AAAAAAGdsP6mlluwkOY="
+							},
+							"font": "Arial;13;0",
+							"parentStyle": false,
+							"head": {
+								"$ref": "AAAAAAGd2PsQiMn7r1k="
+							},
+							"tail": {
+								"$ref": "AAAAAAGdsThloS4HGwc="
+							},
+							"lineStyle": 1,
+							"points": "802:1315;870:1317"
 						}
 					]
 				},

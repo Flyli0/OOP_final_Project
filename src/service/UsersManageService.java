@@ -27,7 +27,6 @@ public class UsersManageService {
         // TODO implement here
         if (!db.allUsers().contains(u)) {
             System.out.println("User not found!");
-            return;
         }
         Scanner sc = new Scanner(System.in);
         System.out.println("Enter new name:");  
@@ -55,7 +54,6 @@ public class UsersManageService {
         // TODO implement here
         if (!db.allUsers().contains(u)) {
             System.out.println("User not found!");
-            return;
         }
         
         db.allUsers().remove(u);

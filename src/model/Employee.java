@@ -11,7 +11,11 @@ public class Employee extends User {
         this.salary = salary;
         this.hireDate = hireDate;
     }
-
+    
+    public Employee(String login, String password) {
+    	super(login,password,1);
+    }
+    
     public double getSalary() {
         return salary;
     }

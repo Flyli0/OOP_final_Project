@@ -1,4 +1,4 @@
-package config;
+	package config;
 import model.User;
 import model.Admin;
 import java.io.FileInputStream;
@@ -82,6 +82,10 @@ public class DbContext {
 	
 	public List<User> allUsers(){
 		return this.users;
+	}
+	
+	public void addUser(User u){
+		this.users.add(u);
 	}
 	
 	public List<Course> allCourses(){

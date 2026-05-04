@@ -4,8 +4,8 @@ public class MasterStudent extends GraduateStudent {
 
     private boolean thesisRequired;
 
-    public MasterStudent(String name, String surname ) {
-        super(name, surname);
+    public MasterStudent(String login, String password ) {
+        super(login, password);
         this.thesisRequired = true;     
         }
 

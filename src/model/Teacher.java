@@ -9,10 +9,14 @@ public class Teacher extends Employee {
     private TeacherTitle title; 
     private List<ScheduleEntry> schedule;
 
-    public Teacher(String name, String surname, double salary, Date hireDate, TeacherTitle title) {
-        super(name, surname, salary, hireDate);
+    public Teacher(String name, String surname, double salary, Date hireDate, TeacherTitle title, String login, String password) {
+        super(name, surname, salary, hireDate, login, password);
         this.title = title;
         this.schedule = new ArrayList<>();
+    }
+    
+    public Teacher(String login, String password) {
+    	super(login, password);
     }
 
     public void putMark(Student s, Course c, Mark m) {

@@ -7,13 +7,21 @@ import config.DbContext;
 import model.User;
 
 public class AuthService {
-	public User login(String username, String password) {
+	private static DbContext db = DbContext.getInstance();
+	public static User login(String login, String password) {
 		List<User> users = DbContext.getInstance().allUsers();
-		Optional<User> ou = users.stream().filter(user -> user.equals(new User(username,password,0))).findFirst();
-		User curU = ou.get();
-		if(curU!=null) {
-			return curU;
-		}
-		return null;
+		return users.stream()
+				.filter(user -> 
+					user.getLogin().equals(login) && 
+					user.getPassword().equals(password))
+				.findFirst()
+				.orElse(null);
+	}
+
+	public static User signUp(String login, String password, AccountType at) {
+		User u = AccountFactory.createAccount(at, login, password);
+		db.addUser(u);
+		return u;
 	}
 }
+	

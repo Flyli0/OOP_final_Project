@@ -18,6 +18,14 @@ public class Student extends User {
         this.creditsGot = 0;
         this.transcript = new Transcript();
     }
+    
+    public Student(String login, String password, int z) {
+    	super(login, password);
+        this.courses = new ArrayList<>();
+        this.schedule = new ArrayList<>();
+        this.creditsGot = 0;
+        this.transcript = new Transcript();
+    }
 
     public List<Course> getCourses() {
         return courses;
