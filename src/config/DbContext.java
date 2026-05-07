@@ -14,6 +14,7 @@ import java.util.List;
 import java.io.File;
 import model.Course; 
 import model.Enrollment;
+import model.News;
 import model.Student;
 
 
@@ -24,10 +25,12 @@ public class DbContext {
 	private static List<Enrollment> enrollments;
 	private static List<User> users;
 	private static List<Student> students;
+    private static List<News> news;
 	
 	private DbContext() {
 		path = new File("src/data").getAbsolutePath();
 		
+		// Create such pattern to ensure absence of NullPointerException 
 		courses = (List<Course>) DbContext.loadCourses();
 		courses = (List<Course>) ValidateDb.validate(courses);
 		
@@ -53,6 +56,7 @@ public class DbContext {
 		return INSTANCE;
 	}
 	
+	// Serialization method DO NOT CHANGE
 	public static boolean serialize(Object o, String fileName) {
 		try(ObjectOutputStream oos = new ObjectOutputStream(
 				new FileOutputStream(path + "/" + fileName + ".txt"))){
@@ -88,6 +92,7 @@ public class DbContext {
 		return null;
 	}
 //			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏    ꧁ ༺SAVE༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	// SAVE METHODS (ADD FOR A NEW COLLECTION)
 	public static boolean saveUsers() {
 		DbContext.serialize(users, "users");
 		return true;
@@ -107,7 +112,8 @@ public class DbContext {
 		DbContext.serialize(courses, "courses");
 		return true;
 	}
-//			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	
+//			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
 		Object ret = DbContext.deserialize("users");
 		return ret;
@@ -128,6 +134,7 @@ public class DbContext {
 		return ret;
 	}
 //		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	// COLLECTION GETTERS
 	public List<User> allUsers(){
 		return this.users;
 	}
@@ -145,6 +152,7 @@ public class DbContext {
 	}
 	
 // 		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	//TO ADD ELEMENTS TO A COLLECTION FROM OUTER METHODS
 	public void addUser(User u){
 		DbContext.users.add(u);
 		DbContext.saveUsers();

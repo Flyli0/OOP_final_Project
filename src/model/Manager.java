@@ -27,9 +27,7 @@ public class Manager extends Employee {
     	EnrollmentService.approveStudents(en);
     }
     
-    public void closeEnrollment(Enrollment en) {
-    	en.closeEnrollment(false);
-    }
+
 
     public ManagerType getManagerType() {
         return type;

@@ -14,6 +14,7 @@ import model.Student;
 import model.User;
 
 public class Core {
+	
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
 	public static void run() throws IOException {
@@ -43,6 +44,7 @@ public class Core {
 		}
 	}
 	
+//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static User auth() throws IOException {
 		System.out.println("Enter your username!");
 		String username = br.readLine();
@@ -83,7 +85,7 @@ public class Core {
 	}
 	
 	
-	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
+//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void enrollment() throws IOException {
 		Enrollment currentEnrollment = new Enrollment(new Course());
 		while(true) {

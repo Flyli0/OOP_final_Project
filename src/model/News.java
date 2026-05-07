@@ -1,9 +1,10 @@
 package model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class News {
+public class News implements Serializable{
 
     private int id;
     private String header;
