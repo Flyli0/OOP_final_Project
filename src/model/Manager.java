@@ -1,9 +1,12 @@
 package model;
 
+import java.io.IOException;
 import java.sql.Date;
 
-public class Manager extends Employee {
+import config.DbContext;
+import service.EnrollmentService;
 
+public class Manager extends Employee {
     private ManagerType type;
     // private NewsService ns; // Пока оставим закомментированным, чтобы не было ошибки из-за сервисов
 
@@ -17,16 +20,22 @@ public class Manager extends Employee {
     }
 
     public void assignCourse(Teacher t, Course c) {
-
+    	
     }
 
-    public void approveRegistration(Student s) {
-        // TODO: логика одобрения регистрации
+    public void approveRegistration(Enrollment en, boolean choice) throws NumberFormatException, IOException {
+    	EnrollmentService.approveStudents(en);
+    }
+    
+    public void closeEnrollment(Enrollment en) {
+    	en.closeEnrollment(false);
     }
 
     public ManagerType getManagerType() {
         return type;
     }
+    
+    
 
     public void manageNews() {
         // TODO: логика управления новостями

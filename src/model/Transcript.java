@@ -1,11 +1,12 @@
 package model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Transcript {
+public class Transcript implements Serializable{
 
-    public static class TranscriptEntry {
+    public static class TranscriptEntry implements Serializable{
         public Course course;
         public Mark mark;
         public String semester; 

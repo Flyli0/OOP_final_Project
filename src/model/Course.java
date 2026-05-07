@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Course {
+public class Course implements Serializable{
 
     private String name;
     private String id;
@@ -14,6 +15,12 @@ public class Course {
 
     public Course() {
     }
+    
+    public Course(String name, int credits) {
+    	this.name= name;
+    	this.credits = credits;
+    }
+   
     
     public String getCourseName() {
     	return this.name;
@@ -40,5 +47,15 @@ public class Course {
         GENERAL,
         MINOR,
         CORE
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Course)) return false;
+
+        Course c = (Course) o;
+
+        return name.equals(c.getCourseName());
     }
 }

@@ -1,18 +1,22 @@
 package views;
 import service.AuthService;
+import service.EnrollmentService;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 import config.DbContext;
 import service.AccountType;
+import model.Course;
+import model.Enrollment;
+import model.Student;
 import model.User;
 
 public class Core {
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
 	public static void run() throws IOException {
-		System.out.println(db.loadUsers());
 		System.out.println("Welcome to University!");
 		System.out.println("Please Authorize!");
 		System.out.println("To sign up Enter 1  \nTo log in Enter 2");
@@ -71,8 +75,68 @@ public class Core {
 		return currUser;
 	}
 	
-	public static void mainPage() {
+	public static void mainPage() throws IOException {
 		System.out.println("WELCOME!!!");
 		System.out.println(db.loadUsers());
+		System.out.println(db.loadEnrollments());
+		enrollment();
+	}
+	
+	
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
+	public static void enrollment() throws IOException {
+		Enrollment currentEnrollment = new Enrollment(new Course());
+		while(true) {
+			System.out.println("Choose course (type Name): \n!!!to Quit enter \"exit\"");
+			for(Course c: db.allCourses()) {
+				System.out.println(c.getCourseName());
+			}
+			String input = br.readLine();
+			if(input.toLowerCase().equals("exit")) {
+				break;
+			}
+			Course currentCourse = db.allCourses().stream().filter(c->c.getCourseName().equals(input)).findFirst().orElse(null);
+			if(EnrollmentService.getEnrollment(currentCourse)==null) {
+				currentEnrollment = EnrollmentService.createEnrollment(currentCourse);
+				System.out.println("Enrollment Created!");
+			}
+			else {
+				currentEnrollment = EnrollmentService.getEnrollment(currentCourse);
+				System.out.println("Enrollment is Found!");
+			}
+			System.out.println("What do you want to do? \n1>Add Student to the enrollment \n2>Approve registration for students of the enrollment");
+			String answer = br.readLine();
+			if(answer.toLowerCase().equals("exit")) {
+				break;
+			}
+			if(answer.equals("1")) {
+				while(true) {
+					System.out.println("Enter StudentID:  \n to exit enter Q");
+					String id = br.readLine();
+					if(id.equals("q") || id.equals("Q")) {
+						break;
+					}
+					Student currentStudent = db.allStudent().stream().filter(student -> student.getSystemId().equals(id)).findFirst().orElse(null);
+					if(currentStudent !=null) {
+						EnrollmentService.enrollStudent(currentStudent, currentEnrollment);
+						System.out.println("Student: " + currentStudent.getSystemId() + " Enrolled on: " + currentCourse.getCourseName());
+						db.saveEnrollments();
+					}
+					else {
+						System.out.println("Unexistent Student ID or invalid format!");
+					}
+				}
+			}
+			else if(answer.equals("2")) {
+				System.out.println("APPROVEMENT");
+				EnrollmentService.approveStudents(currentEnrollment);
+			}
+			System.out.println("Do you want to close the Enrollment? y/n");
+			String answer2 = br.readLine();
+			if(answer2.equals("y")) {
+				currentEnrollment.closeEnrollment();
+				System.out.println("Enrollment: " + currentEnrollment.getCourse() + "is Closed!");
+			}
+		}
 	}
 }

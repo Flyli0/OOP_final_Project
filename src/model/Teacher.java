@@ -2,9 +2,10 @@ package model;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.io.Serializable;
 import java.sql.Date;
 
-public class Teacher extends Employee {
+public class Teacher extends Employee implements Serializable{
 
     private TeacherTitle title; 
     private List<ScheduleEntry> schedule;

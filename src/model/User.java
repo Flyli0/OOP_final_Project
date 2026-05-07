@@ -15,16 +15,22 @@ public class User implements ImUser, Serializable {
 
     private static int idCounter = 0;
     private int id;
+    private String system_id;
     
     public User(String login, String password, int a) {
     	this.login = login;
     	this.password = password;
+    	this.id = ++idCounter;
+    	int current_year = new Date().getYear();
+    	this.system_id = current_year + "B0" + this.id;
     }
     
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
         this.id = ++idCounter;
+        int current_year = new Date().getYear();
+        this.system_id = current_year + "B0" + this.id;
     }
     
     public User(String name, String surname, String login, String password) {
@@ -33,6 +39,8 @@ public class User implements ImUser, Serializable {
         this.id = ++idCounter;
         this.login = login;
         this.password = password;
+        int current_year = new Date().getYear();
+        this.system_id = current_year + "B0" + this.id;
     }
 
     @Override
@@ -67,6 +75,10 @@ public class User implements ImUser, Serializable {
 
     public void changeLanguage(Language language) {
         this.language = language;
+    }
+    
+    public String getSystemId() {
+    	return this.system_id;
     }
 
     @Override

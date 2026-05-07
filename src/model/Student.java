@@ -1,9 +1,10 @@
 package model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Student extends User {
+public class Student extends User implements Serializable{
 
     private int creditsGot;
     private Transcript transcript;
@@ -57,6 +58,6 @@ public class Student extends User {
 
 	@Override
 	public String toString() {
-		return "Student: " + super.getFirstName() + ' ' + super.getLastName();
+		return "Student: " + super.getFirstName() + ' ' + super.getLastName() + " " + super.getSystemId();
 	}
 }

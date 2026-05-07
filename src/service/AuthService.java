@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import config.DbContext;
+import model.Student;
 import model.User;
 
 public class AuthService {
@@ -21,6 +22,9 @@ public class AuthService {
 	public static User signUp(String login, String password, AccountType at) {
 		User u = AccountFactory.createAccount(at, login, password);
 		db.addUser(u);
+		if(u instanceof Student) {
+			db.addStudent((Student) u);
+		}
 		return u;
 	}
 }
