@@ -9,7 +9,7 @@ import model.News;
  * 
  */
 public class NewsService {
-    private static List<News> news;
+
     public void publishResearch() {
         // TODO implement here
     }
