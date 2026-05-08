@@ -82,39 +82,25 @@ public class Core {
 		return currUser;
 	}
 
-	// АЗИЗА: ОБНОВЛЕННАЯ ГЛАВНАЯ СТРАНИЦА С МЕНЮ
 	public static void mainPage() throws IOException {
 		System.out.println("WELCOME!!!");
-
-
-	/*	while(true) {
-			System.out.println("\n=== ГЛАВНОЕ МЕНЮ ===");
-			System.out.println("1. Управление Enrollment (Код Кирилла)");
-			System.out.println("2. Почта и Сообщения (Твой код)");
-			System.out.println("3. Выход");
-			System.out.print("Выбери действие: ");
-
-			String choice = br.readLine();
-
-			if (choice.equals("1")) {
-				enrollment();
-			} else if (choice.equals("2")) {
-				messagesMenu(); // Вызов твоего меню
-			} else if (choice.equals("3") || choice.toLowerCase().equals("exit")) {
-				System.out.println("Выход из системы...");
-				break;
-			} else {
-				System.out.println("Неверная команда, попробуй еще раз."); */
-
-		System.out.println(db.loadUsers());
-		System.out.println(db.loadEnrollments());
+		//System.out.println(db.loadUsers());
+		//System.out.println(db.loadEnrollments());
+		if(currentUser instanceof Employee){
+			System.out.println("Hello! \n choose your move: \n1>Post and Messages");
+			String input = br.readLine();
+			switch(input) {
+			case "1": messagesMenu();
+			default: System.out.println("Wrong format try again!");
+			}
+		}
 		if(currentUser instanceof Manager) {
 			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news");
 			String input = br.readLine();
 			switch(input) {
 			case "1": enrollment();
 			//case "2": newsManage();
-			default: System.out.println("Wrong format!");
+			default: System.out.println("Wrong format try again!");
 
 			}
 		}
