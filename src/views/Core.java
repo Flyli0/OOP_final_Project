@@ -1,6 +1,7 @@
 package views;
 import service.AuthService;
 import service.EnrollmentService;
+import service.NewsService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -158,8 +159,8 @@ public class Core {
 			String input = br.readLine();
 			switch(input) {
 			case "1": researchPublisher();
-			case "2":
-			case "3":
+			case "2": System.out.println(NewsService.generateTopResearch());
+			case "3": newsPrinter();
 			case "4":
 			case "5": break;
 			default: System.out.println("Wrong format!");
@@ -168,6 +169,10 @@ public class Core {
 	}
 	
 	public static void researchPublisher() {
+		
+	}
+	
+	public static void newsPrinter() {
 		
 	}
 }
