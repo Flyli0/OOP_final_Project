@@ -29,7 +29,7 @@ public class News implements Serializable{
         this.topic = topic;
         this.content = content;
         this.authors.add(author);
-        this.isPinned = topic.equalsIgnoreCase("Research");
+        
         this.comments = new ArrayList<>();
         this.is_research = false;
     }
@@ -50,6 +50,7 @@ public class News implements Serializable{
     	this.authors = content.getParticipants();
     	this.is_research = true;
     	this.citations = content.getCitations();
+    	this.isPinned = topic.equalsIgnoreCase("Research");
     }
 
     public String getId() {
