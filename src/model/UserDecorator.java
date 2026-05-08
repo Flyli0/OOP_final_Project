@@ -1,9 +1,14 @@
 package model;
 
-public abstract class UserDecorator implements ImUser {
-    protected ImUser decoratedUser;
+import java.io.Serializable;
 
-    public UserDecorator(ImUser decoratedUser) {
+public abstract class UserDecorator extends User implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	protected ImUser decoratedUser;
+
+    public UserDecorator(User decoratedUser) {
+    	super(decoratedUser.getLogin(),decoratedUser.getPassword(),0);
         this.decoratedUser = decoratedUser;
     }
 

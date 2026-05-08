@@ -41,7 +41,10 @@ public class DbContext {
 
 		enrollments = (List<Enrollment>) DbContext.loadEnrollments();
 		enrollments = (List<Enrollment>) ValidateDb.validate(enrollments);
-
+	
+		news = (List<News>) DbContext.loadNews();
+		news = (List<News>) ValidateDb.validate(news);
+		
 		users = new ArrayList<User>();
 		users = (List<User>) DbContext.loadUsers();
 
@@ -93,7 +96,7 @@ public class DbContext {
 			fnfe.printStackTrace();
 		}
 		catch(IOException ioe) {
-			ioe.printStackTrace();
+			System.out.println(fileName + ": File is empty");
 		}
 		catch(ClassNotFoundException cnfe) {
 			System.out.println("Class not found!");
@@ -127,8 +130,13 @@ public class DbContext {
 		DbContext.serialize(messages, "messages");
 		return true;
 	}
-
-	//        ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	
+	public static boolean saveNews() {
+		DbContext.serialize(news, "news");
+		return true;
+	}
+//			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+>>>>>>> origin/main
 	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
 		Object ret = DbContext.deserialize("users");
@@ -155,8 +163,13 @@ public class DbContext {
 		Object ret = DbContext.deserialize("messages");
 		return ret;
 	}
+	
+	public static Object loadNews() {
+		Object ret = DbContext.deserialize("news");
+		return ret;
+	}
+//		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 
-	//     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	// COLLECTION GETTERS
 	public List<User> allUsers(){
 		return this.users;
@@ -178,8 +191,12 @@ public class DbContext {
 	public List<Message> allMessages(){
 		return this.messages;
 	}
-
-	//     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+	
+	public List<News> allNews(){
+		return this.news;
+	}
+	
+// 		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	//TO ADD ELEMENTS TO A COLLECTION FROM OUTER METHODS
 	public void addUser(User u){
 		DbContext.users.add(u);
@@ -206,4 +223,10 @@ public class DbContext {
 		DbContext.messages.add(m);
 		DbContext.saveMessages();
 	}
+	
+	public void addNews(News n) {
+		DbContext.news.add(n);
+		DbContext.saveNews();
+	}
 }
+

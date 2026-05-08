@@ -2,6 +2,8 @@ package views;
 import service.AuthService;
 import service.EnrollmentService;
 import service.MessageSendingService; // ДОБАВЛЕНО АЗИЗОЙ
+import service.NewsService;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,11 +13,12 @@ import config.DbContext;
 import service.AccountType;
 import model.Course;
 import model.Enrollment;
+import model.Manager;
 import model.Student;
 import model.User;
 
 public class Core {
-
+	private static User currentUser;
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
 
@@ -24,7 +27,7 @@ public class Core {
 		System.out.println("Please Authorize!");
 		System.out.println("To sign up Enter 1  \nTo log in Enter 2");
 		String answer = br.readLine();
-		User currentUser = null;
+			currentUser = null;
 		System.out.println(answer);
 		if(Integer.parseInt(answer) == 1) {
 			currentUser = signup();
@@ -52,8 +55,8 @@ public class Core {
 		String username = br.readLine();
 		System.out.println("Enter your password");
 		String password = br.readLine();
-		User currUser = AuthService.login(username,password);
-		return currUser;
+		currentUser = AuthService.login(username,password);
+		return currentUser;
 	}
 
 	public static User signup() throws IOException {
@@ -83,7 +86,8 @@ public class Core {
 	public static void mainPage() throws IOException {
 		System.out.println("WELCOME!!!");
 
-		while(true) {
+
+	/*	while(true) {
 			System.out.println("\n=== ГЛАВНОЕ МЕНЮ ===");
 			System.out.println("1. Управление Enrollment (Код Кирилла)");
 			System.out.println("2. Почта и Сообщения (Твой код)");
@@ -100,7 +104,18 @@ public class Core {
 				System.out.println("Выход из системы...");
 				break;
 			} else {
-				System.out.println("Неверная команда, попробуй еще раз.");
+				System.out.println("Неверная команда, попробуй еще раз."); */
+
+		System.out.println(db.loadUsers());
+		System.out.println(db.loadEnrollments());
+		if(currentUser instanceof Manager) {
+			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news");
+			String input = br.readLine();
+			switch(input) {
+			case "1": enrollment();
+			//case "2": newsManage();
+			default: System.out.println("Wrong format!");
+
 			}
 		}
 	}
@@ -177,4 +192,29 @@ public class Core {
 			}
 		}
 	}
+
+//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-NEWS FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_	
+	public static void newsManage() throws IOException {
+		while(true) {
+			System.out.println("Welcome to News Management!!! \n1>Publish Research \n2>Generate top Research \n3>Get all News \n4>Publish News \n5>Return to Main");
+			String input = br.readLine();
+			switch(input) {
+			case "1": researchPublisher();
+			case "2": System.out.println(NewsService.generateTopResearch());
+			case "3": newsPrinter();
+			case "4":
+			case "5": break;
+			default: System.out.println("Wrong format!");
+			}
+		}
+	}
+	
+	public static void researchPublisher() {
+		
+	}
+	
+	public static void newsPrinter() {
+		
+	}
 }
+
