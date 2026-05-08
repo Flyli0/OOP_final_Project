@@ -1,54 +1,71 @@
 package service;
 
-import java.io.*;
-import java.util.*;
-
+import config.DbContext;
 import model.Message;
+import java.util.Scanner;
 
-/**
- * 
- */
 public class MessageSendingService {
 
-    /**
-     * Default constructor
-     */
+    DbContext db = DbContext.getInstance();
+    Scanner sc = new Scanner(System.in);
+
     public MessageSendingService() {
     }
 
-    /**
-     * 
-     */
-    private Message m;
-
-    /**
-     * 
-     */
-
-
-    /**
-     * @return
-     */
     public void sendMessage() {
-        // TODO implement here
+        System.out.println("Enter receiver login:");
+        String receiver = sc.nextLine();
+        System.out.println("Enter your message:");
+        String text = sc.nextLine();
+
+        // Здесь можно передать логин текущего пользователя
+        Message msg = new Message("Current_User", receiver, text);
+        db.addMessage(msg);
+        System.out.println("✅ Message sent!");
     }
 
-    /**
-     * @param String 
-     * @return
-     */
-    public void redactMessagee( String content) {
-        // TODO implement here
-        
+    public void viewMyMessages() {
+        System.out.println("Enter your login to check mail:");
+        String myLogin = sc.nextLine();
+        boolean hasMessages = false;
+
+        for (Message m : db.allMessages()) {
+            if (m.getReceiverLogin().equals(myLogin)) {
+                System.out.println(m.toString());
+                hasMessages = true;
+            }
+        }
+        if (!hasMessages) System.out.println("📭 Inbox is empty.");
     }
 
-    /**
-     * @param int 
-     * @return
-     */
+    // 3. Реальное РЕДАКТИРОВАНИЕ
+    public void redactMessagee(String content) {
+        System.out.println("Enter ID of the message you want to edit:");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Message msg = db.allMessages().stream()
+                .filter(m -> m.getId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (msg != null) {
+            msg.setContent(content);
+            DbContext.saveMessages();
+            System.out.println("✅ Message updated!");
+        } else {
+            System.out.println("❌ Message with this ID not found.");
+        }
+    }
+
+    // 4. Реальное УДАЛЕНИЕ
     public void deleteMessage(int id) {
-        // TODO implement here
-        
-    }
+        boolean removed = db.allMessages().removeIf(m -> m.getId() == id);
 
+        if (removed) {
+            DbContext.saveMessages();
+            System.out.println("✅ Message deleted!");
+        } else {
+            System.out.println("❌ Message with this ID not found.");
+        }
+    }
 }

@@ -13,7 +13,7 @@ public class Test {
   public static void main(String[] args) throws IOException {
 	  /*Student s1 = new Student("w","www",0);
 	  Student s2 = new Student("r","rrr",0);
-	  Student s3 = new Student("k","kkk",0);
+	  Student s3 = new Student("k","kkk",0);2
 	  Student s4 = new Student("l","lll",0);
 	  Student s5 = new Student("a","aaa",0);
 	  
