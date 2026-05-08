@@ -10,7 +10,7 @@ public class ResearcherDecorator extends UserDecorator implements Researcher {
     private List<ResearchPaper> papers;
     private List<ResearchProject> projects;
 
-    public ResearcherDecorator(ImUser decoratedUser) {
+    public ResearcherDecorator(User decoratedUser) {
         super(decoratedUser);
         this.papers = new ArrayList<>();
         this.projects = new ArrayList<>();
@@ -48,5 +48,14 @@ public class ResearcherDecorator extends UserDecorator implements Researcher {
     		rproj.addPaper(rp);
     	}
     	this.papers.clear();
+    }
+    
+    public void pendProject(String topic) {
+    	ResearchProject rp = this.projects.stream().filter(project -> project.getTopic().equals(topic)).findFirst().orElse(null);
+    	if(rp==null) {
+    		System.out.println("You don't have such project");
+    		return;
+    	}
+    	
     }
 }

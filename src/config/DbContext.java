@@ -40,6 +40,9 @@ public class DbContext {
 		enrollments = (List<Enrollment>) DbContext.loadEnrollments();
 		enrollments = (List<Enrollment>) ValidateDb.validate(enrollments);
 		
+		news = (List<News>) DbContext.loadNews();
+		news = (List<News>) ValidateDb.validate(news);
+		
 		users = new ArrayList<User>();
 		users = (List<User>) DbContext.loadUsers();
 		
@@ -84,7 +87,7 @@ public class DbContext {
 			fnfe.printStackTrace();
 		}
 		catch(IOException ioe) {
-			ioe.printStackTrace();
+			System.out.println(fileName + ": File is empty");
 		}
 		catch(ClassNotFoundException cnfe) {
 			System.out.println("Class not found!");
@@ -112,6 +115,11 @@ public class DbContext {
 		DbContext.serialize(courses, "courses");
 		return true;
 	}
+	
+	public static boolean saveNews() {
+		DbContext.serialize(news, "news");
+		return true;
+	}
 //			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
@@ -133,6 +141,11 @@ public class DbContext {
 		Object ret = DbContext.deserialize("courses");
 		return ret;
 	}
+	
+	public static Object loadNews() {
+		Object ret = DbContext.deserialize("news");
+		return ret;
+	}
 //		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	// COLLECTION GETTERS
 	public List<User> allUsers(){
@@ -149,6 +162,10 @@ public class DbContext {
 	
 	public List<Course> allCourses(){
 		return this.courses;
+	}
+	
+	public List<News> allNews(){
+		return this.news;
 	}
 	
 // 		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
@@ -171,5 +188,10 @@ public class DbContext {
 	public void addCourse(Course c) {
 		DbContext.courses.add(c);
 		DbContext.saveCourses();
+	}
+	
+	public void addNews(News n) {
+		DbContext.news.add(n);
+		DbContext.saveNews();
 	}
 }
