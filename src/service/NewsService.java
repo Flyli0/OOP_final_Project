@@ -38,3 +38,4 @@ public class NewsService {
     	return DbContext.getInstance().allNews();
     }
 }
+

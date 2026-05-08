@@ -1,26 +1,36 @@
 package model;
 
-public class Message {
+import java.io.Serializable;
+import java.util.Date;
 
-    private String id;
-    private User address;
+public class Message implements Serializable {
+    private static int idCounter = 0; // Счетчик для уникальных ID
+    private int id;
+    private String senderLogin;
+    private String receiverLogin;
     private String content;
+    private Date sendDate;
 
-    public Message(String id, User address, String content) {
-        this.id = id;
-        this.address = address;
+    public Message(String senderLogin, String receiverLogin, String content) {
+        this.id = ++idCounter;
+        this.senderLogin = senderLogin;
+        this.receiverLogin = receiverLogin;
         this.content = content;
+        this.sendDate = new Date();
     }
 
-    public String getId() {
-        return id;
-    }
+    public int getId() { return id; }
+    public String getSenderLogin() { return senderLogin; }
+    public String getReceiverLogin() { return receiverLogin; }
+    public String getContent() { return content; }
 
-    public User getAddress() {
-        return address;
-    }
+    // Сеттер для редактирования текста
+    public void setContent(String content) { this.content = content; }
 
-    public String getContent() {
-        return content;
+    @Override
+    public String toString() {
+        return "ID: " + id + " | From: " + senderLogin + " | Date: " + sendDate + "\n" +
+                "Message: " + content + "\n" +
+                "-----------------------";
     }
 }

@@ -1,7 +1,9 @@
 package views;
 import service.AuthService;
 import service.EnrollmentService;
+import service.MessageSendingService; // ДОБАВЛЕНО АЗИЗОЙ
 import service.NewsService;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +21,7 @@ public class Core {
 	private static User currentUser;
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
+
 	public static void run() throws IOException {
 		System.out.println("Welcome to University!");
 		System.out.println("Please Authorize!");
@@ -36,8 +39,8 @@ public class Core {
 			System.out.println("Unexistent option");
 			Core.run();
 		}
-		
-				
+
+
 		if(currentUser!=null) {
 			mainPage();
 		}
@@ -45,8 +48,8 @@ public class Core {
 			System.err.println("Username or password are not valid!");
 		}
 	}
-	
-//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
+
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static User auth() throws IOException {
 		System.out.println("Enter your username!");
 		String username = br.readLine();
@@ -55,7 +58,7 @@ public class Core {
 		currentUser = AuthService.login(username,password);
 		return currentUser;
 	}
-	
+
 	public static User signup() throws IOException {
 		System.out.println("Enter your username!");
 		String username = br.readLine();
@@ -67,20 +70,42 @@ public class Core {
 		AccountType at = null;
 		int accTypeChoiceInt = Integer.parseInt(accTypeChoice);
 		switch(accTypeChoiceInt) {
-		case(0) -> at = AccountType.ADMIN;
-		case(1) -> at = AccountType.MANAGER;
-		case(2) -> at = AccountType.TECH;
-		case(3) -> at = AccountType.TEACHER;
-		case(4) -> at = AccountType.STUDENT;
-		case(6) -> at = AccountType.PHD;
-		case(5) -> at = AccountType.MASTER;
+			case(0) -> at = AccountType.ADMIN;
+			case(1) -> at = AccountType.MANAGER;
+			case(2) -> at = AccountType.TECH;
+			case(3) -> at = AccountType.TEACHER;
+			case(4) -> at = AccountType.STUDENT;
+			case(6) -> at = AccountType.PHD;
+			case(5) -> at = AccountType.MASTER;
 		}
 		User currUser = AuthService.signUp(username,password,at);
 		return currUser;
 	}
-	
+
+	// АЗИЗА: ОБНОВЛЕННАЯ ГЛАВНАЯ СТРАНИЦА С МЕНЮ
 	public static void mainPage() throws IOException {
 		System.out.println("WELCOME!!!");
+
+
+	/*	while(true) {
+			System.out.println("\n=== ГЛАВНОЕ МЕНЮ ===");
+			System.out.println("1. Управление Enrollment (Код Кирилла)");
+			System.out.println("2. Почта и Сообщения (Твой код)");
+			System.out.println("3. Выход");
+			System.out.print("Выбери действие: ");
+
+			String choice = br.readLine();
+
+			if (choice.equals("1")) {
+				enrollment();
+			} else if (choice.equals("2")) {
+				messagesMenu(); // Вызов твоего меню
+			} else if (choice.equals("3") || choice.toLowerCase().equals("exit")) {
+				System.out.println("Выход из системы...");
+				break;
+			} else {
+				System.out.println("Неверная команда, попробуй еще раз."); */
+
 		System.out.println(db.loadUsers());
 		System.out.println(db.loadEnrollments());
 		if(currentUser instanceof Manager) {
@@ -90,12 +115,28 @@ public class Core {
 			case "1": enrollment();
 			//case "2": newsManage();
 			default: System.out.println("Wrong format!");
+
 			}
 		}
 	}
-	
-	
-//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
+
+	// АЗИЗА:БЛОК ДЛЯ РАБОТЫ С СООБЩЕНИЯМИ
+	public static void messagesMenu() throws IOException {
+		MessageSendingService msgService = new MessageSendingService();
+		System.out.println("\n--- МЕНЮ СООБЩЕНИЙ ---");
+		System.out.println("1. Написать сообщение");
+		System.out.println("2. Прочитать мои входящие");
+		System.out.print("Выбор: ");
+		String ans = br.readLine();
+
+		if (ans.equals("1")) {
+			msgService.sendMessage();
+		} else if (ans.equals("2")) {
+			msgService.viewMyMessages();
+		}
+	}
+
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void enrollment() throws IOException {
 		Enrollment currentEnrollment = new Enrollment(new Course());
 		while(true) {
@@ -151,7 +192,7 @@ public class Core {
 			}
 		}
 	}
-	
+
 //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-NEWS FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_	
 	public static void newsManage() throws IOException {
 		while(true) {
@@ -176,3 +217,4 @@ public class Core {
 		
 	}
 }
+

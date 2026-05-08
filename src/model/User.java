@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public abstract class User implements ImUser, Serializable { 
+>>>>>>> origin/main
 
     private String name;
     private String surname;
@@ -16,15 +17,15 @@ public abstract class User implements ImUser, Serializable {
     private static int idCounter = 0;
     private int id;
     private String system_id;
-    
+
     public User(String login, String password, int a) {
-    	this.login = login;
-    	this.password = password;
-    	this.id = ++idCounter;
-    	int current_year = new Date().getYear();
-    	this.system_id = current_year + "B0" + this.id;
+        this.login = login;
+        this.password = password;
+        this.id = ++idCounter;
+        int current_year = new Date().getYear();
+        this.system_id = current_year + "B0" + this.id;
     }
-    
+
     public User(String name, String surname) {
         this.name = name;
         this.surname = surname;
@@ -32,9 +33,9 @@ public abstract class User implements ImUser, Serializable {
         int current_year = new Date().getYear();
         this.system_id = current_year + "B0" + this.id;
     }
-    
+
     public User(String name, String surname, String login, String password) {
-    	this.name = name;
+        this.name = name;
         this.surname = surname;
         this.id = ++idCounter;
         this.login = login;
@@ -56,6 +57,16 @@ public abstract class User implements ImUser, Serializable {
     public String getFirstName() { return name; }
     public String getLastName() { return surname; }
 
+    // --- Добавленные методы для изменения имени и фамилии ---
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
+    }
+    // --------------------------------------------------------
+
     public String getLogin() {
         return login;
     }
@@ -64,9 +75,9 @@ public abstract class User implements ImUser, Serializable {
     public void setLogin(String login) {
         this.login = login;
     }
-    
+
     public String getPassword() {
-    	return this.password;
+        return this.password;
     }
 
     public void setPassword(String password) {
@@ -76,9 +87,9 @@ public abstract class User implements ImUser, Serializable {
     public void changeLanguage(Language language) {
         this.language = language;
     }
-    
+
     public String getSystemId() {
-    	return this.system_id;
+        return this.system_id;
     }
 
     @Override

@@ -1,14 +1,5 @@
 package service;
 
-import java.io.*;
-import java.sql.Connection;
-import java.util.*;
-
-import model.Lesson;
-
-/**
- * 
- */
 public class ScheduleCreatingService {
 
     /**
@@ -17,14 +8,14 @@ public class ScheduleCreatingService {
     public ScheduleCreatingService() {
     }
 
-    
     /**
-     * @param Lesson l 
-     * @param DateTime date 
+     * Временно выключено, чтобы избежать ошибки с DateTime
+     * @param Lesson l
+     * @param DateTime date
      * @return
      */
-    public void addLesson(Lesson l, DateTime date) {
-        // TODO implement herу
-    }
+//    public void addLesson(Lesson l, DateTime date) {
+//        // TODO implement here
+//    }
 
 }
