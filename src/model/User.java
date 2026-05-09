@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 
 public abstract class User implements ImUser, Serializable { 
->>>>>>> origin/main
 
     private String name;
     private String surname;

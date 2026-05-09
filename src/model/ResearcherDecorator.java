@@ -1,11 +1,15 @@
 package model;
 
 import java.util.List;
+
+import config.DbContext;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 
-public class ResearcherDecorator extends UserDecorator implements Researcher {
+public class ResearcherDecorator extends UserDecorator implements Researcher, Serializable {
 
     private List<ResearchPaper> papers;
     private List<ResearchProject> projects;
@@ -56,6 +60,6 @@ public class ResearcherDecorator extends UserDecorator implements Researcher {
     		System.out.println("You don't have such project");
     		return;
     	}
-    	
+    	DbContext.getInstance().pendProject(rp);
     }
 }

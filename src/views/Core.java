@@ -8,12 +8,17 @@ import service.NewsService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import config.DbContext;
 import service.AccountType;
 import model.Course;
+import model.Employee;
 import model.Enrollment;
 import model.Manager;
+import model.News;
+import model.ResearchProject;
 import model.Student;
 import model.User;
 
@@ -70,7 +75,7 @@ public class Core {
 		AccountType at = null;
 		int accTypeChoiceInt = Integer.parseInt(accTypeChoice);
 		switch(accTypeChoiceInt) {
-			case(0) -> at = AccountType.ADMIN;
+			case(0) -> at = AccountType.ADMIN; 
 			case(1) -> at = AccountType.MANAGER;
 			case(2) -> at = AccountType.TECH;
 			case(3) -> at = AccountType.TEACHER;
@@ -87,21 +92,24 @@ public class Core {
 		//System.out.println(db.loadUsers());
 		//System.out.println(db.loadEnrollments());
 		if(currentUser instanceof Employee){
-			System.out.println("Hello! \n choose your move: \n1>Post and Messages");
+			System.out.println("Hello! \n choose your move: \n1>Post and Messages \n2>Professional menu");
 			String input = br.readLine();
 			switch(input) {
-			case "1": messagesMenu();
+			case "1": messagesMenu(); break;
+			case "2": professionalMenu(currentUser); break;
 			default: System.out.println("Wrong format try again!");
 			}
 		}
-		if(currentUser instanceof Manager) {
+	}
+	
+	public static void professionalMenu(User u) throws IOException {
+		if(u instanceof Manager) {
 			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news");
 			String input = br.readLine();
 			switch(input) {
-			case "1": enrollment();
-			//case "2": newsManage();
+			case "1": enrollment(); break;
+			case "2": newsManage(); break;
 			default: System.out.println("Wrong format try again!");
-
 			}
 		}
 	}
@@ -185,22 +193,57 @@ public class Core {
 			System.out.println("Welcome to News Management!!! \n1>Publish Research \n2>Generate top Research \n3>Get all News \n4>Publish News \n5>Return to Main");
 			String input = br.readLine();
 			switch(input) {
-			case "1": researchPublisher();
-			case "2": System.out.println(NewsService.generateTopResearch());
-			case "3": newsPrinter();
-			case "4":
-			case "5": break;
+			case "1": researchPublisher(); break;
+			case "2": System.out.println(NewsService.generateTopResearch()); break;
+			case "3": newsPrinter(); break;
+			case "4": publishNews(); break;
+			case "5": return;
 			default: System.out.println("Wrong format!");
 			}
 		}
 	}
 	
-	public static void researchPublisher() {
-		
+	public static void researchPublisher() throws IOException {
+		List<ResearchProject> temp = DbContext.getInstance().allPendingProjects();
+		System.out.println("List of all pending projects: ");
+		for(ResearchProject rp: temp) {
+			System.out.println(rp.getTopic() + " : " + rp.getParticipants());
+		}
+		while(true) {
+			System.out.println("Which project do you want to publish? (Enter topic) \nTo exit enter Q");
+			String input = br.readLine();
+			if(input.equals("Q".toUpperCase())) {
+				break;
+			}
+			ResearchProject rp = DbContext.getInstance().allPendingProjects().stream().filter(rpe->rpe.getTopic().equals(input)).findFirst().orElse(null);
+			if(rp == null) {
+				System.out.println("Unexistent project!");
+			}
+			else {
+				NewsService.publishResearch(rp);
+				DbContext.getInstance().removePendingProject(rp);
+				System.out.println("Research: " + rp.getTopic() + " is Published!!!");
+			}
+		}
 	}
 	
 	public static void newsPrinter() {
-		
+		for(News n: DbContext.getInstance().allNews()) {
+			System.out.println(n);
+		}
+	}
+	
+	public static void publishNews() throws IOException{
+		String header = ""; String topic = ""; String content = "";
+		System.out.println("New news :D");
+		System.out.println("Enter Topic: ");
+		topic = br.readLine();
+		System.out.println("Enter Header");
+		header = br.readLine();
+		System.out.println("Enter Content");
+		content = br.readLine();
+		News n = NewsService.publishNews(header, topic, content, currentUser); 
+		System.out.println("News: " + n.getId() + "is publised!!!");
 	}
 }
 

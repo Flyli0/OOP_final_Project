@@ -1,9 +1,10 @@
 package model;
 
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ResearchProject {
+public class ResearchProject implements Serializable{
 
     private int numOfPages;
     private String topic;

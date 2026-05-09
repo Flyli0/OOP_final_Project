@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class ResearchPaper {
+public class ResearchPaper implements Serializable{
 
     private String title;
     private String authors;

@@ -17,9 +17,10 @@ public class NewsService {
         DbContext.getInstance().addNews(n);
     }
     
-    public static void publishNews(String header, String topic, String content, User author) {
+    public static News publishNews(String header, String topic, String content, User author) {
         News n = new News(header,topic,content,author);
         DbContext.getInstance().addNews(n);
+        return n;
     }
 
     public static News generateTopResearch() {
