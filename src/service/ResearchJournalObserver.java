@@ -33,7 +33,8 @@ public class ResearchJournalObserver {
      */
     public void addSubscriber(User u) {
         // TODO implement here
-    
+        subscribers.add(u);
+        notify("User " + u.getName() + " has subscribed.");
     }
 
     /**
@@ -42,7 +43,14 @@ public class ResearchJournalObserver {
      */
     public void removeSubscriber(User u) {
         // TODO implement here
-    
+        if(subscribers.contains(u)){
+            subscribers.remove(u);
+            notify("User " + u.getName() + " has unsubscribed.");
+        } else {
+            System.out.println("User is not a subscriber.");
+        } 
+
+        
     }
 
     /**
@@ -51,7 +59,7 @@ public class ResearchJournalObserver {
      */
     public void notify( String message) {
         // TODO implement here
-        
+        System.out.println("Notification: " + message);
     }
 
     /**
@@ -59,7 +67,7 @@ public class ResearchJournalObserver {
      */
     public List<User> getSubscribers() {
         // TODO implement here
-        return null;
+        return subscribers;
     }
 
     /**
@@ -67,8 +75,9 @@ public class ResearchJournalObserver {
      * @return
      */
     public void addResearch(ResearchProject rp) {
+        researchProjects.add(rp);
+        notify("New research project added: " + rp.getTopic());
         
-    
     }
 
 }
