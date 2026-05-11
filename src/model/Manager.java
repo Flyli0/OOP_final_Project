@@ -8,7 +8,6 @@ import service.EnrollmentService;
 
 public class Manager extends Employee {
     private ManagerType type;
-    // private NewsService ns; // Пока оставим закомментированным, чтобы не было ошибки из-за сервисов
 
     public Manager(String name, String surname, double salary, Date hireDate, ManagerType type, String login, String password) {
         super(name, surname, salary, hireDate, login, password);
@@ -17,10 +16,6 @@ public class Manager extends Employee {
     
     public Manager(String login, String password) {
     	super(login,password);
-    }
-
-    public void assignCourse(Teacher t, Course c) {
-    	
     }
 
     public void approveRegistration(Enrollment en, boolean choice) throws NumberFormatException, IOException {
@@ -33,9 +28,4 @@ public class Manager extends Employee {
         return type;
     }
     
-    
-
-    public void manageNews() {
-        // TODO: логика управления новостями
-    }
 }

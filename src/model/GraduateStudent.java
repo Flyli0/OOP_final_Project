@@ -10,7 +10,7 @@ public abstract class GraduateStudent extends Student {
     private String researchTopic;
     public List<ResearchPaper> publishedWorks;
     private ResearchProject research;
-    private Researcher researchSupervisor;
+    private ResearcherDecorator researchSupervisor;
 
     public GraduateStudent(String login, String password) {
         super(password, password, 0);

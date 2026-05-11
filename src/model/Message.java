@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Message implements Serializable {
-    private static int idCounter = 0; // Счетчик для уникальных ID
+    private static int idCounter = 0; 
     private int id;
     private String senderLogin;
     private String receiverLogin;
@@ -24,7 +24,6 @@ public class Message implements Serializable {
     public String getReceiverLogin() { return receiverLogin; }
     public String getContent() { return content; }
 
-    // Сеттер для редактирования текста
     public void setContent(String content) { this.content = content; }
 
     @Override

@@ -30,7 +30,7 @@ public class TechSupportSpecialist extends Employee {
     }
 
     public List<Request> getPendingRequests() {
-        return pendingRequests;
+        return pendingRequests; // Here later take pending request from DbContext
     }
 
     public String getReport() {

@@ -10,7 +10,6 @@ public class Student extends User implements Serializable{
     private Transcript transcript;
     private List<Course> courses;
     private List<ScheduleEntry> schedule;
-    // private EnrollmentService es; // Пока закомментируем, если файла EnrollmentService еще нет
 
     public Student(String name, String surname) {
         super(name, surname);

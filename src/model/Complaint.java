@@ -11,7 +11,7 @@ public class Complaint {
     private Teacher sender;
 
     public Complaint() {
-        this.students = new ArrayList<>(); // Инициализируем список, чтобы не было ошибок
+        this.students = new ArrayList<>(); 
     }
 
     public void writeComplaint(String s) {
