@@ -2,6 +2,7 @@ package model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public abstract class User implements ImUser, Serializable { 
 
@@ -12,6 +13,7 @@ public abstract class User implements ImUser, Serializable {
     private Date birthDate;
     private Gender gender;
     private Language language;
+    private List<String> journalNotifications;
 
     private static int idCounter = 0;
     private int id;
@@ -89,6 +91,10 @@ public abstract class User implements ImUser, Serializable {
 
     public String getSystemId() {
         return this.system_id;
+    }
+
+    public void update(String message) {
+        this.journalNotifications.add(message);
     }
 
     @Override
