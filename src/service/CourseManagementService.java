@@ -1,54 +1,67 @@
 package service;
 
-import java.io.*;
-import java.util.*;
-
+import config.DbContext;
 import model.Course;
+import model.Student;
+import model.Teacher;
 
-/**
- * 
- */
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.IOException;
+
 public class CourseManagementService {
 
-    /**
-     * Default constructor
-     */
-    public CourseManagementService() {
+    private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    private static DbContext db = DbContext.getInstance();
+
+    // 1. МЕНЕДЖЕР: ДОБАВЛЕНИЕ КУРСА
+    public static void addCourseForRegistration() throws IOException {
+        System.out.println("\n--- 📚 CREATE NEW COURSE ---");
+        System.out.print("Enter Course Name: ");
+        String name = br.readLine();
+
+        System.out.print("Enter Credits Amount: ");
+        int credits = Integer.parseInt(br.readLine());
+
+        System.out.print("Enter Target Major (e.g. SITE, BS): ");
+        String major = br.readLine();
+
+        System.out.print("Enter Year of Study (1-4): ");
+        int year = Integer.parseInt(br.readLine());
+
+        Course newCourse = new Course(name, credits, major, year);
+        db.addCourse(newCourse);
+        System.out.println("✅ Success: Course '" + name + "' added for registration!");
     }
 
-    /**
-     * 
-     */
-    private List<Course> courses;
-
-
-
-
-    /**
-     * @param Course c 
-     * @return
-     */
-    public void addCourse(Course c) {
-        // TODO implement here
-        courses.add(c);
+    // 2. МЕНЕДЖЕР: НАЗНАЧЕНИЕ ПРЕПОДАВАТЕЛЯ
+    public static void assignTeacherToCourse(Course course, Teacher teacher, String lessonType) {
+        if (course != null && teacher != null) {
+            course.addTeacher(teacher);
+            System.out.println("✅ Success: Teacher " + teacher.getFirstName() + " assigned to " + course.getCourseName() + " for " + lessonType);
+        } else {
+            System.out.println("❌ Error: Course or Teacher not found.");
+        }
     }
 
-    /**
-     * @param Course c 
-     * @return
-     */
-    public void removeCourse(Course c) {
-        // TODO implement here
-        courses.remove(c);
-       
-    }
+    // 3. СТУДЕНТ: ПРОВЕРКА ПРИ РЕГИСТРАЦИИ (21 КРЕДИТ + MAJOR)
+    public static boolean canStudentRegister(Student student, Course course, String studentMajor, int studentYear) {
+        System.out.println("\n--- Checking Registration Constraints ---");
 
-    /**
-     * @return
-     */
-    public List<Course> showCourses() {
-        // TODO implement here
-        return courses;
-    }
+        // Проверка 1: Специальность и Год обучения
+        if (course.getTargetMajor() != null && !course.getTargetMajor().equalsIgnoreCase(studentMajor) && course.getType() != Course.CourseType.FREE) {
+            System.out.println("❌ Registration Failed: This course is for " + course.getTargetMajor() + " major.");
+            return false;
+        }
 
+        // Проверка 2: Лимит кредитов
+        int currentCredits = student.getCreditsNum();
+        if (currentCredits + course.getCredits() > 21) {
+            System.out.println("❌ Registration Failed: Exceeds maximum 21 credits! (Current: " + currentCredits + ")");
+            return false;
+        }
+
+        System.out.println("✅ Student is eligible to register for " + course.getCourseName());
+        return true;
+    }
 }

@@ -101,15 +101,17 @@ public class Core {
 			}
 		}
 	}
-	
+
 	public static void professionalMenu(User u) throws IOException {
 		if(u instanceof Manager) {
-			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news");
+			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news \n3>Generate Academic Report \n4>Create New Course");
 			String input = br.readLine();
 			switch(input) {
-			case "1": enrollment(); break;
-			case "2": newsManage(); break;
-			default: System.out.println("Wrong format try again!");
+				case "1": enrollment(); break;
+				case "2": newsManage(); break;
+				case "3": service.ReportGenerationService.generateAcademicReport(); break;
+				case "4": service.CourseManagementService.addCourseForRegistration(); break; // ВОТ ТВОЯ НОВАЯ КНОПКА
+				default: System.out.println("Wrong format try again!");
 			}
 		}
 	}
