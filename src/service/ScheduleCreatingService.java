@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import config.DbContext;
+import model.Course;
 import model.Enrollment;
 import model.Lesson;
 import model.LessonType;
@@ -189,6 +190,108 @@ public class ScheduleCreatingService {
         return true;
     }
 
+
+    /**
+     * Builds a weekly recurring schedule for a course: adds one LECTURE slot
+     * and one PRACTICE slot per week across the given number of weeks,
+     * starting from semesterStart.
+     */
+    public void buildSemesterSchedule(Course course,
+                                      Teacher lectureTeacher,
+                                      Teacher practiceTeacher,
+                                      Date semesterStart,
+                                      int weeks,
+                                      int lectureDayOfWeek,
+                                      int lectureHour,
+                                      int practiceDayOfWeek,
+                                      int practiceHour) {
+        System.out.println("=== Building schedule for: " + course.getCourseName()
+                + " (" + weeks + " weeks) ===");
+
+        // Validate that practice comes after lecture
+        boolean sameDay = (lectureDayOfWeek == practiceDayOfWeek);
+        if (sameDay && practiceHour <= lectureHour) {
+            System.out.println("Error: practice day cannot be earlier in the week than lecture day.");
+            return;
+        }
+        if (practiceDayOfWeek < lectureDayOfWeek) {
+            System.out.println("Error: practice day cannot be earlier in the week than lecture day.");
+            return;
+        }
+
+        String lectureRoom  = findFreeRoom(LessonType.LECTURE);
+        String practiceRoom = findFreeRoom(LessonType.PRACTICE);
+
+        if (lectureRoom == null) {
+            System.out.println("No free lecture room available.");
+            return;
+        }
+        if (practiceRoom == null) {
+            System.out.println("No free practice room available.");
+            return;
+        }
+
+        // Find the Monday of the semester-start week
+        Calendar base = Calendar.getInstance();
+        base.setTime(semesterStart);
+        base.set(Calendar.HOUR_OF_DAY, 0);
+        base.set(Calendar.MINUTE, 0);
+        base.set(Calendar.SECOND, 0);
+        base.set(Calendar.MILLISECOND, 0);
+        while (base.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+            base.add(Calendar.DATE, 1);
+        }
+
+        int scheduled = 0;
+        for (int week = 0; week < weeks; week++) {
+            // ── Lecture slot ────────────────────────────────────────────────
+            Calendar lCal = (Calendar) base.clone();
+            lCal.add(Calendar.WEEK_OF_YEAR, week);
+            advanceToDayOfWeek(lCal, lectureDayOfWeek);
+            lCal.set(Calendar.HOUR_OF_DAY, lectureHour);
+            lCal.set(Calendar.MINUTE, 0);
+            lCal.set(Calendar.SECOND, 0);
+            lCal.set(Calendar.MILLISECOND, 0);
+
+            Lesson lecture = new Lesson(
+                    course.getCourseName() + " – Lecture",
+                    lectureRoom,
+                    LessonType.LECTURE,
+                    lectureTeacher,
+                    course,
+                    lCal.getTime());
+            if (addLesson(lecture)) scheduled++;
+
+            // ── Practice slot ───────────────────────────────────────────────
+            Calendar pCal = (Calendar) base.clone();
+            pCal.add(Calendar.WEEK_OF_YEAR, week);
+            advanceToDayOfWeek(pCal, practiceDayOfWeek);
+            pCal.set(Calendar.HOUR_OF_DAY, practiceHour);
+            pCal.set(Calendar.MINUTE, 0);
+            pCal.set(Calendar.SECOND, 0);
+            pCal.set(Calendar.MILLISECOND, 0);
+
+            Lesson practice = new Lesson(
+                    course.getCourseName() + " – Practice",
+                    practiceRoom,
+                    LessonType.PRACTICE,
+                    practiceTeacher,
+                    course,
+                    pCal.getTime());
+            if (addLesson(practice)) scheduled++;
+        }
+
+        System.out.println("Done: " + scheduled + "/" + (weeks * 2)
+                + " lessons scheduled for " + course.getCourseName() + ".");
+    }
+
+    private void advanceToDayOfWeek(Calendar cal, int targetDayOfWeek) {
+        int currentDow = cal.get(Calendar.DAY_OF_WEEK);
+        int delta = targetDayOfWeek - currentDow;
+        if (delta < 0) delta += 7; 
+        cal.add(Calendar.DATE, delta);
+    }
+    
 
 
 }
