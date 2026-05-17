@@ -67,7 +67,12 @@ public class ResearcherDecorator extends UserDecorator implements Researcher, Se
 
        System.out.println("Research papers published by " + this.getName() + ":");   
     	for(ResearchPaper rp: papers) {
-    		System.out.println(rp);
+            
+    		System.out.printf("  %-45s | Citations: %3d | Pages: %3d | %s%n",
+                    rp.getTitle(),
+                    rp.getCitations(),
+                    rp.getPages(),
+                    rp.getPublicationDate() != null ? rp.getPublicationDate() : "N/A");
     	}
     }
 
