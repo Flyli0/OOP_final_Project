@@ -110,8 +110,8 @@ public class ResearcherDecorator extends UserDecorator implements Researcher, Se
     	}
 
     	this.papers.clear();
-        DbContext.getInstance().pendProject(rproj);
-        
+       
+
     }
     
     public void pendProject(String topic) {
