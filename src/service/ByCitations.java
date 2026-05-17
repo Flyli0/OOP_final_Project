@@ -15,4 +15,9 @@ public class ByCitations implements ResearchPaperComparator {
         return Integer.compare(rp2.getCitations(), rp1.getCitations());
     }
 
+    @Override 
+    public String toString() {
+        return "By Citations";
+    }
+
 }

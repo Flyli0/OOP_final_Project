@@ -19,4 +19,9 @@ public class ByDate implements ResearchPaperComparator {
         return rp1.getPublicationDate().compareTo(rp2.getPublicationDate());
     }
 
+    @Override 
+    public String toString() {
+        return "By Date";
+    }
+
 }

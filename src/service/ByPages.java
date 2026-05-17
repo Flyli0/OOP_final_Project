@@ -16,4 +16,9 @@ public class ByPages implements ResearchPaperComparator {
         return Integer.compare(rp2.getPages(), rp1.getPages());
     }
 
+    @Override 
+    public String toString() {
+        return "By Pages";
+    }
+
 }
