@@ -93,7 +93,7 @@ public class ScheduleCreatingService {
         if (type == LessonType.LECTURE) {
             return room.startsWith("LEC");
         }
-        // PRACTICE → LAB or SEM
+        // PRACTICE -> LAB or SEM
         return room.startsWith("LAB") || room.startsWith("SEM");
     }
 

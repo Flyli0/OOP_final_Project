@@ -47,6 +47,10 @@ public class Student extends User implements Serializable{
         return creditsGot;
     }
 
+    public List<ScheduleEntry> getSchedule() {
+        return schedule;
+    }
+
     public void addCredits(int amount) {
         this.creditsGot += amount;
     }
