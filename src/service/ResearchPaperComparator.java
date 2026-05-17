@@ -4,9 +4,12 @@ package service;
 
 import java.io.*;
 import java.util.*;
-import java.util.Comparator;
 
 
-public interface ResearchPaperComparator extends Comparator {
+import model.ResearchPaper;
 
+
+public interface ResearchPaperComparator extends Comparator<ResearchPaper> {
+
+    public int compare(ResearchPaper o1, ResearchPaper o2);
 }

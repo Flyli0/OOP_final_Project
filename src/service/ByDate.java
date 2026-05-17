@@ -9,24 +9,14 @@ import model.ResearchPaper;
  * 
  */
 public class ByDate implements ResearchPaperComparator {
-
-    /**
-     * Default constructor
-     */
-    public ByDate() {
-    }
-
-    /**
-     * @param ResearchPage rp
-     */
-    public void compareTo(ResearchPaper rp) {
-        // TODO implement here
-    }
-
     @Override
-    public int compare(Object o1, Object o2) {
+    public int compare(ResearchPaper rp1, ResearchPaper rp2) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'compare'");
+        if (rp1.getPublicationDate() == null && rp2.getPublicationDate() == null) return 0;
+        if (rp1.getPublicationDate() == null) return 1;
+        if (rp2.getPublicationDate() == null) return -1;
+        
+        return rp1.getPublicationDate().compareTo(rp2.getPublicationDate());
     }
 
 }

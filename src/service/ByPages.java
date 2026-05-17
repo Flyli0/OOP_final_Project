@@ -9,23 +9,11 @@ import model.ResearchPaper;
  */
 public class ByPages implements ResearchPaperComparator {
 
-    /**
-     * Default constructor
-     */
-    public ByPages() {
-    }
-
-    /**
-     * @param ResearchPage rp
-     */
-    public void compareTo(ResearchPaper rp) {
-        // TODO implement here
-    }
 
     @Override
-    public int compare(Object o1, Object o2) {
+    public int compare(ResearchPaper rp1, ResearchPaper rp2) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'compare'");
+        return Integer.compare(rp2.getPages(), rp1.getPages());
     }
 
 }
