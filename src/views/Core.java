@@ -159,7 +159,7 @@ public class Core {
 					case "2": newsManage(); break;
 					case "3": service.ReportGenerationService.generateAcademicReport(); break;
 					case "4": service.CourseManagementService.addCourseForRegistration(); break;
-					case "5": scheduleMenu(null); break;
+					case "5": managerScheduleMenu(new ScheduleCreatingService()); break;
 					case "0": return;
 					default: System.out.println("Unexistent option");
 				}
@@ -182,11 +182,55 @@ public class Core {
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1": markPuttingMenu(teacher); break;
-				case "2": scheduleMenu(teacher); break;
+				case "2": teacherScheduleMenu(teacher); break;
 				case "3": researchMenu(teacher); break;
 				case "0": return;
-				default: System.out.println("Unexistent option");
+				default: System.out.println("Invalid option. Please enter 1, 2, 3, or 0.");
 			}
+		}
+	}
+
+	public static void teacherScheduleMenu(Teacher teacher) throws IOException {
+		ScheduleCreatingService scs = new ScheduleCreatingService();
+		System.out.println("\n=== My Schedule ===");
+		if(teacher.getSchedule().isEmpty()) {
+			System.out.println("Your schedule is empty. A Manager needs to assign lessons to your courses first.");
+		} else {
+			scs.printTeacherSchedule(teacher);
+		}
+	}
+
+	public static void managerScheduleMenu(ScheduleCreatingService scs) throws IOException {
+		while(true) {
+			System.out.println("\n=== Schedule Menu ===");
+			System.out.println("1> Build semester schedule for a course");
+			System.out.println("2> View a teacher's schedule");
+			System.out.println("0> Back");
+			System.out.print("Your choice: ");
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1": buildScheduleMenu(scs); break;
+				case "2": viewTeacherScheduleMenu(scs); break;
+				case "0": return;
+				default: System.out.println("Invalid option. Please enter 1, 2, or 0.");
+			}
+		}
+	}
+
+	public static void viewTeacherScheduleMenu(ScheduleCreatingService scs) throws IOException {
+		System.out.print("Enter teacher ID: ");
+		String tid = br.readLine().trim();
+		Teacher t = (Teacher) db.allUsers().stream()
+				.filter(u -> u instanceof Teacher && u.getSystemId().equals(tid))
+				.findFirst().orElse(null);
+		if(t == null) {
+			System.out.println("No Teacher found with ID \"" + tid + "\".");
+			return;
+		}
+		if(t.getSchedule().isEmpty()) {
+			System.out.println(t.getFirstName() + " " + t.getLastName() + " has no scheduled lessons yet.");
+		} else {
+			scs.printTeacherSchedule(t);
 		}
 	}
 
@@ -198,14 +242,16 @@ public class Core {
 			return;
 		}
 		System.out.println("Your courses:");
-		
-
 		for(int i = 0; i < courses.size(); i++) {
 			System.out.println((i+1) + "> " + courses.get(i).getCourseName());
 		}
-
 		System.out.println("Enter course number (or 0 to cancel):");
-		int choice = Integer.parseInt(br.readLine().trim());
+		String raw = br.readLine().trim();
+
+		int choice;
+		try { choice = Integer.parseInt(raw); }
+		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+
 		if(choice == 0 || choice > courses.size()) return;
 		Course selected = courses.get(choice - 1);
 		mps.putMarksForCourse(teacher, selected);
@@ -213,79 +259,90 @@ public class Core {
 
 
 	public static void buildScheduleMenu(ScheduleCreatingService scs) throws IOException {
+		// ── Step 1: Pick course ───────────────────────────────────────────────
 		List<Course> courses = db.allCourses();
 		if(courses.isEmpty()) {
 			System.out.println("No courses in the system yet. Add a course first.");
 			return;
 		}
-		System.out.println("Select course:");
+		System.out.println("\nSelect course:");
 		for(int i = 0; i < courses.size(); i++) {
-			System.out.println((i+1) + "> " + courses.get(i).getCourseName());
+			System.out.println("  " + (i+1) + "> " + courses.get(i).getCourseName());
 		}
+		System.out.print("Your choice: ");
 		int courseIdx;
 		try { courseIdx = Integer.parseInt(br.readLine().trim()) - 1; }
 		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
-		if(courseIdx < 0 || courseIdx >= courses.size()) {
-			System.out.println("Course number out of range.");
-			return;
-		}
+		if(courseIdx < 0 || courseIdx >= courses.size()) { System.out.println("Out of range."); return; }
 		Course course = courses.get(courseIdx);
 
-		System.out.println("Enter lecture teacher ID:");
-		String ltId = br.readLine().trim();
-		Teacher lectureTeacher = (Teacher) db.allUsers().stream()
-				.filter(u -> u instanceof Teacher && u.getSystemId().equals(ltId))
-				.findFirst().orElse(null);
-		if(lectureTeacher == null) {
-			System.out.println("No Teacher found with ID \"" + ltId + "\". Schedule not built.");
+		// ── Step 2: Pick teachers from a list ────────────────────────────────
+		List<Teacher> teachers = new ArrayList<>();
+		for(User u : db.allUsers()) {
+			if(u instanceof Teacher) teachers.add((Teacher) u);
+		}
+		if(teachers.isEmpty()) {
+			System.out.println("No teachers in the system yet.");
 			return;
 		}
-
-		System.out.println("Enter practice teacher ID (press Enter to use same teacher):");
-		String ptId = br.readLine().trim();
-		Teacher practiceTeacher;
-		if(ptId.isEmpty() || ptId.equals(ltId)) {
-			practiceTeacher = lectureTeacher;
-		} else {
-			practiceTeacher = (Teacher) db.allUsers().stream()
-					.filter(u -> u instanceof Teacher && u.getSystemId().equals(ptId))
-					.findFirst().orElse(null);
-			if(practiceTeacher == null) {
-				System.out.println("No Teacher found with ID \"" + ptId + "\". Using lecture teacher for practice as well.");
-				practiceTeacher = lectureTeacher;
-			}
+		System.out.println("\nAvailable teachers:");
+		for(int i = 0; i < teachers.size(); i++) {
+			Teacher t = teachers.get(i);
+			System.out.println("  " + (i+1) + "> " + t.getFirstName() + " " + t.getLastName()
+					+ " [ID: " + t.getSystemId() + "]");
 		}
 
-		System.out.println("How many weeks? (1-16):");
+		System.out.print("Select lecture teacher (number): ");
+		int ltIdx;
+		try { ltIdx = Integer.parseInt(br.readLine().trim()) - 1; }
+		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+		if(ltIdx < 0 || ltIdx >= teachers.size()) { System.out.println("Out of range."); return; }
+		Teacher lectureTeacher = teachers.get(ltIdx);
+
+		System.out.print("Select practice teacher (number, or press Enter to use same): ");
+		String ptRaw = br.readLine().trim();
+		Teacher practiceTeacher;
+		if(ptRaw.isEmpty()) {
+			practiceTeacher = lectureTeacher;
+			System.out.println("Using " + lectureTeacher.getFirstName() + " for practice as well.");
+		} else {
+			int ptIdx;
+			try { ptIdx = Integer.parseInt(ptRaw) - 1; }
+			catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+			if(ptIdx < 0 || ptIdx >= teachers.size()) { System.out.println("Out of range."); return; }
+			practiceTeacher = teachers.get(ptIdx);
+		}
+
+		// ── Step 3: Number of weeks ───────────────────────────────────────────
+		System.out.print("How many weeks? (1-16): ");
 		int weeks;
 		try {
 			weeks = Integer.parseInt(br.readLine().trim());
-			if(weeks < 1 || weeks > 16) { System.out.println("Weeks must be between 1 and 16."); return; }
-		} catch(NumberFormatException e) { System.out.println("Invalid number of weeks."); return; }
+			if(weeks < 1 || weeks > 16) { System.out.println("Must be 1-16."); return; }
+		} catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
 
-		// ── Lecture day & time ────────────────────────────────────────────────
-		int lectureDow = pickDayOfWeek("lecture");
+		// ── Step 4: Lecture day & time ────────────────────────────────────────
+		System.out.println("\n-- Lecture slot --");
+		int lectureDow = pickDayOfWeek();
 		if(lectureDow == -1) return;
-		int lectureHour = pickHour("lecture");
+		int lectureHour = pickHour();
 		if(lectureHour == -1) return;
 
-		// ── Practice day & time ───────────────────────────────────────────────
-		int practiceDow = pickDayOfWeek("practice");
+		// ── Step 5: Practice day & time (must be same day later OR later day) ─
+		System.out.println("\n-- Practice slot (must be after lecture) --");
+		int practiceDow = pickDayOfWeek();
 		if(practiceDow == -1) return;
-		int practiceHour = pickHour("practice");
+		int practiceHour = pickHour();
 		if(practiceHour == -1) return;
 
-		if(lectureDow == practiceDow && lectureHour == practiceHour) {
-			System.out.println("Lecture and practice cannot be on the same day at the same time.");
+		// Validate: practice must come strictly after lecture
+		boolean sameDay = (lectureDow == practiceDow);
+		if(sameDay && practiceHour <= lectureHour) {
+			System.out.println("Invalid: practice must start after the lecture ends on the same day.");
 			return;
 		}
-		if(lectureDow == practiceDow && practiceHour < lectureHour) {
-			System.out.println("Practice must be after the lecture. On the same day, practice hour must be greater than lecture hour.");
-			return;
-		}
-		// Day-of-week: Calendar.MONDAY=2 ... FRIDAY=6
 		if(practiceDow < lectureDow) {
-			System.out.println("Practice must be after the lecture. Practice day cannot be earlier in the week than lecture day.");
+			System.out.println("Invalid: practice day cannot be earlier in the week than lecture day.");
 			return;
 		}
 
@@ -293,60 +350,30 @@ public class Core {
 				new Date(), weeks, lectureDow, lectureHour, practiceDow, practiceHour);
 	}
 
+
 	/** Prompts the manager to pick a weekday. Returns Calendar constant or -1 on bad input. */
-	private static int pickDayOfWeek(String lessonLabel) throws IOException {
-		System.out.println("Choose day for " + lessonLabel + ":");
+	private static int pickDayOfWeek() throws IOException {
 		System.out.println("  1> Monday  2> Tuesday  3> Wednesday  4> Thursday  5> Friday");
-		System.out.print("Your choice: ");
-		String raw = br.readLine().trim();
-		switch(raw) {
+		System.out.print("  Day: ");
+		switch(br.readLine().trim()) {
 			case "1": return Calendar.MONDAY;
 			case "2": return Calendar.TUESDAY;
 			case "3": return Calendar.WEDNESDAY;
 			case "4": return Calendar.THURSDAY;
 			case "5": return Calendar.FRIDAY;
-			default:
-				System.out.println("Invalid day. Please enter 1-5.");
-				return -1;
+			default: System.out.println("Invalid day."); return -1;
 		}
 	}
+
 
 	/** Prompts the manager to pick an hour (8-18). Returns the hour or -1 on bad input. */
-	private static int pickHour(String lessonLabel) throws IOException {
-		System.out.print("Choose start hour for " + lessonLabel + " (8-18, e.g. 9 for 09:00): ");
-		String raw = br.readLine().trim();
-		int hour;
-		try { hour = Integer.parseInt(raw); }
-		catch(NumberFormatException e) { System.out.println("Invalid hour."); return -1; }
-		if(hour < 8 || hour > 18) { System.out.println("Hour must be between 8 and 18."); return -1; }
-		return hour;
-	}
-
-
-	public static void scheduleMenu(Teacher teacher) throws IOException {
-		ScheduleCreatingService scs = new ScheduleCreatingService();
-		while(true) {
-			System.out.println("\n=== Schedule Menu ===");
-			System.out.println("1> View my schedule");
-			System.out.println("2> Build semester schedule for a course");
-			System.out.println("0> Back");
-			System.out.print("Your choice: ");
-			String input = br.readLine().trim();
-			switch(input) {
-				case "1":
-					if(teacher == null) {
-						System.out.println("No teacher context — log in as a Teacher to view your schedule.");
-					} else if(teacher.getSchedule().isEmpty()) {
-						System.out.println("Your schedule is empty.");
-					} else {
-						scs.printTeacherSchedule(teacher);
-					}
-					break;
-				case "2": buildScheduleMenu(scs); break;
-				case "0": return;
-				default: System.out.println("Unexistent option");
-			}
-		}
+	private static int pickHour() throws IOException {
+		System.out.print("  Start hour (8-18): ");
+		try {
+			int hour = Integer.parseInt(br.readLine().trim());
+			if(hour < 8 || hour > 18) { System.out.println("Must be between 8 and 18."); return -1; }
+			return hour;
+		} catch(NumberFormatException e) { System.out.println("Invalid hour."); return -1; }
 	}
 
 
