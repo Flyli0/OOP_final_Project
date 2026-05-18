@@ -46,6 +46,7 @@ public class Teacher extends Employee implements Serializable{
     }
 
     public List<ScheduleEntry> getSchedule() {
+        if (schedule == null) schedule = new ArrayList<>();
         return schedule;
     }
 }
