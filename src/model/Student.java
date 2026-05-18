@@ -11,21 +11,14 @@ public class Student extends User implements Serializable{
     private List<Course> courses;
     private List<ScheduleEntry> schedule;
 
-    public Student(String name, String surname) {
-        super(name, surname);
+    public Student(String login, String password) {
+        super(login, password, 0);
         this.courses = new ArrayList<>();
         this.schedule = new ArrayList<>();
         this.creditsGot = 0;
         this.transcript = new Transcript();
     }
     
-    public Student(String login, String password, int z) {
-    	super(login, password);
-        this.courses = new ArrayList<>();
-        this.schedule = new ArrayList<>();
-        this.creditsGot = 0;
-        this.transcript = new Transcript();
-    }
 
     public List<Course> getCourses() {
         return courses;

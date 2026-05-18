@@ -96,7 +96,22 @@ public abstract class User implements ImUser, Serializable {
     public void update(String message) {
         this.journalNotifications.add(message);
     }
+    
+    public Date getBirthday() {
+    	return this.birthDate;
+    }
+    
+    public void setBirthday(Date date) {
+    	this.birthDate = date;
+    }
 
+    public Gender getGender() {
+    	return this.gender;
+    }
+    
+    public void setGender(Gender g) {
+    	this.gender = g;
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

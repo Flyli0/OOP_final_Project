@@ -15,16 +15,16 @@ import config.DbContext;
 public class Test {
   public static void main(String[] args) throws IOException {
 	/*	
-	  Student s1 = new Student("w","www",0);
+	  Student s1 = new Student("w","www");
 	  
 	  ResearcherDecorator rs1 = new ResearcherDecorator(s1);
 	  rs1.addProject(new ResearchProject("Shiza soseda",10));
 	  rs1.pendProject("Shiza soseda");
 	  
-	  Student s2 = new Student("r","rrr",0);
-	  Student s3 = new Student("k","kkk",0);
-	  Student s4 = new Student("l","lll",0);
-	  Student s5 = new Student("a","aaa",0);
+	  Student s2 = new Student("r","rrr");
+	  Student s3 = new Student("k","kkk");
+	  Student s4 = new Student("l","lll");
+	  Student s5 = new Student("a","aaa");
 	  DbContext.getInstance().addStudent(s1);
 	  DbContext.getInstance().addStudent(s2);
 	  DbContext.getInstance().addStudent(s3);
@@ -44,9 +44,9 @@ public class Test {
 	  DbContext.getInstance().addNews(n1);
 	  DbContext.getInstance().addNews(n2);
 	  DbContext.getInstance().addNews(n3);
+	 
+   
 	  */
-  
-	  
 	  
 	  System.out.println("COURSES" + DbContext.getInstance().loadCourses());
 	  System.out.println("USERS"+DbContext.getInstance().loadUsers());

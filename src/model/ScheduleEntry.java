@@ -2,9 +2,10 @@ package model;
 
 import java.util.Date;
 import java.util.List;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ScheduleEntry {
+public class ScheduleEntry implements Serializable{
 
     private Lesson lesson;
     private List<Date> days;
@@ -28,10 +29,5 @@ public class ScheduleEntry {
 
     public Lesson getLesson() {
         return lesson;
-    }
-
-    public int getRoomLoad() {
-        // Логика расчета загруженности комнаты (если нужно для Part C)
-        return 0;
     }
 }

@@ -18,7 +18,7 @@ public class AccountFactory {
 			return null;
 		}
 		User newUser = switch(type) {
-			case AccountType.STUDENT -> new Student(login, password, 0);
+			case AccountType.STUDENT -> new Student(login, password);
 			case AccountType.MASTER -> new MasterStudent(login, password);
 			case AccountType.PHD -> new PhDStudent(login,password);
 			case AccountType.TEACHER -> new Teacher(login,password);

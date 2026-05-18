@@ -22,19 +22,22 @@ import service.AccountType;
 import model.Course;
 import model.Employee;
 import model.Enrollment;
+import model.Gender;
 import model.Manager;
 import model.News;
 import model.ResearchProject;
 import model.ResearcherDecorator;
 import model.Student;
 import model.Teacher;
+import model.TeacherTitle;
 import model.User;
+
 
 public class Core {
 	private static User currentUser;
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-RUN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void run() throws IOException {
 		while(true) {
 			System.out.println("\n========================================");
@@ -109,16 +112,46 @@ public class Core {
 		}
 		User currUser = AuthService.signUp(username,password,at);
 		if(currUser instanceof Teacher) {
-			System.out.println("What is your teacher title? \n1>Tutor \n2>Lector \n3>Senior=lector \n4>Professor");
+			System.out.println("What is your teacher title? \n1>Tutor \n2>Lector \n3>Senior-lector \n4>Professor");
 			String TT = br.readLine();
+			TeacherTitle tt = null;
 			switch(TT) {
-			case(1) // TODO: Finish teacher title assigning
+			case("1") -> tt = TeacherTitle.TUTOR;
+			case("2") -> tt = TeacherTitle.LECTOR;
+			case("3") -> tt = TeacherTitle.SENIOR_LECTOR;
+			case("4") -> tt = TeacherTitle.PROFESSOR;
+			default -> {((Teacher) currUser).setTitle(tt);;System.out.println("Wrong format"); return null;}
 			}
-		
+		}
+		FTAccountSetting();
 		Core.currentUser = currUser;
 		return currUser;
 	}
-
+	
+	//---------------------ACCOUNT SETTINGS
+	public static void FTAccountSetting() throws  IOException {
+		String name = null;
+		String surname = null;
+		Date birthday = null;
+		System.out.println("Enter your name");
+		name = br.readLine();
+		Core.currentUser.setName(name);
+		System.out.println("Enter your surname");
+		surname = br.readLine();
+		Core.currentUser.setSurname(surname);
+		System.out.println("Enter your birth date: YYYY-MM-DD");
+		String datestr = br.readLine();
+		birthday = new Date(datestr);
+		System.out.println("Enter your gender: 1>Male 2>Female");
+		String c = br.readLine();
+		switch(c) {
+		case("1"): Core.currentUser.setGender(Gender.MALE);
+		case("2"): Core.currentUser.setGender(Gender.FEMALE);
+		}
+		db.saveUsers();
+		db.saveStudents();
+	}
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void mainPage() throws IOException {
 		System.out.println("\nWELCOME, " + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
@@ -126,12 +159,14 @@ public class Core {
 				System.out.println("\n=== Main Menu ===");
 				System.out.println("1> Messages");
 				System.out.println("2> Professional menu");
+				System.out.println("3> Profile");
 				System.out.println("0> Logout");
 				System.out.print("Your choice: ");
 				String input = br.readLine().trim();
 				switch(input) {
 					case "1": messagesMenu(); break;
 					case "2": professionalMenu(currentUser); break;
+					case "3": profile(); break;
 					case "0": return;
 					default: System.out.println("Unexistent option");
 				}
@@ -140,7 +175,34 @@ public class Core {
 			studentMenu((Student) currentUser);
 		}
 	}
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFILE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
+	public static void profile() throws IOException {
+		while(true) {
+			System.out.println("PROFILE: ");
+			System.out.println("Login: " + Core.currentUser.getLogin());
+			System.out.println("Name: " + Core.currentUser.getFirstName());
+			System.out.println("Surname: " + Core.currentUser.getLastName());
+			System.out.println("Birth date: " + Core.currentUser.getBirthday());
+			System.out.println("Gender: " + Core.currentUser.getGender());
+			System.out.println("ID: " + Core.currentUser.getId());
+			System.out.println("ENTER: \n1> Settings \n2> Exit");
+			String in = br.readLine();
+			switch(in) {
+			case("1"):settings(); break;
+			case("2"):return;
+			default: System.out.println("Wrong option!");
+			}
+		}
+		
+	}
+	
+	private static void settings(){
+		System.out.println("What do you wand to set?");
+		System.out.println(" 1>Login \n 2>Name \n 3>LastName \n 4>Birth Date \n 5>Gender \n 6>Password \nYour Choice: ");
+		
+	}
+	
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFESSIONAL MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void professionalMenu(User u) throws IOException {
 
 		if(u instanceof Manager) {
@@ -170,7 +232,7 @@ public class Core {
 	}
 
 
-   // Teacher menu
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void teacherMenu(Teacher teacher) throws IOException {
 		while(true) {
 			System.out.println("\n=== Teacher Menu ===");
@@ -190,6 +252,7 @@ public class Core {
 		}
 	}
 
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void teacherScheduleMenu(Teacher teacher) throws IOException {
 		ScheduleCreatingService scs = new ScheduleCreatingService();
 		System.out.println("\n=== My Schedule ===");
@@ -199,7 +262,7 @@ public class Core {
 			scs.printTeacherSchedule(teacher);
 		}
 	}
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MANAGER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void managerScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		while(true) {
 			System.out.println("\n=== Schedule Menu ===");
@@ -216,7 +279,7 @@ public class Core {
 			}
 		}
 	}
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOOK UP TEACHERS FOR SCHEDULE FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void viewTeacherScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		System.out.print("Enter teacher ID: ");
 		String tid = br.readLine().trim();
@@ -233,7 +296,7 @@ public class Core {
 			scs.printTeacherSchedule(t);
 		}
 	}
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MARK PUTTING-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void markPuttingMenu(Teacher teacher) throws IOException {
 		MarkPuttingService mps = new MarkPuttingService();
 		List<Course> courses = db.allCourses();
@@ -257,7 +320,7 @@ public class Core {
 		mps.putMarksForCourse(teacher, selected);
 	}
 
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-SCHEDULE BUILDING MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void buildScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		// ── Step 1: Pick course ───────────────────────────────────────────────
 		List<Course> courses = db.allCourses();
@@ -378,7 +441,7 @@ public class Core {
 
 
 
-    // Research menu
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MENU FOR RESEARCHERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void researchMenu(User user) throws IOException {
 		ResearcherDecorator researcher = null;
 		for(User u : db.allUsers()) {
@@ -439,7 +502,7 @@ public class Core {
 		}
 	}
    
-    // Student menu
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MENU FOR STUDENTS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void studentMenu(Student student) throws IOException {
 		while(true) {
 			System.out.println("\n=== Student Menu ===");
@@ -485,7 +548,7 @@ public class Core {
 		}
 	}
 
-
+	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MESSAGES MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void messagesMenu() throws IOException {
 		MessageSendingService msgService = new MessageSendingService();
 		System.out.println("\n--- МЕНЮ СООБЩЕНИЙ ---");
