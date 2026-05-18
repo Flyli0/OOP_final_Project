@@ -127,4 +127,8 @@ public class ResearcherDecorator extends UserDecorator implements Researcher, Se
     	}
     	DbContext.getInstance().pendProject(rp);
     }
+
+    public List<ResearchPaper> getPapers() {
+        return papers;
+    }
 }
