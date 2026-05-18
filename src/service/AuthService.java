@@ -9,15 +9,17 @@ import model.User;
 
 public class AuthService {
 	private static DbContext db = DbContext.getInstance();
+
 	public static User login(String login, String password) {
 		List<User> users = DbContext.getInstance().allUsers();
 		return users.stream()
-				.filter(user -> 
-					user.getLogin().equals(login) && 
-					user.getPassword().equals(password))
+				.filter(user ->
+					login.equals(user.getLogin()) &&
+					password.equals(user.getPassword())) 
 				.findFirst()
 				.orElse(null);
 	}
+
 
 	public static User signUp(String login, String password, AccountType at) {
 		User u = AccountFactory.createAccount(at, login, password);
