@@ -1,14 +1,20 @@
 package views;
 import service.AuthService;
+import service.ByCitations;
+import service.ByDate;
+import service.ByPages;
 import service.EnrollmentService;
+import service.MarkPuttingService;
 import service.MessageSendingService; // ДОБАВЛЕНО АЗИЗОЙ
 import service.NewsService;
-
+import service.ScheduleCreatingService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import config.DbContext;
@@ -19,7 +25,9 @@ import model.Enrollment;
 import model.Manager;
 import model.News;
 import model.ResearchProject;
+import model.ResearcherDecorator;
 import model.Student;
+import model.Teacher;
 import model.User;
 
 public class Core {
@@ -28,29 +36,31 @@ public class Core {
 	private static DbContext db = DbContext.getInstance();
 
 	public static void run() throws IOException {
-		System.out.println("Welcome to University!");
-		System.out.println("Please Authorize!");
-		System.out.println("To sign up Enter 1  \nTo log in Enter 2");
-		String answer = br.readLine();
+		while(true) {
+			System.out.println("\n========================================");
+			System.out.println("   Welcome to University System!");
+			System.out.println("========================================");
+			System.out.println("1> Sign up");
+			System.out.println("2> Log in");
+			System.out.println("0> Exit system");
+			System.out.print("Your choice: ");
+			String answer = br.readLine().trim();
 			currentUser = null;
-		System.out.println(answer);
-		if(Integer.parseInt(answer) == 1) {
-			currentUser = signup();
-		}
-		else if(Integer.parseInt(answer) ==  2) {
-			currentUser = auth();
-		}
-		else {
-			System.out.println("Unexistent option");
-			Core.run();
-		}
-
-
-		if(currentUser!=null) {
-			mainPage();
-		}
-		else{
-			System.err.println("Username or password are not valid!");
+			switch(answer) {
+				case "1": currentUser = signup(); break;
+				case "2": currentUser = auth(); break;
+				case "0":
+					return;
+				default:
+					System.out.println("Unexistent option.");
+					continue;
+			}
+			if(currentUser != null) {
+				mainPage();
+				System.out.println("You have been logged out.");
+			} else {
+				System.out.println("Username or password are not valid!");
+			}
 		}
 	}
 
@@ -60,15 +70,28 @@ public class Core {
 		String username = br.readLine();
 		System.out.println("Enter your password");
 		String password = br.readLine();
-		currentUser = AuthService.login(username,password);
+		currentUser = AuthService.login(username, password);
+		if(currentUser == null) System.out.println("Invalid username or password.");
 		return currentUser;
 	}
 
 	public static User signup() throws IOException {
+		List<User> users = DbContext.getInstance().allUsers();
+
 		System.out.println("Enter your username!");
 		String username = br.readLine();
+		if(username.isBlank()) { System.out.println("Username cannot be empty."); return null; }
+
+
+		if(users.stream().anyMatch(u -> u.getLogin().equals(username))) {
+			System.out.println("This username already exists.");
+			return signup();
+		}
+
 		System.out.println("Enter your password");
 		String password = br.readLine();
+		if(password.isBlank()) { System.out.println("Password cannot be empty."); return null; }
+
 		System.out.println("Choose your Account type: ");
 		System.out.println("0 - Admin \n 1-Manager \n 2-Technical Specialist \n 3-Teacher \n 4-Student Bachelor \n 5-Master grade student \n 6-PhD Student");
 		String accTypeChoice = br.readLine();
@@ -82,36 +105,347 @@ public class Core {
 			case(4) -> at = AccountType.STUDENT;
 			case(6) -> at = AccountType.PHD;
 			case(5) -> at = AccountType.MASTER;
+			default -> { System.out.println("Invalid account type."); return null; }
 		}
+		
 		User currUser = AuthService.signUp(username,password,at);
 		return currUser;
 	}
 
 	public static void mainPage() throws IOException {
-		System.out.println("WELCOME!!!");
-		//System.out.println(db.loadUsers());
-		//System.out.println(db.loadEnrollments());
-		if(currentUser instanceof Employee){
-			System.out.println("Hello! \n choose your move: \n1>Post and Messages \n2>Professional menu");
-			String input = br.readLine();
-			switch(input) {
-			case "1": messagesMenu(); break;
-			case "2": professionalMenu(currentUser); break;
-			default: System.out.println("Wrong format try again!");
+		System.out.println("\nWELCOME, " + currentUser.getName().toUpperCase() + "!");
+		if(currentUser instanceof Employee) {
+			while(true) {
+				System.out.println("\n=== Main Menu ===");
+				System.out.println("1> Messages");
+				System.out.println("2> Professional menu");
+				System.out.println("0> Logout");
+				System.out.print("Your choice: ");
+				String input = br.readLine().trim();
+				switch(input) {
+					case "1": messagesMenu(); break;
+					case "2": professionalMenu(currentUser); break;
+					case "0": return;
+					default: System.out.println("Unexistent option");
+				}
 			}
+		} else if(currentUser instanceof Student) {
+			studentMenu((Student) currentUser);
 		}
 	}
 
 	public static void professionalMenu(User u) throws IOException {
 		if(u instanceof Manager) {
-			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news \n3>Generate Academic Report \n4>Create New Course");
-			String input = br.readLine();
+			while(true) {
+				System.out.println("\n=== Manager Menu ===");
+				System.out.println("1> Manage enrollments");
+				System.out.println("2> Manage news");
+				System.out.println("3> Generate Academic Report");
+				System.out.println("4> Create New Course");
+				System.out.println("5> Schedule");
+				System.out.println("0> Back");
+				System.out.print("Your choice: ");
+				String input = br.readLine().trim();
+				switch(input) {
+					case "1": enrollment(); break;
+					case "2": newsManage(); break;
+					case "3": service.ReportGenerationService.generateAcademicReport(); break;
+					case "4": service.CourseManagementService.addCourseForRegistration(); break;
+					case "5": scheduleMenu(null); break;
+					case "0": return;
+					default: System.out.println("Unexistent option");
+				}
+			}
+		} else if(u instanceof Teacher) {
+			teacherMenu((Teacher) u);
+		}
+	}
+
+
+   // Teacher menu
+	public static void teacherMenu(Teacher teacher) throws IOException {
+		while(true) {
+			System.out.println("\n=== Teacher Menu ===");
+			System.out.println("1> Put marks for a course");
+			System.out.println("2> View my schedule");
+			System.out.println("3> Research menu");
+			System.out.println("0> Back");
+			System.out.print("Your choice: ");
+			String input = br.readLine().trim();
 			switch(input) {
-				case "1": enrollment(); break;
-				case "2": newsManage(); break;
-				case "3": service.ReportGenerationService.generateAcademicReport(); break;
-				case "4": service.CourseManagementService.addCourseForRegistration(); break; // ВОТ ТВОЯ НОВАЯ КНОПКА
-				default: System.out.println("Wrong format try again!");
+				case "1": markPuttingMenu(teacher); break;
+				case "2": scheduleMenu(teacher); break;
+				case "3": researchMenu(teacher); break;
+				case "0": return;
+				default: System.out.println("Unexistent option");
+			}
+		}
+	}
+
+	public static void markPuttingMenu(Teacher teacher) throws IOException {
+		MarkPuttingService mps = new MarkPuttingService();
+		List<Course> courses = db.allCourses();
+		if(courses.isEmpty()) {
+			System.out.println("No courses exist in the system yet.");
+			return;
+		}
+		System.out.println("Your courses:");
+		
+
+		for(int i = 0; i < courses.size(); i++) {
+			System.out.println((i+1) + "> " + courses.get(i).getCourseName());
+		}
+
+		System.out.println("Enter course number (or 0 to cancel):");
+		int choice = Integer.parseInt(br.readLine().trim());
+		if(choice == 0 || choice > courses.size()) return;
+		Course selected = courses.get(choice - 1);
+		mps.putMarksForCourse(teacher, selected);
+	}
+
+
+	public static void buildScheduleMenu(ScheduleCreatingService scs) throws IOException {
+		List<Course> courses = db.allCourses();
+		if(courses.isEmpty()) {
+			System.out.println("No courses in the system yet. Add a course first.");
+			return;
+		}
+		System.out.println("Select course:");
+		for(int i = 0; i < courses.size(); i++) {
+			System.out.println((i+1) + "> " + courses.get(i).getCourseName());
+		}
+		int courseIdx;
+		try { courseIdx = Integer.parseInt(br.readLine().trim()) - 1; }
+		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+		if(courseIdx < 0 || courseIdx >= courses.size()) {
+			System.out.println("Course number out of range.");
+			return;
+		}
+		Course course = courses.get(courseIdx);
+
+		System.out.println("Enter lecture teacher ID:");
+		String ltId = br.readLine().trim();
+		Teacher lectureTeacher = (Teacher) db.allUsers().stream()
+				.filter(u -> u instanceof Teacher && u.getSystemId().equals(ltId))
+				.findFirst().orElse(null);
+		if(lectureTeacher == null) {
+			System.out.println("No Teacher found with ID \"" + ltId + "\". Schedule not built.");
+			return;
+		}
+
+		System.out.println("Enter practice teacher ID (press Enter to use same teacher):");
+		String ptId = br.readLine().trim();
+		Teacher practiceTeacher;
+		if(ptId.isEmpty() || ptId.equals(ltId)) {
+			practiceTeacher = lectureTeacher;
+		} else {
+			practiceTeacher = (Teacher) db.allUsers().stream()
+					.filter(u -> u instanceof Teacher && u.getSystemId().equals(ptId))
+					.findFirst().orElse(null);
+			if(practiceTeacher == null) {
+				System.out.println("No Teacher found with ID \"" + ptId + "\". Using lecture teacher for practice as well.");
+				practiceTeacher = lectureTeacher;
+			}
+		}
+
+		System.out.println("How many weeks? (1-16):");
+		int weeks;
+		try {
+			weeks = Integer.parseInt(br.readLine().trim());
+			if(weeks < 1 || weeks > 16) { System.out.println("Weeks must be between 1 and 16."); return; }
+		} catch(NumberFormatException e) { System.out.println("Invalid number of weeks."); return; }
+
+		// ── Lecture day & time ────────────────────────────────────────────────
+		int lectureDow = pickDayOfWeek("lecture");
+		if(lectureDow == -1) return;
+		int lectureHour = pickHour("lecture");
+		if(lectureHour == -1) return;
+
+		// ── Practice day & time ───────────────────────────────────────────────
+		int practiceDow = pickDayOfWeek("practice");
+		if(practiceDow == -1) return;
+		int practiceHour = pickHour("practice");
+		if(practiceHour == -1) return;
+
+		if(lectureDow == practiceDow && lectureHour == practiceHour) {
+			System.out.println("Lecture and practice cannot be on the same day at the same time.");
+			return;
+		}
+		if(lectureDow == practiceDow && practiceHour < lectureHour) {
+			System.out.println("Practice must be after the lecture. On the same day, practice hour must be greater than lecture hour.");
+			return;
+		}
+		// Day-of-week: Calendar.MONDAY=2 ... FRIDAY=6
+		if(practiceDow < lectureDow) {
+			System.out.println("Practice must be after the lecture. Practice day cannot be earlier in the week than lecture day.");
+			return;
+		}
+
+		scs.buildSemesterSchedule(course, lectureTeacher, practiceTeacher,
+				new Date(), weeks, lectureDow, lectureHour, practiceDow, practiceHour);
+	}
+
+	/** Prompts the manager to pick a weekday. Returns Calendar constant or -1 on bad input. */
+	private static int pickDayOfWeek(String lessonLabel) throws IOException {
+		System.out.println("Choose day for " + lessonLabel + ":");
+		System.out.println("  1> Monday  2> Tuesday  3> Wednesday  4> Thursday  5> Friday");
+		System.out.print("Your choice: ");
+		String raw = br.readLine().trim();
+		switch(raw) {
+			case "1": return Calendar.MONDAY;
+			case "2": return Calendar.TUESDAY;
+			case "3": return Calendar.WEDNESDAY;
+			case "4": return Calendar.THURSDAY;
+			case "5": return Calendar.FRIDAY;
+			default:
+				System.out.println("Invalid day. Please enter 1-5.");
+				return -1;
+		}
+	}
+
+	/** Prompts the manager to pick an hour (8-18). Returns the hour or -1 on bad input. */
+	private static int pickHour(String lessonLabel) throws IOException {
+		System.out.print("Choose start hour for " + lessonLabel + " (8-18, e.g. 9 for 09:00): ");
+		String raw = br.readLine().trim();
+		int hour;
+		try { hour = Integer.parseInt(raw); }
+		catch(NumberFormatException e) { System.out.println("Invalid hour."); return -1; }
+		if(hour < 8 || hour > 18) { System.out.println("Hour must be between 8 and 18."); return -1; }
+		return hour;
+	}
+
+
+	public static void scheduleMenu(Teacher teacher) throws IOException {
+		ScheduleCreatingService scs = new ScheduleCreatingService();
+		while(true) {
+			System.out.println("\n=== Schedule Menu ===");
+			System.out.println("1> View my schedule");
+			System.out.println("2> Build semester schedule for a course");
+			System.out.println("0> Back");
+			System.out.print("Your choice: ");
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1":
+					if(teacher == null) {
+						System.out.println("No teacher context — log in as a Teacher to view your schedule.");
+					} else if(teacher.getSchedule().isEmpty()) {
+						System.out.println("Your schedule is empty.");
+					} else {
+						scs.printTeacherSchedule(teacher);
+					}
+					break;
+				case "2": buildScheduleMenu(scs); break;
+				case "0": return;
+				default: System.out.println("Unexistent option");
+			}
+		}
+	}
+
+
+
+    // Research menu
+	public static void researchMenu(User user) throws IOException {
+		ResearcherDecorator researcher = null;
+		for(User u : db.allUsers()) {
+			if(u instanceof ResearcherDecorator && ((ResearcherDecorator)u).getId() == user.getId()) {
+				researcher = (ResearcherDecorator) u;
+				break;
+			}
+		}
+		if(researcher == null) {
+			System.out.println("You are not registered as a Researcher. Contact an Admin to get Researcher status.");
+			return;
+		}
+		final ResearcherDecorator r = researcher;
+		while(true) {
+			System.out.println("\n=== Research Menu ===");
+			System.out.println("1> Publish a paper");
+			System.out.println("2> Print my papers (by citations)");
+			System.out.println("3> Print my papers (by date)");
+			System.out.println("4> Print my papers (by pages)");
+			System.out.println("5> View h-index");
+			System.out.println("6> Close & submit project");
+			System.out.println("0> Back");
+			System.out.print("Your choice: ");
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1":
+					System.out.print("Title: "); String title = br.readLine();
+					if(title.isBlank()) { System.out.println("Title cannot be empty."); break; }
+					System.out.print("Content summary: "); String content = br.readLine();
+					System.out.print("Pages: ");
+					int pages;
+					try { pages = Integer.parseInt(br.readLine().trim()); }
+					catch(NumberFormatException e) { System.out.println("Invalid page count."); break; }
+					if(pages <= 0) { System.out.println("Pages must be greater than 0."); break; }
+					r.conductResearch(content, title, pages);
+					break;
+				case "2":
+					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					r.printPapers(new ByCitations()); break;
+				case "3":
+					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					r.printPapers(new ByDate()); break;
+				case "4":
+					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					r.printPapers(new ByPages()); break;
+				case "5":
+					if(r.getPapers().isEmpty()) { System.out.println("You have no papers — h-index is 0."); break; }
+					System.out.printf("Your h-index: %.0f%n", r.calculateH()); break;
+				case "6":
+					if(r.getPapers().isEmpty()) { System.out.println("You have no loose papers to form a project from."); break; }
+					System.out.print("Project topic: "); String topic = br.readLine();
+					if(topic.isBlank()) { System.out.println("Topic cannot be empty."); break; }
+					r.closeProject(topic);
+					break;
+				case "0": return;
+				default: System.out.println("Invalid option. Please enter 1–6 or 0.");
+			}
+		}
+	}
+   
+    // Student menu
+	public static void studentMenu(Student student) throws IOException {
+		while(true) {
+			System.out.println("\n=== Student Menu ===");
+			System.out.println("1> View my courses");
+			System.out.println("2> View my marks / transcript");
+			System.out.println("3> View my schedule");
+			System.out.println("0> Logout");
+			System.out.print("Your choice: ");
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1":
+					List<Enrollment> myEnrollments = new ArrayList<>();
+					for(Enrollment en : db.allEnrollments()) {
+						if(en.getStudents().containsKey(student)) myEnrollments.add(en);
+					}
+					if(myEnrollments.isEmpty()) {
+						System.out.println("You are not enrolled in any courses yet. Ask a Manager to enroll you.");
+					} else {
+						for(Enrollment en : myEnrollments) {
+							boolean approved = en.getStudents().get(student);
+							System.out.println("  " + en.getCourse().getCourseName()
+								+ " [" + (approved ? "approved" : "pending approval") + "]");
+						}
+					}
+					break;
+				case "2":
+					if(student.getTranscript() == null) {
+						System.out.println("No transcript found. Marks will appear here once a Teacher enters them.");
+					} else {
+						System.out.println(student.getTranscript());
+					}
+					break;
+				case "3":
+					if(student.getSchedule() == null || student.getSchedule().isEmpty()) {
+						System.out.println("Your schedule is empty. It will populate once a Manager builds the semester schedule.");
+					} else {
+						student.getSchedule().forEach(se -> System.out.println("  " + se));
+					}
+					break;
+				case "0": return;
+				default: System.out.println("Unexistent option");
 			}
 		}
 	}
@@ -248,4 +582,3 @@ public class Core {
 		System.out.println("News: " + n.getId() + "is publised!!!");
 	}
 }
-
