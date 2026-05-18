@@ -20,6 +20,7 @@ import model.Manager;
 import model.News;
 import model.ResearchProject;
 import model.Student;
+import model.Teacher;
 import model.User;
 
 public class Core {
@@ -103,20 +104,27 @@ public class Core {
 	}
 
 	public static void professionalMenu(User u) throws IOException {
-		if(u instanceof Manager) {
-			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news \n3>Generate Academic Report \n4>Create New Course");
+		if(u instanceof Manager) {  // Manager Professional Menu
+			System.out.println("Hello Manager! \n choose your move: \n1>Manage enrollments \n2>Manage news \n3>Create Academic Report");
 			String input = br.readLine();
 			switch(input) {
 				case "1": enrollment(); break;
 				case "2": newsManage(); break;
 				case "3": service.ReportGenerationService.generateAcademicReport(); break;
-				case "4": service.CourseManagementService.addCourseForRegistration(); break; // ВОТ ТВОЯ НОВАЯ КНОПКА
+				default: System.out.println("Wrong format try again!");
+			}
+		}
+		if(u instanceof Teacher) { // Teacher Professional Menu
+			System.out.println("Hello Teacher \n choose your move: \\n1>Manage courses");
+			String input = br.readLine();
+			switch(input) {
+				case "1": service.CourseManagementService.addCourseForRegistration(); break; 
 				default: System.out.println("Wrong format try again!");
 			}
 		}
 	}
 
-	// АЗИЗА:БЛОК ДЛЯ РАБОТЫ С СООБЩЕНИЯМИ
+
 	public static void messagesMenu() throws IOException {
 		MessageSendingService msgService = new MessageSendingService();
 		System.out.println("\n--- МЕНЮ СООБЩЕНИЙ ---");

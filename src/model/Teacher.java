@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.Date;
+import model.Complaint
 
 public class Teacher extends Employee implements Serializable{
 
