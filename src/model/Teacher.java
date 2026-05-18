@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.Date;
-import model.Complaint
+import model.Complaint;
 
 public class Teacher extends Employee implements Serializable{
 
@@ -19,6 +19,10 @@ public class Teacher extends Employee implements Serializable{
     
     public Teacher(String login, String password) {
     	super(login, password);
+    }
+    
+    public void setTitle(TeacherTitle title) {
+    	this.title = title;
     }
 
     public void putMark(Student s, Course c, Mark m) {

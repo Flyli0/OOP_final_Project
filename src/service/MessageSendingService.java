@@ -2,6 +2,8 @@ package service;
 
 import config.DbContext;
 import model.Message;
+import model.User;
+
 import java.util.Scanner;
 
 public class MessageSendingService {
@@ -12,14 +14,13 @@ public class MessageSendingService {
     public MessageSendingService() {
     }
 
-    public void sendMessage() {
+    public void sendMessage(User curUser) {
         System.out.println("Enter receiver login:");
         String receiver = sc.nextLine();
         System.out.println("Enter your message:");
         String text = sc.nextLine();
 
-        // Здесь можно передать логин текущего пользователя
-        Message msg = new Message("Current_User", receiver, text);
+        Message msg = new Message(curUser.getLogin(), receiver, text);
         db.addMessage(msg);
         System.out.println("✅ Message sent!");
     }

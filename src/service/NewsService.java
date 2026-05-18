@@ -2,6 +2,7 @@ package service;
 
 import java.io.*;
 import java.util.*;
+import java.util.Comparator;
 
 import config.DbContext;
 import model.Comment;
@@ -24,9 +25,11 @@ public class NewsService {
     }
 
     public static News generateTopResearch() {
-        List<News> news = NewsService.getNews().stream().filter(newsL->newsL.getStatus()==true).toList();
-        news.sort((x,y)->Integer.compare(x.getCitations(), y.getCitations()));
-        return news.getFirst();
+    	return NewsService.getNews().stream()
+    	        .filter(newsL -> newsL.getStatus())
+    	        .max((x, y) ->
+                Integer.compare(x.getCitations(), y.getCitations()))
+    	        .orElse(null);
     }
 
     public static void addComment(News n, String s, User author) {

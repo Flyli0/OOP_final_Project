@@ -66,7 +66,7 @@ public class Core {
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static User auth() throws IOException {
-		System.out.println("Enter your username!");
+		System.out.println("Enter your login!");
 		String username = br.readLine();
 		System.out.println("Enter your password");
 		String password = br.readLine();
@@ -93,7 +93,7 @@ public class Core {
 		if(password.isBlank()) { System.out.println("Password cannot be empty."); return null; }
 
 		System.out.println("Choose your Account type: ");
-		System.out.println("0 - Admin \n 1-Manager \n 2-Technical Specialist \n 3-Teacher \n 4-Student Bachelor \n 5-Master grade student \n 6-PhD Student");
+		System.out.println(" 0 - Admin \n 1-Manager \n 2-Technical Specialist \n 3-Teacher \n 4-Student Bachelor \n 5-Master grade student \n 6-PhD Student");
 		String accTypeChoice = br.readLine();
 		AccountType at = null;
 		int accTypeChoiceInt = Integer.parseInt(accTypeChoice);
@@ -107,13 +107,20 @@ public class Core {
 			case(5) -> at = AccountType.MASTER;
 			default -> { System.out.println("Invalid account type."); return null; }
 		}
-		
 		User currUser = AuthService.signUp(username,password,at);
+		if(currUser instanceof Teacher) {
+			System.out.println("What is your teacher title? \n1>Tutor \n2>Lector \n3>Senior=lector \n4>Professor");
+			String TT = br.readLine();
+			switch(TT) {
+			case(1) // TODO: Finish teacher title assigning
+			}
+		
+		Core.currentUser = currUser;
 		return currUser;
 	}
 
 	public static void mainPage() throws IOException {
-		System.out.println("\nWELCOME, " + currentUser.getName().toUpperCase() + "!");
+		System.out.println("\nWELCOME, " + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
 			while(true) {
 				System.out.println("\n=== Main Menu ===");
@@ -447,7 +454,6 @@ public class Core {
 					break;
 				case "0": return;
 				default: System.out.println("Unexistent option");
->>>>>>> 68691475400a0a7a79165bd5f6bc4f0d2f1eba78
 			}
 		}
 	}
@@ -462,7 +468,7 @@ public class Core {
 		String ans = br.readLine();
 
 		if (ans.equals("1")) {
-			msgService.sendMessage();
+			msgService.sendMessage(Core.currentUser);
 		} else if (ans.equals("2")) {
 			msgService.viewMyMessages();
 		}

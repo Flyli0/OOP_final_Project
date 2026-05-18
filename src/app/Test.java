@@ -14,7 +14,7 @@ import config.DbContext;
 
 public class Test {
   public static void main(String[] args) throws IOException {
-	/*
+	/*	
 	  Student s1 = new Student("w","www",0);
 	  
 	  ResearcherDecorator rs1 = new ResearcherDecorator(s1);
@@ -31,9 +31,9 @@ public class Test {
 	  DbContext.getInstance().addStudent(s4);
 	  DbContext.getInstance().addStudent(s5);
 	   
-	  Course c1 = new Course("ADS",5);
-	  Course c2 = new Course("Physics 2",3);
-	  Course c3 = new Course("English C1",3);
+	  Course c1 = new Course("ADS",5,"IS",2);
+	  Course c2 = new Course("Physics 2",3,"Techsomething",2);
+	  Course c3 = new Course("English C1",3,"General",1);
 	  DbContext.getInstance().addCourse(c1);
 	  DbContext.getInstance().addCourse(c2);
 	  DbContext.getInstance().addCourse(c3);
@@ -44,8 +44,8 @@ public class Test {
 	  DbContext.getInstance().addNews(n1);
 	  DbContext.getInstance().addNews(n2);
 	  DbContext.getInstance().addNews(n3);
-	  
-*/	  
+	  */
+  
 	  
 	  
 	  System.out.println("COURSES" + DbContext.getInstance().loadCourses());

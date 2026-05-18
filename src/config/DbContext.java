@@ -28,7 +28,7 @@ public class DbContext {
 	private static List<User> users;
 	private static List<Student> students;
 	private static List<News> news;
-	private static List<Message> messages; // ДОБАВЛЕНО АЗИЗОЙ
+	private static List<Message> messages; 
 	private static List<ResearchProject> pendingProjects;
 
 	private DbContext() {
