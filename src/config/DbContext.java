@@ -26,6 +26,7 @@ public class DbContext {
 	private static List<ResearchProject> pendingProjects;
 	private static List<Complaint> complaints;
 	private static List<Log> logs;
+	private static List<Request> requests;
 
 	private DbContext() {
 		path = new File("src/data").getAbsolutePath();
@@ -33,6 +34,9 @@ public class DbContext {
 		// Create such pattern to ensure absence of NullPointerException
 		courses = (List<Course>) DbContext.loadCourses();
 		courses = (List<Course>) ValidateDb.validate(courses);
+		
+		requests = (List<Request>) DbContext.loadrequests();
+		requests = (List<Request>) ValidateDb.validate(courses);
 
 		students = (List<Student>) DbContext.loadStudents();
 		students = (List<Student>) ValidateDb.validate(students);
@@ -157,6 +161,11 @@ public class DbContext {
 		DbContext.serialize(pendingProjects, "pendingProjects");
 		return true;
 	}
+	
+	public static boolean saveRequests() {
+		DbContext.serialize(requests, "requests");
+		return true;
+	}
 
 	public static boolean saveLogs() {
 		DbContext.serialize(logs, "logs");
@@ -216,6 +225,11 @@ public class DbContext {
 		Object ret = DbContext.deserialize("complaints");
 		return ret;
 	}
+	
+	public static Object loadRequests() {
+		Object ret = DbContext.deserialize("requests");
+		return ret;
+	}
 //     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 
 	// COLLECTION GETTERS
@@ -252,9 +266,12 @@ public class DbContext {
 		return this.pendingProjects;
 	}
 
-	// ТВОЙ ГЕТТЕР: Чтобы другие классы (например, Декан) могли получить список всех жалоб
 	public List<Complaint> allComplaints() {
 		return this.complaints;
+	}
+	
+	public List<Request> allRequests(){
+		return this.requests;
 	}
 	//     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	//TO ADD ELEMENTS TO A COLLECTION FROM OUTER METHODS
@@ -303,6 +320,11 @@ public class DbContext {
 	public void addComplaint(Complaint c) {
 		DbContext.complaints.add(c);
 		DbContext.saveComplaints();
+	}
+	
+	public void addRequest(Request r) {
+		DbContext.requests.add(r);
+		DbContext.saveRequests();
 	}
 
 // ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏ ꧁ ༺ REMOVERS IF NEEDED ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏

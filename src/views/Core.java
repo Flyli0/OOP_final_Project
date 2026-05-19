@@ -275,7 +275,11 @@ public class Core {
 	
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFESSIONAL MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	private static void professionalMenu(User u) throws IOException, ParseException {
-
+		System.out.println(LanguageManager.get("send_req"));
+		String ch = br.readLine();
+		if(ch.toLowerCase().equals("y") || ch.toLowerCase().equals("yes")) {
+			sendRequest();
+		}
 		if(u instanceof Manager) {
 			while(true) {
 				System.out.println(LanguageManager.get("manager_menu"));
@@ -306,9 +310,80 @@ public class Core {
 			teacherMenu((Teacher) u);
 		} else if(u instanceof Admin) {
 			adminMenu((Admin) u);
+		} else if(u instanceof TechSupportSpecialist) {
+			techMenu((TechSupportSpecialist) u);
 		}
 	}
-
+    //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TECH MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-
+	private static void techMenu(TechSupportSpecialist tech) throws IOException {
+		while(true) {
+			System.out.println(LanguageManager.get("tech_support_menu"));
+			System.out.println("1>" + LanguageManager.get("view_pending_requests"));
+			System.out.println("2>" + LanguageManager.get("accept_request"));
+			System.out.println("3>" + LanguageManager.get("reject_request"));
+			System.out.println("4>" + LanguageManager.get("status_accepted_requests"));
+			System.out.println("0>" + LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1": pendingRequests(tech);
+				case "2": acceptReq(tech);
+				case "3": rejectReq(tech);
+				case "4": doneReq(tech);
+				case "0": return;
+				default: System.out.println(LanguageManager.get("unexistent_option"));
+			}
+		}
+	}
+	private static void pendingRequests(TechSupportSpecialist tss) {
+		for(Request r: tss.getAccepted()) {
+			System.out.println(r.getInfo()+" : ["+ r.getId()+"] : "+r.getStatus());
+		}
+	}
+	
+	private static void acceptReq(TechSupportSpecialist tss) throws IOException {
+		System.out.println(LanguageManager.get("insert_request_id"));
+		int input = Integer.parseInt(br.readLine().trim());
+		boolean result = tss.acceptRequest(input);
+		if(result) {
+			System.out.println(LanguageManager.get("request_accepted"));
+		}
+		else {
+			System.out.println(LanguageManager.get("something_wrong"));
+		}
+	}
+	
+	private static void rejectReq(TechSupportSpecialist tss) throws IOException {
+		System.out.println(LanguageManager.get("insert_request_id"));
+		int input = Integer.parseInt(br.readLine().trim());
+		boolean result = tss.rejectRequest(input);
+		if(result) {
+			System.out.println(LanguageManager.get("request_rejected"));
+		}
+		else {
+			System.out.println(LanguageManager.get("something_wrong"));
+		}
+	}
+	
+	private static void doneReq(TechSupportSpecialist tss) throws IOException {
+		System.out.println(LanguageManager.get("insert_request_id"));
+		int input = Integer.parseInt(br.readLine().trim());
+		boolean result = tss.doneRequest(input);
+		if(result) {
+			System.out.println(LanguageManager.get("request_done"));
+		}
+		else {
+			System.out.println(LanguageManager.get("something_wrong"));
+		}
+	}
+	
+	
+	private static void sendRequest() throws IOException {
+		System.out.println(LanguageManager.get("info"));
+		String info = br.readLine();
+		Request r = new Request(info);
+		db.addRequest(r);
+	}
     //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ADMIN MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-
 
 
