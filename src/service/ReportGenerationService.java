@@ -23,21 +23,21 @@ public class ReportGenerationService {
 
         double totalGpa = 0.0;
         double maxGpa = -1.0;
-        double minGpa = 100.0; // Ставим с запасом, чтобы найти минимум
+        double minGpa = 100.0;
         Student topStudent = null;
         Student worstStudent = null;
 
-        // Пробегаемся по всем студентам в базе
+    
         for (Student s : students) {
             double gpa = s.getTranscript().calculateTotalGPA();
             totalGpa += gpa;
 
-            // Ищем отличника
+            
             if (gpa > maxGpa) {
                 maxGpa = gpa;
                 topStudent = s;
             }
-            // Ищем отстающего
+
             if (gpa < minGpa) {
                 minGpa = gpa;
                 worstStudent = s;

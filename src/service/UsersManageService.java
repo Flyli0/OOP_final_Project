@@ -6,17 +6,16 @@ import java.util.Scanner;
 
 public class UsersManageService {
 
-    // Подключаемся к нашей единой базе данных
     DbContext db = DbContext.getInstance();
 
     public UsersManageService() {
     }
 
-    // 1. Метод для ОБНОВЛЕНИЯ пользователя [cite: 102]
+
     public void updateUser(User u) {
         if (!db.allUsers().contains(u)) {
-            System.out.println("❌ Пользователь не найден!"); // Исправили Course.out на System.out
-            return; // Прерываем работу, если юзера нет
+            System.out.println("❌ Пользователь не найден!"); 
+            return; 
         }
 
         Scanner sc = new Scanner(System.in);
@@ -26,29 +25,27 @@ public class UsersManageService {
         System.out.println("Введите новую фамилию:");
         String surname = sc.nextLine();
 
-        // Физически обновляем данные в объекте
+
         u.setName(name);
         u.setSurname(surname);
 
-        DbContext.saveUsers(); // Исправили ошибку сохранения
+        DbContext.saveUsers(); 
         System.out.println("✅ Данные пользователя успешно обновлены!");
     }
 
-    // 2. Метод для ДОБАВЛЕНИЯ пользователя [cite: 102]
     public void addUser(User u) {
         if (db.allUsers().contains(u)) {
             System.out.println("❌ Такой пользователь уже существует в системе!");
             return;
         }
-        db.addUser(u); // Этот метод внутри DbContext уже вызывает сохранение
+        db.addUser(u); 
         System.out.println("✅ Пользователь успешно зарегистрирован!");
     }
 
-    // 3. Метод для УДАЛЕНИЯ пользователя [cite: 102]
     public void removeUser(User u) {
         if (db.allUsers().contains(u)) {
-            db.allUsers().remove(u); // Удаляем из списка
-            DbContext.saveUsers();   // Сохраняем изменения в файл
+            db.allUsers().remove(u);
+            DbContext.saveUsers();   
             System.out.println("✅ Пользователь успешно удален из системы!");
         } else {
             System.out.println("❌ Ошибка: Пользователь не найден!");

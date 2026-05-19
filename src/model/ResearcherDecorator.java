@@ -30,9 +30,6 @@ public class ResearcherDecorator extends UserDecorator implements Researcher, Se
         System.out.println("Research paper \"" + title + "\" published by " + this.getName());
     }
 
-
-    //Calculates the h-index: the largest h such that h papers have >= h citations.
-    //Algorithm: sort citation counts descending, then find the crossing point.
     @Override
     public double calculateH() {
         if(papers.isEmpty()) {

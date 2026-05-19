@@ -14,7 +14,7 @@ public class CourseManagementService {
     private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     private static DbContext db = DbContext.getInstance();
 
-    // 1. МЕНЕДЖЕР: ДОБАВЛЕНИЕ КУРСА
+
     public static void addCourseForRegistration() throws IOException {
         System.out.println("\n--- 📚 CREATE NEW COURSE ---");
         System.out.print("Enter Course Name: ");
@@ -34,7 +34,7 @@ public class CourseManagementService {
         System.out.println("✅ Success: Course '" + name + "' added for registration!");
     }
 
-    // 2. МЕНЕДЖЕР: НАЗНАЧЕНИЕ ПРЕПОДАВАТЕЛЯ
+
     public static void assignTeacherToCourse(Course course, Teacher teacher, String lessonType) {
         if (course != null && teacher != null) {
             course.addTeacher(teacher);
@@ -44,17 +44,17 @@ public class CourseManagementService {
         }
     }
 
-    // 3. СТУДЕНТ: ПРОВЕРКА ПРИ РЕГИСТРАЦИИ (21 КРЕДИТ + MAJOR)
+
     public static boolean canStudentRegister(Student student, Course course, String studentMajor, int studentYear) {
         System.out.println("\n--- Checking Registration Constraints ---");
 
-        // Проверка 1: Специальность и Год обучения
+
         if (course.getTargetMajor() != null && !course.getTargetMajor().equalsIgnoreCase(studentMajor) && course.getType() != Course.CourseType.FREE) {
             System.out.println("❌ Registration Failed: This course is for " + course.getTargetMajor() + " major.");
             return false;
         }
 
-        // Проверка 2: Лимит кредитов
+
         int currentCredits = student.getCreditsNum();
         if (currentCredits + course.getCredits() > 21) {
             System.out.println("❌ Registration Failed: Exceeds maximum 21 credits! (Current: " + currentCredits + ")");
