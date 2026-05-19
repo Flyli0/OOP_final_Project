@@ -136,7 +136,7 @@ public class Core {
 	
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void mainPage() throws IOException {
+	public static void mainPage() throws IOException, ParseException {
 		System.out.println(LanguageManager.get("welcome_caps") + " " + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
 			while(true) {
@@ -263,7 +263,7 @@ public class Core {
 	}
 	
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFESSIONAL MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void professionalMenu(User u) throws IOException {
+	public static void professionalMenu(User u) throws IOException, ParseException {
 
 		if(u instanceof Manager) {
 			while(true) {
@@ -288,8 +288,67 @@ public class Core {
 			}
 		} else if(u instanceof Teacher) {
 			teacherMenu((Teacher) u);
+		} else if(u instanceof Admin) {
+			adminMenu((Admin) u);
 		}
 	}
+
+    //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ADMIN MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-
+
+
+	public static void adminMenu(Admin admin) throws IOException, ParseException{
+		while(true) {
+			System.out.println(LanguageManager.get("admin_menu"));
+			System.out.println("1>" + LanguageManager.get("manage_users"));
+			System.out.println("0>" + LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1": manageUsersMenu(admin); break;
+				case "0": return;
+				default: System.out.println(LanguageManager.get("unexistent_option"));
+			}
+		}
+	}
+
+	public static void manageUsersMenu(Admin admin) throws IOException, ParseException {
+		while(true) {
+			System.out.println(LanguageManager.get("manage_users_menu"));
+			System.out.println("1>" + LanguageManager.get("add_user"));
+			System.out.println("2>" + LanguageManager.get("update_user"));
+			System.out.println("0>" + LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
+			String input = br.readLine().trim();
+			switch(input) {
+				case "1": signup(); break;
+				case "2": updateUser(admin); break;
+				case "0": return;
+				default: System.out.println(LanguageManager.get("unexistent_option"));
+			}
+		}
+	}
+
+	public static void updateUser(Admin admin) throws IOException {
+		List<User> users = db.allUsers();
+		System.out.print(LanguageManager.get("enter_user_id"));
+		
+		String id = br.readLine().trim();
+
+		User userToUpdate = users.stream()
+        .filter(u -> u.getSystemId().equals(id))
+        .findFirst()
+        .orElse(null);
+	
+		if(userToUpdate == null) {
+			System.out.println(LanguageManager.get("user_not_found"));
+			return;
+		}
+		admin.updateUser(userToUpdate);
+	}
+
+	
+	
+
 
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_

@@ -26,6 +26,7 @@ public class UsersManageService {
 
         u.setName(name);
         u.setSurname(surname);
+        sc.close();
 
         DbContext.saveUsers();
         System.out.println("✅ User data successfully updated!");
