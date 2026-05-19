@@ -25,9 +25,14 @@ public class Teacher extends Employee implements Serializable{
     	this.title = title;
     }
 
+    public void putMark(Student s, Course c, Mark m) {
+        System.out.println("Mark " + m.getValue() + " put for student " + s.getName());
+    }
+
     public void sendComplaint(Student s, Complaint.UrgencyLevel ul) {
         // TODO: логика отправки жалобы
     }
+
 
     public TeacherTitle getTitle() {
         return title;

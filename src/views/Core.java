@@ -141,6 +141,7 @@ public class Core {
 				System.out.println("1> Messages");
 				System.out.println("2> Professional menu");
 				System.out.println("3> Profile");
+				System.out.println("4> Researcher menu");
 				System.out.println("0> Logout");
 				System.out.print("Your choice: ");
 				String input = br.readLine().trim();
@@ -148,6 +149,7 @@ public class Core {
 					case "1": messagesMenu(); break;
 					case "2": professionalMenu(currentUser); break;
 					case "3": profile(); break;
+					case "4": researchMenu(currentUser); break;
 					case "0": return;
 					default: System.out.println("Unexistent option");
 				}
@@ -192,6 +194,7 @@ public class Core {
 				else {
 					Core.currentUser.setLogin(nl);
 				}
+				break;
 			case("2"):
 				System.out.println("enter new Name: "); 
 				String nn = br.readLine();
@@ -201,6 +204,7 @@ public class Core {
 				else {
 					Core.currentUser.setName(nn);
 				}
+				break;
 			case("3"):
 				System.out.println("enter new  Surname: "); 
 				String nln = br.readLine();
@@ -210,6 +214,7 @@ public class Core {
 				else {
 					Core.currentUser.setSurname(nln);;
 				}
+				break;
 			case("4"):
 				System.out.println("enter your current Password: "); 
 				String pc = br.readLine();
@@ -234,6 +239,7 @@ public class Core {
 				else {
 					System.out.println("Wrong password!");
 				}
+				break;
 			case("5"): 
 				db.saveUsers();
 				db.saveStudents();
@@ -279,6 +285,8 @@ public class Core {
 			System.out.println("1> Put marks for a course");
 			System.out.println("2> View my schedule");
 			System.out.println("3> Research menu");
+			System.out.println("4> View courses");
+			System.out.println("5> View students");
 			System.out.println("0> Back");
 			System.out.print("Your choice: ");
 			String input = br.readLine().trim();
@@ -286,9 +294,25 @@ public class Core {
 				case "1": markPuttingMenu(teacher); break;
 				case "2": teacherScheduleMenu(teacher); break;
 				case "3": researchMenu(teacher); break;
+				case "4": viewCourses();
+				case "5": viewStudents();
 				case "0": return;
 				default: System.out.println("Invalid option. Please enter 1, 2, 3, or 0.");
 			}
+		}
+	}
+	
+	private static void viewCourses() {
+		System.out.println("Current enrollment courses");
+		for(Enrollment en: db.allEnrollments()) {
+			System.out.println(en.getCourse() + "\n");
+		}
+	}
+	
+	private static void viewStudents() {
+		System.out.println("Current enrollment students");
+		for(Enrollment en: db.allEnrollments()) {
+			System.out.println(en.getStudents() + "\n");
 		}
 	}
 
@@ -557,6 +581,7 @@ public class Core {
 			System.out.println("2> View my marks / transcript");
 			System.out.println("3> View my schedule");
 			System.out.println("4> Register for courses");
+			System.out.println("5> Researcher menu");
 			System.out.println("0> Logout");
 			System.out.print("Your choice: ");
 			String input = br.readLine().trim();
@@ -591,6 +616,7 @@ public class Core {
 					}
 					break;
 				case "4": registerForCourse();break;
+				case "5": researchMenu(currentUser); break;
 				case "0": return;
 				default: System.out.println("Unexistent option");
 			}
@@ -634,7 +660,7 @@ public class Core {
 				currentEnrollment = EnrollmentService.getEnrollment(currentCourse);
 				System.out.println("Enrollment is Found!");
 			}
-			System.out.println("What do you want to do? \n1>Add Student to the enrollment \n2>Approve registration for students of the enrollment");
+			System.out.println("What do you want to do? \n1>Add Student to the enrollment \n2>Approve registration for students of the enrollment \n3>Assign teacher to the course");
 			String answer = br.readLine();
 			if(answer.toLowerCase().equals("exit")) {
 				break;
@@ -660,6 +686,24 @@ public class Core {
 			else if(answer.equals("2")) {
 				System.out.println("APPROVEMENT");
 				EnrollmentService.approveStudents(currentEnrollment);
+			}
+			else if(answer.equals("3")) {
+				List<Teacher> teachers = db.allUsers().stream().filter(user -> user instanceof Teacher).map(user -> (Teacher) user).toList();
+				System.out.println("Available teachers");
+				for(Teacher t: teachers) {
+					System.out.println(t.getFirstName() + " " + t.getLastName() + " [ " + t.getSystemId() + " ]");
+				}
+				System.out.println("Enter teacher ID: ");
+				String id = br.readLine();
+				Teacher t = teachers.stream().filter(teacher -> teacher.getSystemId().equals(id)).findFirst().orElse(null);
+				if(t==null) {
+					System.out.println("Such id does not exist");
+				}
+				else {
+					currentEnrollment.addTeacher(t);
+					System.out.println("Teacher: " + t + "added to " + currentEnrollment.getCourse().getCourseName());
+					db.saveEnrollments();
+				}
 			}
 			System.out.println("Do you want to close the Enrollment? y/n");
 			String answer2 = br.readLine();

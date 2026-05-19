@@ -51,7 +51,7 @@ public class AuthService {
 		System.out.println("Enter your surname");
 		surname = br.readLine();
 		u.setSurname(surname);
-		System.out.println("Enter your birth date: MM-DD-YYYY");
+		System.out.println("Enter your birth date: DD-MM-YYYY");
 		String datestr = br.readLine();
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		Date d = sdf.parse(datestr);
@@ -59,8 +59,8 @@ public class AuthService {
 		System.out.println("Enter your gender: 1>Male 2>Female");
 		String c = br.readLine();
 		switch(c) {
-		case("1"): u.setGender(Gender.MALE);
-		case("2"): u.setGender(Gender.FEMALE);
+		case("1"): u.setGender(Gender.MALE);break;
+		case("2"): u.setGender(Gender.FEMALE);break;
 		}
 		db.saveUsers();
 		db.saveStudents();
