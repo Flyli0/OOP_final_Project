@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import config.DbContext;
+import lang.LanguageManager;
 import service.AccountType;
 import model.Course;
 import model.Employee;
@@ -42,13 +43,14 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-RUN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void run() throws IOException, ParseException {
 		while(true) {
+			LanguageManager.setLanguage("ru");
 			System.out.println("\n========================================");
-			System.out.println("   Welcome to University System!");
+			System.out.println(LanguageManager.get("Welcome"));
 			System.out.println("========================================");
-			System.out.println("1> Sign up");
-			System.out.println("2> Log in");
-			System.out.println("0> Exit system");
-			System.out.print("Your choice: ");
+			System.out.println("1>" + LanguageManager.get("sign_up"));
+			System.out.println("2>" + LanguageManager.get("log_in"));
+			System.out.println("0>" + LanguageManager.get("Exit"));
+			System.out.print(LanguageManager.get("Your_choice")+": ");
 			String answer = br.readLine().trim();
 			currentUser = null;
 			switch(answer) {
@@ -57,48 +59,48 @@ public class Core {
 				case "0":
 					return;
 				default:
-					System.out.println("Unexistent option.");
+					System.out.println(LanguageManager.get("unexistent_option"));
 					continue;
 			}
 			if(currentUser != null) {
 				mainPage();
-				System.out.println("You have been logged out.");
+				System.out.println(LanguageManager.get("logged_out"));
 			} else {
-				System.out.println("Username or password are not valid!");
+				System.out.println(LanguageManager.get("Invalid_pl"));
 			}
 		}
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static User auth() throws IOException {
-		System.out.println("Enter your login!");
+		System.out.println(LanguageManager.get("enter_login"));
 		String username = br.readLine();
-		System.out.println("Enter your password");
+		System.out.println(LanguageManager.get("enter_password"));
 		String password = br.readLine();
 		currentUser = AuthService.login(username, password);
-		if(currentUser == null) System.out.println("Invalid username or password.");
+		if(currentUser == null) System.out.println(LanguageManager.get("Invalid_pl"));
 		return currentUser;
 	}
 
 	public static User signup() throws IOException, ParseException {
 		List<User> users = DbContext.getInstance().allUsers();
 
-		System.out.println("Enter your login!");
+		System.out.println(LanguageManager.get("enter_login"));
 		String username = br.readLine();
-		if(username.isBlank()) { System.out.println("Login cannot be empty."); return null; }
+		if(username.isBlank()) { System.out.println(LanguageManager.get("login_not_empty")); return null; }
 
 
 		if(users.stream().anyMatch(u -> u.getLogin().equals(username))) {
-			System.out.println("This login already exists.");
+			System.out.println(LanguageManager.get("login_taken"));
 			return signup();
 		}
 
-		System.out.println("Enter your password");
+		System.out.println(LanguageManager.get("enter_password"));
 		String password = br.readLine();
-		if(password.isBlank()) { System.out.println("Password cannot be empty."); return null; }
+		if(password.isBlank()) { System.out.println(LanguageManager.get("password_not_empty")); return null; }
 
-		System.out.println("Choose your Account type: ");
-		System.out.println(" 0 - Admin \n 1-Manager \n 2-Technical Specialist \n 3-Teacher \n 4-Student Bachelor \n 5-Master grade student \n 6-PhD Student");
+		System.out.println(LanguageManager.get("ch_acc_type"));
+		System.out.println(LanguageManager.get("acc_types"));
 		String accTypeChoice = br.readLine();
 		AccountType at = null;
 		int accTypeChoiceInt = Integer.parseInt(accTypeChoice);
@@ -110,11 +112,11 @@ public class Core {
 			case(4) -> at = AccountType.STUDENT;
 			case(6) -> at = AccountType.PHD;
 			case(5) -> at = AccountType.MASTER;
-			default -> { System.out.println("Invalid account type."); return null; }
+			default -> { System.out.println(LanguageManager.get("inv_acc_type")); return null; }
 		}
 		User currUser = AuthService.signUp(username,password,at);
 		if(currUser instanceof Teacher) {
-			System.out.println("What is your teacher title? \n1>Tutor \n2>Lector \n3>Senior-lector \n4>Professor");
+			System.out.println(LanguageManager.get("teacher_titles"));
 			String TT = br.readLine();
 			TeacherTitle tt = null;
 			switch(TT) {
@@ -122,7 +124,7 @@ public class Core {
 			case "2" -> tt = TeacherTitle.LECTOR;
 			case "3" -> tt = TeacherTitle.SENIOR_LECTOR;
 			case "4" -> tt = TeacherTitle.PROFESSOR;
-			default -> {System.out.println("Wrong format");break;}
+			default -> {System.out.println(LanguageManager.get("wrong_format"));break;}
 			}
 			System.out.println(tt);
 			((Teacher) currUser).setTitle(tt);
@@ -134,16 +136,16 @@ public class Core {
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void mainPage() throws IOException {
-		System.out.println("\nWELCOME, " + Core.currentUser.getLogin().toUpperCase() + "!");
+		System.out.println(LanguageManager.get("welcome_caps") + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
 			while(true) {
-				System.out.println("\n=== Main Menu ===");
-				System.out.println("1> Messages");
-				System.out.println("2> Professional menu");
-				System.out.println("3> Profile");
-				System.out.println("4> Researcher menu");
-				System.out.println("0> Logout");
-				System.out.print("Your choice: ");
+				System.out.println(LanguageManager.get("main_menu"));
+				System.out.println("1>" + LanguageManager.get("messages"));
+				System.out.println("2>" + LanguageManager.get("pro_menu"));
+				System.out.println("3>" + LanguageManager.get("profile"));
+				System.out.println("4>" + LanguageManager.get("res_menu"));
+				System.out.println("0>" + LanguageManager.get("Logout"));
+				System.out.print(LanguageManager.get("Your_choice"));
 				String input = br.readLine().trim();
 				switch(input) {
 					case "1": messagesMenu(); break;
@@ -151,7 +153,7 @@ public class Core {
 					case "3": profile(); break;
 					case "4": researchMenu(currentUser); break;
 					case "0": return;
-					default: System.out.println("Unexistent option");
+					default: System.out.println(LanguageManager.get("unexistent_option"));
 				}
 			}
 		} else if(currentUser instanceof Student) {
@@ -161,19 +163,19 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFILE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void profile() throws IOException {
 		while(true) {
-			System.out.println("PROFILE: ");
-			System.out.println("Login: " + Core.currentUser.getLogin());
-			System.out.println("Name: " + Core.currentUser.getFirstName());
-			System.out.println("Surname: " + Core.currentUser.getLastName());
-			System.out.println("Birth date: " + Core.currentUser.getBirthday());
-			System.out.println("Gender: " + Core.currentUser.getGender());
-			System.out.println("ID: " + Core.currentUser.getId());
-			System.out.println("ENTER: \n1> Settings \n2> Exit");
+			System.out.println(LanguageManager.get("profile_caps"));
+			System.out.println(LanguageManager.get("login") + ": " + Core.currentUser.getLogin());
+			System.out.println(LanguageManager.get("name") +"Name: " + Core.currentUser.getFirstName());
+			System.out.println(LanguageManager.get("surname") +"Surname: " + Core.currentUser.getLastName());
+			System.out.println(LanguageManager.get("birth_date") +"Birth date: " + Core.currentUser.getBirthday());
+			System.out.println(LanguageManager.get("gender") +"Gender: " + Core.currentUser.getGender());
+			System.out.println(LanguageManager.get("id") +"ID: " + Core.currentUser.getId());
+			System.out.println(LanguageManager.get("enter_caps") + ": \n1>"+LanguageManager.get("settings")+"\n2>"+LanguageManager.get("Exit"));
 			String in = br.readLine();
 			switch(in) {
 			case("1"):settings(); break;
 			case("2"):return;
-			default: System.out.println("Wrong option!");
+			default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
 		
@@ -181,63 +183,68 @@ public class Core {
 	
 	private static void settings() throws IOException{
 		while(true) {
-			System.out.println("What do you wand to set?");
-			System.out.println(" 1>Login \n 2>Name \n 3>LastName \n 4>Password \n 5>Save and Exit \nYour Choice: ");
+			System.out.println(LanguageManager.get("set_offer"));
+			System.out.println(" 1>" + LanguageManager.get("login")
+					+ "\n 2>" + LanguageManager.get("name") 
+					+ "\n 3>" + LanguageManager.get("surname")
+					+ "\n 4>" + LanguageManager.get("password")
+					+ "\n 5>" + LanguageManager.get("save_and_exit")
+					+ "\n" + LanguageManager.get("Your_choice"));
 			String in = br.readLine();
 			switch(in) {
 			case("1"): 
-				System.out.println("enter new login: "); 
+				System.out.println(LanguageManager.get("new_login")); 
 				String nl = br.readLine();
 				if(nl.isEmpty() || nl.isBlank()) {
-					System.out.println("login can't be empty string!");
+					System.out.println(LanguageManager.get("login_not_empty"));
 				}
 				else {
 					Core.currentUser.setLogin(nl);
 				}
 				break;
 			case("2"):
-				System.out.println("enter new Name: "); 
+				System.out.println(LanguageManager.get("new_name")); 
 				String nn = br.readLine();
 				if(nn.isEmpty() || nn.isBlank()) {
-					System.out.println("name can't be empty string!");
+					System.out.println(LanguageManager.get("name_not_empty"));
 				}
 				else {
 					Core.currentUser.setName(nn);
 				}
 				break;
 			case("3"):
-				System.out.println("enter new  Surname: "); 
+				System.out.println(LanguageManager.get("new_surname")); 
 				String nln = br.readLine();
 				if(nln.isEmpty() || nln.isBlank()) {
-					System.out.println("Surname can't be empty string!");
+					System.out.println(LanguageManager.get("surname_not_empty"));
 				}
 				else {
 					Core.currentUser.setSurname(nln);;
 				}
 				break;
 			case("4"):
-				System.out.println("enter your current Password: "); 
+				System.out.println(LanguageManager.get("enter_password")); 
 				String pc = br.readLine();
 				if(Core.currentUser.getPassword().equals(pc)) {
-					System.out.println("enter new  Password: "); 
+					System.out.println(LanguageManager.get("new_password")); 
 					String np = br.readLine();
 					if(np.isEmpty() || np.isBlank()) {
-						System.out.println("Password can't be empty string!");
+						System.out.println(LanguageManager.get("password_not_empty"));
 					}
 					else {
-						System.out.println("Repeat new password");
+						System.out.println(LanguageManager.get("repeat_password"));
 						String npc = br.readLine();
 						if(npc.equals(np)) {
 							Core.currentUser.setPassword(np);
-							System.out.println("Password changed!");
+							System.out.println(LanguageManager.get("password_changed"));
 						}
 						else {
-							System.out.println("Passwords are not equal");
+							System.out.println(LanguageManager.get("passwords_not_equal"));
 						}
 					}
 				}
 				else {
-					System.out.println("Wrong password!");
+					System.out.println(LanguageManager.get("login"));
 				}
 				break;
 			case("5"): 
@@ -253,14 +260,14 @@ public class Core {
 
 		if(u instanceof Manager) {
 			while(true) {
-				System.out.println("\n=== Manager Menu ===");
-				System.out.println("1> Manage enrollments");
-				System.out.println("2> Manage news");
-				System.out.println("3> Generate Academic Report");
-				System.out.println("4> Create New Course");
-				System.out.println("5> Schedule");
-				System.out.println("0> Back");
-				System.out.print("Your choice: ");
+				System.out.println(LanguageManager.get("manager_menu"));
+				System.out.println("1>"+LanguageManager.get("manage_enrollments"));
+				System.out.println("2>"+LanguageManager.get("manage_news"));
+				System.out.println("3>"+LanguageManager.get("gen_academic_report"));
+				System.out.println("4>"+LanguageManager.get("new_course"));
+				System.out.println("5>"+LanguageManager.get("schedule"));
+				System.out.println("0>"+LanguageManager.get("back"));
+				System.out.print(LanguageManager.get("Your_choice"));
 				String input = br.readLine().trim();
 				switch(input) {
 					case "1": enrollment(); break;
@@ -269,7 +276,7 @@ public class Core {
 					case "4": service.CourseManagementService.addCourseForRegistration(); break;
 					case "5": managerScheduleMenu(new ScheduleCreatingService()); break;
 					case "0": return;
-					default: System.out.println("Unexistent option");
+					default: System.out.println(LanguageManager.get("unexistent_option"));
 				}
 			}
 		} else if(u instanceof Teacher) {
@@ -281,14 +288,14 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void teacherMenu(Teacher teacher) throws IOException {
 		while(true) {
-			System.out.println("\n=== Teacher Menu ===");
-			System.out.println("1> Put marks for a course");
-			System.out.println("2> View my schedule");
-			System.out.println("3> Research menu");
-			System.out.println("4> View courses");
-			System.out.println("5> View students");
-			System.out.println("0> Back");
-			System.out.print("Your choice: ");
+			System.out.println(LanguageManager.get("teacher_menu"));
+			System.out.println("1>"+LanguageManager.get("put_marks"));
+			System.out.println("2>"+LanguageManager.get("schedule"));
+			System.out.println("3>"+LanguageManager.get("research_menu"));
+			System.out.println("4>"+LanguageManager.get("view_courses"));
+			System.out.println("5>"+LanguageManager.get("view_students"));
+			System.out.println("0>"+LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1": markPuttingMenu(teacher); break;
@@ -297,20 +304,20 @@ public class Core {
 				case "4": viewCourses();
 				case "5": viewStudents();
 				case "0": return;
-				default: System.out.println("Invalid option. Please enter 1, 2, 3, or 0.");
+				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
 	}
 	
 	private static void viewCourses() {
-		System.out.println("Current enrollment courses");
+		System.out.println(LanguageManager.get("cur_en_courses"));
 		for(Enrollment en: db.allEnrollments()) {
 			System.out.println(en.getCourse() + "\n");
 		}
 	}
 	
 	private static void viewStudents() {
-		System.out.println("Current enrollment students");
+		System.out.println(LanguageManager.get("cur_en_students"));
 		for(Enrollment en: db.allEnrollments()) {
 			System.out.println(en.getStudents() + "\n");
 		}
@@ -319,9 +326,9 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void teacherScheduleMenu(Teacher teacher) throws IOException {
 		ScheduleCreatingService scs = new ScheduleCreatingService();
-		System.out.println("\n=== My Schedule ===");
+		System.out.println(LanguageManager.get("my_schedule"));
 		if(teacher.getSchedule().isEmpty()) {
-			System.out.println("Your schedule is empty. A Manager needs to assign lessons to your courses first.");
+			System.out.println(LanguageManager.get("your_sc_is_mt"));
 		} else {
 			scs.printTeacherSchedule(teacher);
 		}
@@ -329,33 +336,33 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MANAGER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void managerScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		while(true) {
-			System.out.println("\n=== Schedule Menu ===");
-			System.out.println("1> Build semester schedule for a course");
-			System.out.println("2> View a teacher's schedule");
-			System.out.println("0> Back");
-			System.out.print("Your choice: ");
+			System.out.println(LanguageManager.get("schedule_menu"));
+			System.out.println("1>" + LanguageManager.get("build_ss"));
+			System.out.println("2>" + LanguageManager.get("view_t_s"));
+			System.out.println("0>" + LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1": buildScheduleMenu(scs); break;
 				case "2": viewTeacherScheduleMenu(scs); break;
 				case "0": return;
-				default: System.out.println("Invalid option. Please enter 1, 2, or 0.");
+				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOOK UP TEACHERS FOR SCHEDULE FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void viewTeacherScheduleMenu(ScheduleCreatingService scs) throws IOException {
-		System.out.print("Enter teacher ID: ");
+		System.out.print(LanguageManager.get("e_teacher_id"));
 		String tid = br.readLine().trim();
 		Teacher t = (Teacher) db.allUsers().stream()
 				.filter(u -> u instanceof Teacher && u.getSystemId().equals(tid))
 				.findFirst().orElse(null);
 		if(t == null) {
-			System.out.println("No Teacher found with ID \"" + tid + "\".");
+			System.out.println(LanguageManager.get("t_not_found") + tid + "\".");
 			return;
 		}
 		if(t.getSchedule().isEmpty()) {
-			System.out.println(t.getFirstName() + " " + t.getLastName() + " has no scheduled lessons yet.");
+			System.out.println(t.getFirstName() + " " + t.getLastName() + LanguageManager.get("hnly"));
 		} else {
 			scs.printTeacherSchedule(t);
 		}
@@ -365,19 +372,19 @@ public class Core {
 		MarkPuttingService mps = new MarkPuttingService();
 		List<Course> courses = db.allCourses();
 		if(courses.isEmpty()) {
-			System.out.println("No courses exist in the system yet.");
+			System.out.println(LanguageManager.get("mark.no_courses"));
 			return;
 		}
-		System.out.println("Your courses:");
+		System.out.println(LanguageManager.get("mark.your_courses"));
 		for(int i = 0; i < courses.size(); i++) {
 			System.out.println((i+1) + "> " + courses.get(i).getCourseName());
 		}
-		System.out.println("Enter course number (or 0 to cancel):");
+		System.out.println(LanguageManager.get("mark.enter_course"));
 		String raw = br.readLine().trim();
 
 		int choice;
 		try { choice = Integer.parseInt(raw); }
-		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+		catch(NumberFormatException e) { System.out.println(LanguageManager.get("mark.invalid_input")); return; }
 
 		if(choice == 0 || choice > courses.size()) return;
 		Course selected = courses.get(choice - 1);
@@ -389,18 +396,18 @@ public class Core {
 		// ── Step 1: Pick course ───────────────────────────────────────────────
 		List<Course> courses = db.allCourses();
 		if(courses.isEmpty()) {
-			System.out.println("No courses in the system yet. Add a course first.");
+			System.out.println(LanguageManager.get("schedule.no_courses"));
 			return;
 		}
-		System.out.println("\nSelect course:");
+		System.out.println(LanguageManager.get("schedule.select_course"));
 		for(int i = 0; i < courses.size(); i++) {
 			System.out.println("  " + (i+1) + "> " + courses.get(i).getCourseName());
 		}
-		System.out.print("Your choice: ");
+		System.out.print(LanguageManager.get("Your_choice"));
 		int courseIdx;
 		try { courseIdx = Integer.parseInt(br.readLine().trim()) - 1; }
-		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
-		if(courseIdx < 0 || courseIdx >= courses.size()) { System.out.println("Out of range."); return; }
+		catch(NumberFormatException e) { System.out.println(LanguageManager.get("common.invalid_input")); return; }
+		if(courseIdx < 0 || courseIdx >= courses.size()) { System.out.println(LanguageManager.get("common.out_of_range")); return; }
 		Course course = courses.get(courseIdx);
 
 		// ────────────────────────────────────────── Step 2: Pick teachers from a list ────────────────────────────────
@@ -409,58 +416,60 @@ public class Core {
 			if(u instanceof Teacher) teachers.add((Teacher) u);
 		}
 		if(teachers.isEmpty()) {
-			System.out.println("No teachers in the system yet.");
+			System.out.println(LanguageManager.get("schedule.no_teachers"));
 			return;
 		}
-		System.out.println("\nAvailable teachers:");
+		System.out.println(LanguageManager.get("available_teachers"));
 		for(int i = 0; i < teachers.size(); i++) {
 			Teacher t = teachers.get(i);
 			System.out.println("  " + (i+1) + "> " + t.getFirstName() + " " + t.getLastName()
 					+ " [ID: " + t.getSystemId() + "] " + t.getTitle());
 		}
 
-		System.out.print("Select lecture teacher (number): ");
+		System.out.print(LanguageManager.get("schedule.select_lecture_teacher"));
 		int ltIdx;
 		try { ltIdx = Integer.parseInt(br.readLine().trim()) - 1; }
-		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
-		if(ltIdx < 0 || ltIdx >= teachers.size()) { System.out.println("Out of range."); return; }
+		catch(NumberFormatException e) { System.out.println(LanguageManager.get("common.invalid_input")); return; }
+		if(ltIdx < 0 || ltIdx >= teachers.size()) { System.out.println(LanguageManager.get("common.out_of_range")); return; }
 		Teacher lectureTeacher = teachers.get(ltIdx);
 		if(lectureTeacher.getTitle()==TeacherTitle.TUTOR) {
-			System.out.println("This teacher can only work on practices!");
+			System.out.println(LanguageManager.get("schedule.tutor_practice_only"));
 			return;
 		}
 
-		System.out.print("Select practice teacher (number, or press Enter to use same): ");
+		System.out.print(LanguageManager.get("schedule.select_practice_teacher"));
 		String ptRaw = br.readLine().trim();
 		Teacher practiceTeacher;
 		if(ptRaw.isEmpty()) {
 			practiceTeacher = lectureTeacher;
-			System.out.println("Using " + lectureTeacher.getFirstName() + " for practice as well.");
+			System.out.println(LanguageManager.get("schedule.same_teacher")
+		            + lectureTeacher.getFirstName()
+		            + LanguageManager.get("schedule.same_teacher_suffix"));
 		} else {
 			int ptIdx;
 			try { ptIdx = Integer.parseInt(ptRaw) - 1; }
-			catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
-			if(ptIdx < 0 || ptIdx >= teachers.size()) { System.out.println("Out of range."); return; }
+			catch(NumberFormatException e) { System.out.println(LanguageManager.get("common.invalid_input")); return; }
+			if(ptIdx < 0 || ptIdx >= teachers.size()) { System.out.println(LanguageManager.get("common.out_of_range")); return; }
 			practiceTeacher = teachers.get(ptIdx);
 		}
 
 		// ── Step 3: Number of weeks ───────────────────────────────────────────
-		System.out.print("How many weeks? (1-16): ");
+		System.out.print("schedule.how_many_weeks");
 		int weeks;
 		try {
 			weeks = Integer.parseInt(br.readLine().trim());
-			if(weeks < 1 || weeks > 16) { System.out.println("Must be 1-16."); return; }
-		} catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
+			if(weeks < 1 || weeks > 16) { System.out.println("schedule.weeks_range"); return; }
+		} catch(NumberFormatException e) { System.out.println(LanguageManager.get("common.invalid_input")); return; }
 
 		// ── Step 4: Lecture day & time ────────────────────────────────────────
-		System.out.println("\n-- Lecture slot --");
+		System.out.println( "\n" + LanguageManager.get("schedule.lecture_slot"));
 		int lectureDow = pickDayOfWeek();
 		if(lectureDow == -1) return;
 		int lectureHour = pickHour();
 		if(lectureHour == -1) return;
 
 		// ── Step 5: Practice day & time (must be same day later OR later day) ─
-		System.out.println("\n-- Practice slot (must be after lecture) --");
+		System.out.println("\n" + LanguageManager.get("schedule.practice_slot"));
 		int practiceDow = pickDayOfWeek();
 		if(practiceDow == -1) return;
 		int practiceHour = pickHour();
@@ -469,11 +478,11 @@ public class Core {
 		// Validate: practice must come strictly after lecture
 		boolean sameDay = (lectureDow == practiceDow);
 		if(sameDay && practiceHour <= lectureHour) {
-			System.out.println("Invalid: practice must start after the lecture ends on the same day.");
+			System.out.println(LanguageManager.get("schedule.practice_after_lecture"));
 			return;
 		}
 		if(practiceDow < lectureDow) {
-			System.out.println("Invalid: practice day cannot be earlier in the week than lecture day.");
+			System.out.println(LanguageManager.get("schedule.practice_day_invalid"));
 			return;
 		}
 
@@ -487,27 +496,27 @@ public class Core {
 
 	/** Prompts the manager to pick a weekday. Returns Calendar constant or -1 on bad input. */
 	private static int pickDayOfWeek() throws IOException {
-		System.out.println("  1> Monday  2> Tuesday  3> Wednesday  4> Thursday  5> Friday");
-		System.out.print("  Day: ");
+		System.out.println(LanguageManager.get("days_of_week"));
+		System.out.print(LanguageManager.get("day"));
 		switch(br.readLine().trim()) {
 			case "1": return Calendar.MONDAY;
 			case "2": return Calendar.TUESDAY;
 			case "3": return Calendar.WEDNESDAY;
 			case "4": return Calendar.THURSDAY;
 			case "5": return Calendar.FRIDAY;
-			default: System.out.println("Invalid day."); return -1;
+			default: System.out.println(LanguageManager.get("common.invalid_input")); return -1;
 		}
 	}
 
 
 	/** Prompts the manager to pick an hour (8-18). Returns the hour or -1 on bad input. */
 	private static int pickHour() throws IOException {
-		System.out.print("  Start hour (8-18): ");
+		System.out.print(LanguageManager.get("hour_range"));
 		try {
 			int hour = Integer.parseInt(br.readLine().trim());
-			if(hour < 8 || hour > 18) { System.out.println("Must be between 8 and 18."); return -1; }
+			if(hour < 8 || hour > 18) { System.out.println(LanguageManager.get("mush_hour")); return -1; }
 			return hour;
-		} catch(NumberFormatException e) { System.out.println("Invalid hour."); return -1; }
+		} catch(NumberFormatException e) { System.out.println(LanguageManager.get("invalid_hour")); return -1; }
 	}
 
 
@@ -522,53 +531,55 @@ public class Core {
 			}
 		}
 		if(researcher == null) {
-			System.out.println("You are not registered as a Researcher. Contact an Admin to get Researcher status.");
+			System.out.println(LanguageManager.get("research.not_registered"));
 			return;
 		}
 		final ResearcherDecorator r = researcher;
 		while(true) {
-			System.out.println("\n=== Research Menu ===");
-			System.out.println("1> Publish a paper");
-			System.out.println("2> Print my papers (by citations)");
-			System.out.println("3> Print my papers (by date)");
-			System.out.println("4> Print my papers (by pages)");
-			System.out.println("5> View h-index");
-			System.out.println("6> Close & submit project");
-			System.out.println("0> Back");
-			System.out.print("Your choice: ");
+			System.out.println("\n=== "
+		            + LanguageManager.get("research.menu_title")
+		            + " ===");
+			System.out.println("1> " + LanguageManager.get("research.publish_paper"));
+			System.out.println("2> " + LanguageManager.get("research.print_by_citations"));
+			System.out.println("3> " + LanguageManager.get("research.print_by_date"));
+			System.out.println("4> " + LanguageManager.get("research.print_by_pages"));
+			System.out.println("5> " + LanguageManager.get("research.view_hindex"));
+			System.out.println("6> " + LanguageManager.get("research.close_project"));
+			System.out.println("0> " + LanguageManager.get("back"));
+			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1":
-					System.out.print("Title: "); String title = br.readLine();
-					if(title.isBlank()) { System.out.println("Title cannot be empty."); break; }
-					System.out.print("Content summary: "); String content = br.readLine();
-					System.out.print("Pages: ");
+					System.out.print( LanguageManager.get("research.title")); String title = br.readLine();
+					if(title.isBlank()) { System.out.println(LanguageManager.get("research.title_empty")); break; }
+					System.out.print(LanguageManager.get("research.content_summary")); String content = br.readLine();
+					System.out.print(LanguageManager.get("research.pages"));
 					int pages;
 					try { pages = Integer.parseInt(br.readLine().trim()); }
-					catch(NumberFormatException e) { System.out.println("Invalid page count."); break; }
-					if(pages <= 0) { System.out.println("Pages must be greater than 0."); break; }
+					catch(NumberFormatException e) { System.out.println(LanguageManager.get("research.invalid_pages")); break; }
+					if(pages <= 0) { System.out.println(LanguageManager.get("research.pages_positive")); break; }
 					r.conductResearch(content, title, pages);
 					break;
 				case "2":
-					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					if(r.getPapers().isEmpty()) { System.out.println(LanguageManager.get("research.no_papers")); break; }
 					r.printPapers(new ByCitations()); break;
 				case "3":
-					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					if(r.getPapers().isEmpty()) { System.out.println(LanguageManager.get("research.no_papers")); break; }
 					r.printPapers(new ByDate()); break;
 				case "4":
-					if(r.getPapers().isEmpty()) { System.out.println("You have no published papers yet."); break; }
+					if(r.getPapers().isEmpty()) { System.out.println(LanguageManager.get("research.no_papers")); break; }
 					r.printPapers(new ByPages()); break;
 				case "5":
-					if(r.getPapers().isEmpty()) { System.out.println("You have no papers — h-index is 0."); break; }
-					System.out.printf("Your h-index: %.0f%n", r.calculateH()); break;
+					if(r.getPapers().isEmpty()) { System.out.println(LanguageManager.get("research.hindex_zero")); break; }
+					System.out.printf(LanguageManager.get("research.hindex"), r.calculateH()); break;
 				case "6":
-					if(r.getPapers().isEmpty()) { System.out.println("You have no loose papers to form a project from."); break; }
-					System.out.print("Project topic: "); String topic = br.readLine();
-					if(topic.isBlank()) { System.out.println("Topic cannot be empty."); break; }
+					if(r.getPapers().isEmpty()) { System.out.println( LanguageManager.get("research.no_loose_papers")); break; }
+					System.out.print(LanguageManager.get("research.project_topic")); String topic = br.readLine();
+					if(topic.isBlank()) { System.out.println(LanguageManager.get("research.topic_empty")); break; }
 					r.closeProject(topic);
 					break;
 				case "0": return;
-				default: System.out.println("Invalid option. Please enter 1–6 or 0.");
+				default: System.out.println(LanguageManager.get("research.invalid_option"));
 			}
 		}
 	}
@@ -576,14 +587,16 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MENU FOR STUDENTS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void studentMenu(Student student) throws IOException {
 		while(true) {
-			System.out.println("\n=== Student Menu ===");
-			System.out.println("1> View my courses");
-			System.out.println("2> View my marks / transcript");
-			System.out.println("3> View my schedule");
-			System.out.println("4> Register for courses");
-			System.out.println("5> Researcher menu");
-			System.out.println("0> Logout");
-			System.out.print("Your choice: ");
+			System.out.println("\n=== "
+		            + LanguageManager.get("student.menu_title")
+		            + " ===");
+			System.out.println("1> " + LanguageManager.get("student.view_courses"));
+			System.out.println("2> " + LanguageManager.get("student.view_transcript"));
+			System.out.println("3> " + LanguageManager.get("student.view_schedule"));
+			System.out.println("4> " + LanguageManager.get("student.register_courses"));
+			System.out.println("5> " + LanguageManager.get("student.research_menu"));
+			System.out.println("0> " + LanguageManager.get("common.logout"));
+			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1":
@@ -592,25 +605,33 @@ public class Core {
 						if(en.getStudents().containsKey(student)) myEnrollments.add(en);
 					}
 					if(myEnrollments.isEmpty()) {
-						System.out.println("You are not enrolled in any courses yet. Ask a Manager to enroll you.");
+						System.out.println(LanguageManager.get("student.no_enrollments"));
 					} else {
 						for(Enrollment en : myEnrollments) {
 							boolean approved = en.getStudents().get(student);
 							System.out.println("  " + en.getCourse().getCourseName()
-								+ " [" + (approved ? "approved" : "pending approval") + "]");
+								+ " [" + (approved ? LanguageManager.get(
+	                                    "student.approved"
+		                                  ) : LanguageManager.get(
+		                                          "student.pending"
+		                                          )) + "]");
 						}
 					}
 					break;
 				case "2":
 					if(student.getTranscript() == null) {
-						System.out.println("No transcript found. Marks will appear here once a Teacher enters them.");
+						System.out.println(LanguageManager.get(
+	                            "student.no_transcript"
+		                        ));
 					} else {
 						System.out.println(student.getTranscript());
 					}
 					break;
 				case "3":
 					if(student.getSchedule() == null || student.getSchedule().isEmpty()) {
-						System.out.println("Your schedule is empty. It will populate once a Manager builds the semester schedule.");
+						System.out.println(LanguageManager.get(
+	                            "student.empty_schedule"
+		                        ));
 					} else {
 						student.getSchedule().forEach(se -> System.out.println("  " + se.getDays() + "): " + se.getCourse()));
 					}
@@ -618,7 +639,7 @@ public class Core {
 				case "4": registerForCourse();break;
 				case "5": researchMenu(currentUser); break;
 				case "0": return;
-				default: System.out.println("Unexistent option");
+				default: System.out.println(LanguageManager.get("student.invalid_option"));
 			}
 		}
 	}
@@ -626,10 +647,10 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MESSAGES MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void messagesMenu() throws IOException {
 		MessageSendingService msgService = new MessageSendingService();
-		System.out.println("\n--- МЕНЮ СООБЩЕНИЙ ---");
-		System.out.println("1. Написать сообщение");
-		System.out.println("2. Прочитать мои входящие");
-		System.out.print("Выбор: ");
+		System.out.println(LanguageManager.get("message_menu"));
+		System.out.println(LanguageManager.get("write"));
+		System.out.println(LanguageManager.get("read"));
+		System.out.print(LanguageManager.get("Your_choice"));
 		String ans = br.readLine();
 
 		if (ans.equals("1")) {
