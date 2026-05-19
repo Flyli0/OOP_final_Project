@@ -42,8 +42,15 @@ public class Core {
 	private static DbContext db = DbContext.getInstance();
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-RUN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void run() throws IOException, ParseException {
+		System.out.println("Please choose your language: en, ru, kz");
+		String in = br.readLine();
+		switch(in) {
+		case("en"): LanguageManager.setLanguage(in);break;
+		case("ru"): LanguageManager.setLanguage(in);break;
+		case("kz"): LanguageManager.setLanguage(in);break;
+		default: System.out.println("Wrong option! try again");
+		}
 		while(true) {
-			LanguageManager.setLanguage("en");
 			System.out.println("\n========================================");
 			System.out.println(LanguageManager.get("Welcome"));
 			System.out.println("========================================");
@@ -79,6 +86,10 @@ public class Core {
 		String password = br.readLine();
 		currentUser = AuthService.login(username, password);
 		if(currentUser == null) System.out.println(LanguageManager.get("Invalid_pl"));
+		if(currentUser.getLanguage() == null) {
+			currentUser.setLanguage("en");
+		}
+		LanguageManager.setLanguage(currentUser.getLanguage());
 		return currentUser;
 	}
 
@@ -115,6 +126,7 @@ public class Core {
 			default -> { System.out.println(LanguageManager.get("inv_acc_type")); return null; }
 		}
 		User currUser = AuthService.signUp(username,password,at);
+		
 		if(currUser instanceof Teacher) {
 			System.out.println(LanguageManager.get("teacher_titles"));
 			String TT = br.readLine();
@@ -165,11 +177,11 @@ public class Core {
 		while(true) {
 			System.out.println(LanguageManager.get("profile_caps"));
 			System.out.println(LanguageManager.get("login") + ": " + Core.currentUser.getLogin());
-			System.out.println(LanguageManager.get("name") +"Name: " + Core.currentUser.getFirstName());
-			System.out.println(LanguageManager.get("surname") +"Surname: " + Core.currentUser.getLastName());
-			System.out.println(LanguageManager.get("birth_date") +"Birth date: " + Core.currentUser.getBirthday());
-			System.out.println(LanguageManager.get("gender") +"Gender: " + Core.currentUser.getGender());
-			System.out.println(LanguageManager.get("id") +"ID: " + Core.currentUser.getId());
+			System.out.println(LanguageManager.get("name") + Core.currentUser.getFirstName());
+			System.out.println(LanguageManager.get("surname") + Core.currentUser.getLastName());
+			System.out.println(LanguageManager.get("birth_date") + Core.currentUser.getBirthday());
+			System.out.println(LanguageManager.get("gender") + Core.currentUser.getGender());
+			System.out.println(LanguageManager.get("id") + Core.currentUser.getId());
 			System.out.println(LanguageManager.get("enter_caps") + ": \n1>"+LanguageManager.get("settings")+"\n2>"+LanguageManager.get("Exit"));
 			String in = br.readLine();
 			switch(in) {
@@ -184,6 +196,7 @@ public class Core {
 	private static void settings() throws IOException{
 		while(true) {
 			System.out.println(LanguageManager.get("set_offer"));
+			System.out.println("Change language/Изменить язык/Тілді өзгерту >>6");
 			System.out.println(" 1>" + LanguageManager.get("login")
 					+ "\n 2>" + LanguageManager.get("name") 
 					+ "\n 3>" + LanguageManager.get("surname")
@@ -251,6 +264,11 @@ public class Core {
 				db.saveUsers();
 				db.saveStudents();
 				return;
+			case("6"):
+				System.out.println("Please choose your language: en, ru, kz");
+				String inp = br.readLine();
+				currentUser.setLanguage(inp);
+				LanguageManager.setLanguage(currentUser.getLanguage());
 			}
 		}
 	}

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import lang.LanguageManager;
+
 public abstract class User implements ImUser, Serializable { 
 
     private String name;
@@ -107,6 +109,25 @@ public abstract class User implements ImUser, Serializable {
 
     public Gender getGender() {
     	return this.gender;
+    }
+    
+    public void setLanguage(String lang) {
+		switch(lang) {
+		case("en"): this.language = Language.EN;break;
+		case("ru"): this.language = Language.RU;break;
+		case("kz"): this.language = Language.KZ;break;
+		default: System.out.println("Wrong option! try again");
+		}
+    }
+    
+    public String getLanguage() {
+    	Language a = this.language;
+    	switch(a) {
+    	case Language.EN : return "en";
+    	case Language.RU : return "ru";
+    	case Language.KZ : return "kz";
+    	default: return null;
+    	}
     }
     
     public void setGender(Gender g) {
