@@ -25,6 +25,7 @@ public class DbContext {
 	private static List<Message> messages;
 	private static List<ResearchProject> pendingProjects;
 	private static List<Complaint> complaints;
+	private static List<Log> logs;
 
 	private DbContext() {
 		path = new File("src/data").getAbsolutePath();
@@ -48,6 +49,13 @@ public class DbContext {
 		users = new ArrayList<User>();
 		users = (List<User>) DbContext.loadUsers();
 
+
+		logs = (List<Log>) DbContext.loadLogs();
+		if(logs == null) {
+			logs = new ArrayList<Log>();
+			DbContext.saveLogs();
+		}
+
 		// БЛОК ИНИЦИАЛИЗАЦИИ СООБЩЕНИЙ (ДОБАВЛЕНО АЗИЗОЙ)
 		messages = (List<Message>) DbContext.loadMessages();
 		if(messages == null) {
@@ -61,6 +69,8 @@ public class DbContext {
 			complaints = new ArrayList<Complaint>();
 			DbContext.saveComplaints();
 		}
+
+		
 
 		//System.out.println(users);
 		if(users == null) {
@@ -148,6 +158,11 @@ public class DbContext {
 		return true;
 	}
 
+	public static boolean saveLogs() {
+		DbContext.serialize(logs, "logs");
+		return true;
+	}
+
 	// ТВОЙ МЕТОД СОХРАНЕНИЯ ЖАЛОБ В ФАЙЛ complaints.txt
 	public static boolean saveComplaints() {
 		DbContext.serialize(complaints, "complaints");
@@ -157,6 +172,11 @@ public class DbContext {
 	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
 		Object ret = DbContext.deserialize("users");
+		return ret;
+	}
+
+	public static Object loadLogs(){
+		Object ret = DbContext.deserialize("logs");
 		return ret;
 	}
 
@@ -215,6 +235,10 @@ public class DbContext {
 		return this.courses;
 	}
 
+	public List<Log> allLogs() {
+		return this.logs;
+	}
+
 	// ДОБАВЛЕНО АЗИЗОЙ
 	public List<Message> allMessages(){
 		return this.messages;
@@ -252,6 +276,11 @@ public class DbContext {
 	public void addCourse(Course c) {
 		DbContext.courses.add(c);
 		DbContext.saveCourses();
+	}
+
+	public void addLog(Log l) {
+		DbContext.logs.add(l);
+		DbContext.saveLogs();
 	}
 
 	// ДОБАВЛЕНО АЗИЗОЙ
