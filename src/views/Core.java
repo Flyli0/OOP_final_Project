@@ -12,6 +12,8 @@ import service.ScheduleCreatingService;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +40,7 @@ public class Core {
 	private static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	private static DbContext db = DbContext.getInstance();
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-RUN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void run() throws IOException {
+	public static void run() throws IOException, ParseException {
 		while(true) {
 			System.out.println("\n========================================");
 			System.out.println("   Welcome to University System!");
@@ -78,16 +80,16 @@ public class Core {
 		return currentUser;
 	}
 
-	public static User signup() throws IOException {
+	public static User signup() throws IOException, ParseException {
 		List<User> users = DbContext.getInstance().allUsers();
 
-		System.out.println("Enter your username!");
+		System.out.println("Enter your login!");
 		String username = br.readLine();
-		if(username.isBlank()) { System.out.println("Username cannot be empty."); return null; }
+		if(username.isBlank()) { System.out.println("Login cannot be empty."); return null; }
 
 
 		if(users.stream().anyMatch(u -> u.getLogin().equals(username))) {
-			System.out.println("This username already exists.");
+			System.out.println("This login already exists.");
 			return signup();
 		}
 
@@ -116,41 +118,20 @@ public class Core {
 			String TT = br.readLine();
 			TeacherTitle tt = null;
 			switch(TT) {
-			case("1") -> tt = TeacherTitle.TUTOR;
-			case("2") -> tt = TeacherTitle.LECTOR;
-			case("3") -> tt = TeacherTitle.SENIOR_LECTOR;
-			case("4") -> tt = TeacherTitle.PROFESSOR;
-			default -> {((Teacher) currUser).setTitle(tt);;System.out.println("Wrong format"); return null;}
+			case "1" -> tt = TeacherTitle.TUTOR;
+			case "2" -> tt = TeacherTitle.LECTOR;
+			case "3" -> tt = TeacherTitle.SENIOR_LECTOR;
+			case "4" -> tt = TeacherTitle.PROFESSOR;
+			default -> {System.out.println("Wrong format");break;}
 			}
+			System.out.println(tt);
+			((Teacher) currUser).setTitle(tt);
+			db.saveUsers();
 		}
-		FTAccountSetting();
-		Core.currentUser = currUser;
 		return currUser;
 	}
 	
-	//---------------------ACCOUNT SETTINGS
-	public static void FTAccountSetting() throws  IOException {
-		String name = null;
-		String surname = null;
-		Date birthday = null;
-		System.out.println("Enter your name");
-		name = br.readLine();
-		Core.currentUser.setName(name);
-		System.out.println("Enter your surname");
-		surname = br.readLine();
-		Core.currentUser.setSurname(surname);
-		System.out.println("Enter your birth date: YYYY-MM-DD");
-		String datestr = br.readLine();
-		birthday = new Date(datestr);
-		System.out.println("Enter your gender: 1>Male 2>Female");
-		String c = br.readLine();
-		switch(c) {
-		case("1"): Core.currentUser.setGender(Gender.MALE);
-		case("2"): Core.currentUser.setGender(Gender.FEMALE);
-		}
-		db.saveUsers();
-		db.saveStudents();
-	}
+
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void mainPage() throws IOException {
 		System.out.println("\nWELCOME, " + Core.currentUser.getLogin().toUpperCase() + "!");
@@ -196,10 +177,69 @@ public class Core {
 		
 	}
 	
-	private static void settings(){
-		System.out.println("What do you wand to set?");
-		System.out.println(" 1>Login \n 2>Name \n 3>LastName \n 4>Birth Date \n 5>Gender \n 6>Password \nYour Choice: ");
-		
+	private static void settings() throws IOException{
+		while(true) {
+			System.out.println("What do you wand to set?");
+			System.out.println(" 1>Login \n 2>Name \n 3>LastName \n 4>Password \n 5>Save and Exit \nYour Choice: ");
+			String in = br.readLine();
+			switch(in) {
+			case("1"): 
+				System.out.println("enter new login: "); 
+				String nl = br.readLine();
+				if(nl.isEmpty() || nl.isBlank()) {
+					System.out.println("login can't be empty string!");
+				}
+				else {
+					Core.currentUser.setLogin(nl);
+				}
+			case("2"):
+				System.out.println("enter new Name: "); 
+				String nn = br.readLine();
+				if(nn.isEmpty() || nn.isBlank()) {
+					System.out.println("name can't be empty string!");
+				}
+				else {
+					Core.currentUser.setName(nn);
+				}
+			case("3"):
+				System.out.println("enter new  Surname: "); 
+				String nln = br.readLine();
+				if(nln.isEmpty() || nln.isBlank()) {
+					System.out.println("Surname can't be empty string!");
+				}
+				else {
+					Core.currentUser.setSurname(nln);;
+				}
+			case("4"):
+				System.out.println("enter your current Password: "); 
+				String pc = br.readLine();
+				if(Core.currentUser.getPassword().equals(pc)) {
+					System.out.println("enter new  Password: "); 
+					String np = br.readLine();
+					if(np.isEmpty() || np.isBlank()) {
+						System.out.println("Password can't be empty string!");
+					}
+					else {
+						System.out.println("Repeat new password");
+						String npc = br.readLine();
+						if(npc.equals(np)) {
+							Core.currentUser.setPassword(np);
+							System.out.println("Password changed!");
+						}
+						else {
+							System.out.println("Passwords are not equal");
+						}
+					}
+				}
+				else {
+					System.out.println("Wrong password!");
+				}
+			case("5"): 
+				db.saveUsers();
+				db.saveStudents();
+				return;
+			}
+		}
 	}
 	
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFESSIONAL MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
@@ -339,7 +379,7 @@ public class Core {
 		if(courseIdx < 0 || courseIdx >= courses.size()) { System.out.println("Out of range."); return; }
 		Course course = courses.get(courseIdx);
 
-		// ── Step 2: Pick teachers from a list ────────────────────────────────
+		// ────────────────────────────────────────── Step 2: Pick teachers from a list ────────────────────────────────
 		List<Teacher> teachers = new ArrayList<>();
 		for(User u : db.allUsers()) {
 			if(u instanceof Teacher) teachers.add((Teacher) u);
@@ -352,7 +392,7 @@ public class Core {
 		for(int i = 0; i < teachers.size(); i++) {
 			Teacher t = teachers.get(i);
 			System.out.println("  " + (i+1) + "> " + t.getFirstName() + " " + t.getLastName()
-					+ " [ID: " + t.getSystemId() + "]");
+					+ " [ID: " + t.getSystemId() + "] " + t.getTitle());
 		}
 
 		System.out.print("Select lecture teacher (number): ");
@@ -361,6 +401,10 @@ public class Core {
 		catch(NumberFormatException e) { System.out.println("Invalid input."); return; }
 		if(ltIdx < 0 || ltIdx >= teachers.size()) { System.out.println("Out of range."); return; }
 		Teacher lectureTeacher = teachers.get(ltIdx);
+		if(lectureTeacher.getTitle()==TeacherTitle.TUTOR) {
+			System.out.println("This teacher can only work on practices!");
+			return;
+		}
 
 		System.out.print("Select practice teacher (number, or press Enter to use same): ");
 		String ptRaw = br.readLine().trim();

@@ -1,8 +1,9 @@
 package model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Lesson {
+public class Lesson implements Serializable{
 
     private String title;
     private String room;

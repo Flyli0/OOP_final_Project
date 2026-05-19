@@ -48,10 +48,6 @@ public class Student extends User implements Serializable{
         this.creditsGot += amount;
     }
 
-    public void createSchedule() {
-        // TODO: логика создания расписания
-    }
-
 	@Override
 	public String toString() {
 		return "Student: " + super.getFirstName() + ' ' + super.getLastName() + " " + super.getSystemId();

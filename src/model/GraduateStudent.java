@@ -13,7 +13,7 @@ public abstract class GraduateStudent extends Student {
     private ResearcherDecorator researchSupervisor;
 
     public GraduateStudent(String login, String password) {
-        super(password, password, 0);
+        super(login,password);
         this.publishedWorks = new ArrayList<>();
     }
 
