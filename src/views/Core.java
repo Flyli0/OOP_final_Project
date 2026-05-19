@@ -202,6 +202,9 @@ public class Core {
 				}
 				else {
 					Core.currentUser.setLogin(nl);
+
+					Log log = new Log("Changed login to " + nl, Core.currentUser.getSystemId());
+					db.addLog(log);	
 				}
 				break;
 			case("2"):
@@ -212,6 +215,9 @@ public class Core {
 				}
 				else {
 					Core.currentUser.setName(nn);
+
+					Log log = new Log("Changed name to " + nn, Core.currentUser.getSystemId());
+					db.addLog(log);
 				}
 				break;
 			case("3"):
@@ -221,7 +227,9 @@ public class Core {
 					System.out.println(LanguageManager.get("surname_not_empty"));
 				}
 				else {
-					Core.currentUser.setSurname(nln);;
+					Core.currentUser.setSurname(nln);
+					Log log = new Log("Changed surname to " + nln, Core.currentUser.getSystemId());
+					db.addLog(log);
 				}
 				break;
 			case("4"):
@@ -238,6 +246,9 @@ public class Core {
 						String npc = br.readLine();
 						if(npc.equals(np)) {
 							Core.currentUser.setPassword(np);
+
+							Log log = new Log("Changed password", Core.currentUser.getSystemId());
+							db.addLog(log);
 							System.out.println(LanguageManager.get("password_changed"));
 						}
 						else {
@@ -280,7 +291,12 @@ public class Core {
 					case "1": enrollment(); break;
 					case "2": newsManage(); break;
 					case "3": service.ReportGenerationService.generateAcademicReport(); break;
-					case "4": service.CourseManagementService.addCourseForRegistration(); break;
+
+					case "4": service.CourseManagementService.addCourseForRegistration(); 
+					Log log = new Log("Added new course", Core.currentUser.getSystemId());
+					db.addLog(log);
+					break;
+
 					case "5": managerScheduleMenu(new ScheduleCreatingService()); break;
 					case "0": return;
 					default: System.out.println(LanguageManager.get("unexistent_option"));
@@ -300,14 +316,26 @@ public class Core {
 		while(true) {
 			System.out.println(LanguageManager.get("admin_menu"));
 			System.out.println("1>" + LanguageManager.get("manage_users"));
+			System.out.println("2>" + LanguageManager.get("view_logs"));
 			System.out.println("0>" + LanguageManager.get("back"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1": manageUsersMenu(admin); break;
+				case "2": printLogs(); break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
+		}
+	}
+
+	public static void printLogs() {
+		if(db.allLogs().isEmpty()) {
+			System.out.println("No logs to display.");
+			return;
+		}
+		for(Log log : db.allLogs()) {
+			System.out.println(log.toString());
 		}
 	}
 
@@ -320,12 +348,19 @@ public class Core {
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
-				case "1": signup(); break;
+				case "1": addUser(admin); break;
 				case "2": updateUser(admin); break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
+	}
+
+	public static void addUser(Admin admin) throws IOException, ParseException {
+		User newUser = signup();
+		admin.addUser(newUser);
+		Log log = new Log("Added user: " + newUser.getLogin(), Core.currentUser.getSystemId());
+		db.addLog(log);
 	}
 
 	public static void updateUser(Admin admin) throws IOException {
@@ -344,6 +379,8 @@ public class Core {
 			return;
 		}
 		admin.updateUser(userToUpdate);
+		Log log = new Log("Updated user: " + userToUpdate.getLogin(), Core.currentUser.getSystemId());	
+		db.addLog(log);
 	}
 
 	
@@ -397,6 +434,9 @@ public class Core {
 					if(urgInput.equals("3")) urgency = UrgencyLevel.HIGH;
 
 					teacher.sendComplaint(student, msg, urgency);
+
+					Log log = new Log("Sent complaint to student: " + student.getLogin(), Core.currentUser.getSystemId());
+					db.addLog(log);
 					break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("unexistent_option"));
@@ -484,6 +524,9 @@ public class Core {
 		if(choice == 0 || choice > courses.size()) return;
 		Course selected = courses.get(choice - 1);
 		mps.putMarksForCourse(teacher, selected);
+		
+		Log log = new Log("Put marks for course: " + selected.getCourseName(), Core.currentUser.getSystemId());
+		db.addLog(log);
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-SCHEDULE BUILDING MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
@@ -584,6 +627,9 @@ public class Core {
 		scs.buildSemesterSchedule(course, lectureTeacher, practiceTeacher,
 				new Date(), weeks, lectureDow, lectureHour, practiceDow, practiceHour);
 		db.saveUsers();
+		
+		Log log = new Log("Built semester schedule for course: " + course.getCourseName(), Core.currentUser.getSystemId());
+		db.addLog(log);
 		db.saveCourses();
 		db.saveEnrollments();
 		db.saveStudents();
@@ -750,6 +796,8 @@ public class Core {
 
 		if (ans.equals("1")) {
 			msgService.sendMessage(Core.currentUser);
+			Log log = new Log("Message sent by " + Core.currentUser.getLogin(), Core.currentUser.getSystemId());
+			db.addLog(log);
 		} else if (ans.equals("2")) {
 			msgService.viewMyMessages();
 		}
