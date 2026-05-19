@@ -62,6 +62,7 @@ public class AuthService {
 		case("1"): u.setGender(Gender.MALE);break;
 		case("2"): u.setGender(Gender.FEMALE);break;
 		}
+		u.setLanguage("en");
 		db.saveUsers();
 		db.saveStudents();
 	}
