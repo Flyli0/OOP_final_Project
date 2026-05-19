@@ -1,6 +1,7 @@
 package service;
 
 import config.DbContext;
+import model.ResearcherDecorator;
 import model.User;
 import java.util.Scanner;
 
@@ -25,7 +26,12 @@ public class UsersManageService {
 
         System.out.println("Enter new last name:");
         String surname = sc.nextLine();
-
+        
+        System.out.println("Do you want to make this user a Researcher? y/n");
+        String ans = sc.nextLine();
+        if(ans.toLowerCase().equals("y") || ans.toLowerCase().equals("yes")) {
+        	u = new ResearcherDecorator(u);
+        }
 
         u.setName(name);
         u.setSurname(surname);

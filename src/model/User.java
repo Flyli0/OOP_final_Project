@@ -60,7 +60,6 @@ public abstract class User implements ImUser, Serializable {
     public String getFirstName() { return name; }
     public String getLastName() { return surname; }
 
-    // --- Добавленные методы для изменения имени и фамилии ---
     public void setName(String name) {
         this.name = name;
     }

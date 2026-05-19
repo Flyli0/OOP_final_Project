@@ -68,7 +68,7 @@ public class Core {
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOGIN AND SIGNUP-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static User auth() throws IOException {
+	private static User auth() throws IOException {
 		System.out.println(LanguageManager.get("enter_login"));
 		String username = br.readLine();
 		System.out.println(LanguageManager.get("enter_password"));
@@ -82,7 +82,7 @@ public class Core {
 		return currentUser;
 	}
 
-	public static User signup() throws IOException, ParseException {
+	private static User signup() throws IOException, ParseException {
 		List<User> users = DbContext.getInstance().allUsers();
 
 		System.out.println(LanguageManager.get("enter_login"));
@@ -136,7 +136,7 @@ public class Core {
 	
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void mainPage() throws IOException, ParseException {
+	private static void mainPage() throws IOException, ParseException {
 		System.out.println(LanguageManager.get("welcome_caps") + " " + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
 			while(true) {
@@ -162,7 +162,7 @@ public class Core {
 		}
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFILE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void profile() throws IOException {
+	private static void profile() throws IOException {
 		while(true) {
 			System.out.println(LanguageManager.get("profile_caps"));
 			System.out.println(LanguageManager.get("login") + ": " + Core.currentUser.getLogin());
@@ -263,7 +263,7 @@ public class Core {
 	}
 	
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFESSIONAL MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void professionalMenu(User u) throws IOException, ParseException {
+	private static void professionalMenu(User u) throws IOException, ParseException {
 
 		if(u instanceof Manager) {
 			while(true) {
@@ -296,7 +296,7 @@ public class Core {
     //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ADMIN MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-
 
 
-	public static void adminMenu(Admin admin) throws IOException, ParseException{
+	private static void adminMenu(Admin admin) throws IOException, ParseException{
 		while(true) {
 			System.out.println(LanguageManager.get("admin_menu"));
 			System.out.println("1>" + LanguageManager.get("manage_users"));
@@ -311,7 +311,7 @@ public class Core {
 		}
 	}
 
-	public static void manageUsersMenu(Admin admin) throws IOException, ParseException {
+	private static void manageUsersMenu(Admin admin) throws IOException, ParseException {
 		while(true) {
 			System.out.println(LanguageManager.get("manage_users_menu"));
 			System.out.println("1>" + LanguageManager.get("add_user"));
@@ -328,7 +328,7 @@ public class Core {
 		}
 	}
 
-	public static void updateUser(Admin admin) throws IOException {
+	private static void updateUser(Admin admin) throws IOException {
 		List<User> users = db.allUsers();
 		System.out.print(LanguageManager.get("enter_user_id"));
 		
@@ -352,7 +352,7 @@ public class Core {
 
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void teacherMenu(Teacher teacher) throws IOException {
+	private static void teacherMenu(Teacher teacher) throws IOException {
 		while(true) {
 			System.out.println(LanguageManager.get("teacher_menu"));
 			System.out.println("1>"+LanguageManager.get("put_marks"));
@@ -360,7 +360,7 @@ public class Core {
 			System.out.println("3>"+LanguageManager.get("research_menu"));
 			System.out.println("4>"+LanguageManager.get("view_courses"));
 			System.out.println("5>"+LanguageManager.get("view_students"));
-			System.out.println("6> Send Complaint");
+			System.out.println("6>"+LanguageManager.get("send_complaint"));
 			System.out.println("0>"+LanguageManager.get("back"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
@@ -419,7 +419,7 @@ public class Core {
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void teacherScheduleMenu(Teacher teacher) throws IOException {
+	private static void teacherScheduleMenu(Teacher teacher) throws IOException {
 		ScheduleCreatingService scs = new ScheduleCreatingService();
 		System.out.println(LanguageManager.get("my_schedule"));
 		if(teacher.getSchedule().isEmpty()) {
@@ -429,7 +429,7 @@ public class Core {
 		}
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MANAGER SCHEDULE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void managerScheduleMenu(ScheduleCreatingService scs) throws IOException {
+	private static void managerScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		while(true) {
 			System.out.println(LanguageManager.get("schedule_menu"));
 			System.out.println("1>" + LanguageManager.get("build_ss"));
@@ -446,7 +446,7 @@ public class Core {
 		}
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-LOOK UP TEACHERS FOR SCHEDULE FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void viewTeacherScheduleMenu(ScheduleCreatingService scs) throws IOException {
+	private static void viewTeacherScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		System.out.print(LanguageManager.get("e_teacher_id"));
 		String tid = br.readLine().trim();
 		Teacher t = (Teacher) db.allUsers().stream()
@@ -463,7 +463,7 @@ public class Core {
 		}
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-TEACHER MARK PUTTING-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void markPuttingMenu(Teacher teacher) throws IOException {
+	private static void markPuttingMenu(Teacher teacher) throws IOException {
 		MarkPuttingService mps = new MarkPuttingService();
 		List<Course> courses = db.allCourses();
 		if(courses.isEmpty()) {
@@ -487,7 +487,7 @@ public class Core {
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-SCHEDULE BUILDING MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void buildScheduleMenu(ScheduleCreatingService scs) throws IOException {
+	private static void buildScheduleMenu(ScheduleCreatingService scs) throws IOException {
 		// ── Step 1: Pick course ───────────────────────────────────────────────
 		List<Course> courses = db.allCourses();
 		if(courses.isEmpty()) {
@@ -617,7 +617,7 @@ public class Core {
 
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MENU FOR RESEARCHERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void researchMenu(User user) throws IOException {
+	private static void researchMenu(User user) throws IOException {
 		ResearcherDecorator researcher = null;
 		for(User u : db.allUsers()) {
 			if(u instanceof ResearcherDecorator && ((ResearcherDecorator)u).getId() == user.getId()) {
@@ -680,7 +680,7 @@ public class Core {
 	}
    
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MENU FOR STUDENTS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void studentMenu(Student student) throws IOException {
+	private static void studentMenu(Student student) throws IOException {
 		while(true) {
 			System.out.println("\n=== "
 		            + LanguageManager.get("student.menu_title")
@@ -740,7 +740,7 @@ public class Core {
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MESSAGES MENU-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void messagesMenu() throws IOException {
+	private static void messagesMenu() throws IOException {
 		MessageSendingService msgService = new MessageSendingService();
 		System.out.println(LanguageManager.get("message_menu"));
 		System.out.println(LanguageManager.get("write"));
@@ -756,7 +756,7 @@ public class Core {
 	}
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-ENROLLMENT FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
-	public static void enrollment() throws IOException {
+	private static void enrollment() throws IOException {
 		Enrollment currentEnrollment = new Enrollment(new Course());
 		while(true) {
 			System.out.println(LanguageManager.get(
@@ -875,7 +875,7 @@ public class Core {
 	}
 
 //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-NEWS FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_	
-	public static void newsManage() throws IOException {
+	private static void newsManage() throws IOException {
 		while(true) {
 			System.out.println(LanguageManager.get("news.management_menu"));
 			String input = br.readLine();
@@ -892,7 +892,7 @@ public class Core {
 		}
 	}
 	
-	public static void researchPublisher() throws IOException {
+	private static void researchPublisher() throws IOException {
 		List<ResearchProject> temp = DbContext.getInstance().allPendingProjects();
 		System.out.println(LanguageManager.get(
 	            "news.pending_projects"
@@ -926,13 +926,13 @@ public class Core {
 		}
 	}
 	
-	public static void newsPrinter() {
+	private static void newsPrinter() {
 		for(News n: DbContext.getInstance().allNews()) {
 			System.out.println(n);
 		}
 	}
 	
-	public static void publishNews() throws IOException{
+	private static void publishNews() throws IOException{
 		String header = ""; String topic = ""; String content = "";
 		System.out.println(LanguageManager.get(
 	            "news.new_news"
@@ -958,7 +958,7 @@ public class Core {
 	}
 	
 	
-	public static void registerForCourse() throws IOException {
+	private static void registerForCourse() throws IOException {
 		while(true) {
 			System.out.println(LanguageManager.get(
 	                "course.choose_course"

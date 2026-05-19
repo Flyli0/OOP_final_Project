@@ -17,7 +17,6 @@ public class Admin extends Employee {
     }
 
     public void updateUser(User u) {
-        // TODO: здесь позже напишем логику управления юзерами
         ums.updateUser(u);
     }
 
