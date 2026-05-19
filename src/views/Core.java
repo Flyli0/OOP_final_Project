@@ -43,14 +43,14 @@ public class Core {
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-RUN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void run() throws IOException, ParseException {
 		while(true) {
-			LanguageManager.setLanguage("ru");
+			LanguageManager.setLanguage("en");
 			System.out.println("\n========================================");
 			System.out.println(LanguageManager.get("Welcome"));
 			System.out.println("========================================");
 			System.out.println("1>" + LanguageManager.get("sign_up"));
 			System.out.println("2>" + LanguageManager.get("log_in"));
 			System.out.println("0>" + LanguageManager.get("Exit"));
-			System.out.print(LanguageManager.get("Your_choice")+": ");
+			System.out.print(LanguageManager.get("Your_choice"));
 			String answer = br.readLine().trim();
 			currentUser = null;
 			switch(answer) {
@@ -136,7 +136,7 @@ public class Core {
 
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-MAIN-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	public static void mainPage() throws IOException {
-		System.out.println(LanguageManager.get("welcome_caps") + Core.currentUser.getLogin().toUpperCase() + "!");
+		System.out.println(LanguageManager.get("welcome_caps") + " " + Core.currentUser.getLogin().toUpperCase() + "!");
 		if(currentUser instanceof Employee) {
 			while(true) {
 				System.out.println(LanguageManager.get("main_menu"));
@@ -664,7 +664,9 @@ public class Core {
 	public static void enrollment() throws IOException {
 		Enrollment currentEnrollment = new Enrollment(new Course());
 		while(true) {
-			System.out.println("Choose course (type Name): \n!!!to Quit enter \"exit\"");
+			System.out.println(LanguageManager.get(
+	                "enrollment.choose_course"
+		            ));
 			for(Course c: db.allCourses()) {
 				System.out.println(c.getCourseName());
 			}
@@ -675,20 +677,28 @@ public class Core {
 			Course currentCourse = db.allCourses().stream().filter(c->c.getCourseName().equals(input)).findFirst().orElse(null);
 			if(EnrollmentService.getEnrollment(currentCourse)==null) {
 				currentEnrollment = EnrollmentService.createEnrollment(currentCourse);
-				System.out.println("Enrollment Created!");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.created"
+		                ));
 			}
 			else {
 				currentEnrollment = EnrollmentService.getEnrollment(currentCourse);
-				System.out.println("Enrollment is Found!");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.found"
+		                ));
 			}
-			System.out.println("What do you want to do? \n1>Add Student to the enrollment \n2>Approve registration for students of the enrollment \n3>Assign teacher to the course");
+			System.out.println(LanguageManager.get(
+	                "enrollment.actions"
+		            ));
 			String answer = br.readLine();
 			if(answer.toLowerCase().equals("exit")) {
 				break;
 			}
 			if(answer.equals("1")) {
 				while(true) {
-					System.out.println("Enter StudentID:  \n to exit enter Q");
+					System.out.println(LanguageManager.get(
+	                        "enrollment.enter_student_id"
+		                    ));
 					String id = br.readLine();
 					if(id.equals("q") || id.equals("Q")) {
 						break;
@@ -696,41 +706,75 @@ public class Core {
 					Student currentStudent = db.allStudent().stream().filter(student -> student.getSystemId().equals(id)).findFirst().orElse(null);
 					if(currentStudent !=null) {
 						EnrollmentService.enrollStudent(currentStudent, currentEnrollment);
-						System.out.println("Student: " + currentStudent.getSystemId() + " Enrolled on: " + currentCourse.getCourseName());
+						System.out.println(LanguageManager.get(
+	                            "enrollment.student"
+		                        )
+		                        + currentStudent.getSystemId()
+		                        + LanguageManager.get(
+		                            "enrollment.enrolled_on"
+		                        )
+		                        + currentCourse.getCourseName());
 						db.saveEnrollments();
 					}
 					else {
-						System.out.println("Unexistent Student ID or invalid format!");
+						System.out.println(LanguageManager.get(
+	                            "enrollment.invalid_student"
+		                        ));
 					}
 				}
 			}
 			else if(answer.equals("2")) {
-				System.out.println("APPROVEMENT");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.approval"
+		                ));
 				EnrollmentService.approveStudents(currentEnrollment);
 			}
 			else if(answer.equals("3")) {
 				List<Teacher> teachers = db.allUsers().stream().filter(user -> user instanceof Teacher).map(user -> (Teacher) user).toList();
-				System.out.println("Available teachers");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.available_teachers"
+		                ));
 				for(Teacher t: teachers) {
 					System.out.println(t.getFirstName() + " " + t.getLastName() + " [ " + t.getSystemId() + " ]");
 				}
-				System.out.println("Enter teacher ID: ");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.enter_teacher_id"
+		                ));
 				String id = br.readLine();
 				Teacher t = teachers.stream().filter(teacher -> teacher.getSystemId().equals(id)).findFirst().orElse(null);
 				if(t==null) {
-					System.out.println("Such id does not exist");
+					System.out.println(LanguageManager.get(
+	                        "enrollment.teacher_not_found"
+		                    ));
 				}
 				else {
 					currentEnrollment.addTeacher(t);
-					System.out.println("Teacher: " + t + "added to " + currentEnrollment.getCourse().getCourseName());
+					System.out.println(LanguageManager.get(
+	                        "enrollment.teacher_added"
+		                    )
+		                    + t
+		                    + LanguageManager.get(
+		                        "enrollment.teacher_added_to"
+		                    )
+		                    + currentEnrollment
+		                        .getCourse()
+		                        .getCourseName());
 					db.saveEnrollments();
 				}
 			}
-			System.out.println("Do you want to close the Enrollment? y/n");
+			System.out.println(LanguageManager.get(
+	                "enrollment.close_question"
+		            ));
 			String answer2 = br.readLine();
 			if(answer2.equals("y")) {
 				currentEnrollment.closeEnrollment();
-				System.out.println("Enrollment: " + currentEnrollment.getCourse() + "is Closed!");
+				System.out.println(LanguageManager.get(
+	                    "enrollment.closed"
+		                )
+		                + currentEnrollment.getCourse()
+		                + LanguageManager.get(
+		                    "enrollment.closed_suffix"
+		                ));
 			}
 		}
 	}
@@ -738,7 +782,7 @@ public class Core {
 //--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-NEWS FOR MANAGERS-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_	
 	public static void newsManage() throws IOException {
 		while(true) {
-			System.out.println("Welcome to News Management!!! \n1>Publish Research \n2>Generate top Research \n3>Get all News \n4>Publish News \n5>Return to Main");
+			System.out.println(LanguageManager.get("news.management_menu"));
 			String input = br.readLine();
 			switch(input) {
 			case "1": researchPublisher(); break;
@@ -746,31 +790,43 @@ public class Core {
 			case "3": newsPrinter(); break;
 			case "4": publishNews(); break;
 			case "5": return;
-			default: System.out.println("Wrong format!");
+			default: System.out.println(LanguageManager.get(
+                    "common.wrong_format"
+                ));
 			}
 		}
 	}
 	
 	public static void researchPublisher() throws IOException {
 		List<ResearchProject> temp = DbContext.getInstance().allPendingProjects();
-		System.out.println("List of all pending projects: ");
+		System.out.println(LanguageManager.get(
+	            "news.pending_projects"
+		        ));
 		for(ResearchProject rp: temp) {
 			System.out.println(rp.getTopic() + " : " + rp.getParticipants());
 		}
 		while(true) {
-			System.out.println("Which project do you want to publish? (Enter topic) \nTo exit enter Q");
+			System.out.println(LanguageManager.get(
+	                "news.choose_project"
+		            ));
 			String input = br.readLine();
 			if(input.equals("Q".toUpperCase())) {
 				break;
 			}
 			ResearchProject rp = DbContext.getInstance().allPendingProjects().stream().filter(rpe->rpe.getTopic().equals(input)).findFirst().orElse(null);
 			if(rp == null) {
-				System.out.println("Unexistent project!");
+				System.out.println(LanguageManager.get(
+	                    "news.project_not_found"
+		                ));
 			}
 			else {
 				NewsService.publishResearch(rp);
 				DbContext.getInstance().removePendingProject(rp);
-				System.out.println("Research: " + rp.getTopic() + " is Published!!!");
+				System.out.println(LanguageManager.get(
+	                    "news.research_published"
+		                )
+		                + rp.getTopic()
+		                + "!");
 			}
 		}
 	}
@@ -783,21 +839,35 @@ public class Core {
 	
 	public static void publishNews() throws IOException{
 		String header = ""; String topic = ""; String content = "";
-		System.out.println("New news :D");
-		System.out.println("Enter Topic: ");
+		System.out.println(LanguageManager.get(
+	            "news.new_news"
+		        ));
+		System.out.println(LanguageManager.get(
+	            "news.enter_topic"
+		        ));
 		topic = br.readLine();
-		System.out.println("Enter Header");
+		System.out.println(LanguageManager.get(
+	            "news.enter_header"
+		        ));
 		header = br.readLine();
-		System.out.println("Enter Content");
+		System.out.println(LanguageManager.get(
+	            "news.enter_content"
+		        ));
 		content = br.readLine();
 		News n = NewsService.publishNews(header, topic, content, currentUser); 
-		System.out.println("News: " + n.getId() + "is publised!!!");
+		System.out.println(LanguageManager.get(
+	            "news.news_published"
+		        )
+		        + n.getId()
+		        + "!");
 	}
 	
 	
 	public static void registerForCourse() throws IOException {
 		while(true) {
-			System.out.println("Choose course (type Name): \n!!!to Quit enter \"exit\"");
+			System.out.println(LanguageManager.get(
+	                "course.choose_course"
+		            ));
 			for(Course c: db.allCourses()) {
 				System.out.println(c.getCourseName());
 			}
@@ -807,13 +877,24 @@ public class Core {
 			}
 			Course currentCourse = db.allCourses().stream().filter(c->c.getCourseName().equals(input)).findFirst().orElse(null);
 			if(EnrollmentService.getEnrollment(currentCourse)==null) {
-				System.out.println("This enrollment is closed!");
+				System.out.println(LanguageManager.get(
+	                    "course.enrollment_closed"
+		                ));
 			}
 			else {
 				Enrollment currentEnrollment = EnrollmentService.getEnrollment(currentCourse);
-				System.out.println("Enrollment is Found!");
+				System.out.println(LanguageManager.get(
+	                    "course.enrollment_found"
+		                ));
 				EnrollmentService.enrollStudent((Student) Core.currentUser, currentEnrollment);
-				System.out.println("You : " + Core.currentUser.getSystemId() + " Enrolled on: " + currentCourse.getCourseName());
+				System.out.println( LanguageManager.get(
+	                    "course.you"
+		                )
+		                + Core.currentUser.getSystemId()
+		                + LanguageManager.get(
+		                    "course.enrolled_on"
+		                )
+		                + currentCourse.getCourseName());
 				db.saveEnrollments();
 			}
 		}
