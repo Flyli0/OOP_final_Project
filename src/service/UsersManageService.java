@@ -14,41 +14,34 @@ public class UsersManageService {
 
     public void updateUser(User u) {
         if (!db.allUsers().contains(u)) {
-            System.out.println("❌ Пользователь не найден!"); 
-            return; 
+            System.out.println("❌ User not found!");
+            return;
+
         }
 
         Scanner sc = new Scanner(System.in);
-        System.out.println("Введите новое имя:");
+        System.out.println("Enter new first name:");
         String name = sc.nextLine();
 
-        System.out.println("Введите новую фамилию:");
+        System.out.println("Enter new last name:");
         String surname = sc.nextLine();
 
 
         u.setName(name);
         u.setSurname(surname);
+        sc.close();
 
-        DbContext.saveUsers(); 
-        System.out.println("✅ Данные пользователя успешно обновлены!");
+
+        DbContext.saveUsers();
+        System.out.println("✅ User data successfully updated!");
     }
 
     public void addUser(User u) {
         if (db.allUsers().contains(u)) {
-            System.out.println("❌ Такой пользователь уже существует в системе!");
+            System.out.println("❌ This user already exists in the system!");
             return;
         }
-        db.addUser(u); 
-        System.out.println("✅ Пользователь успешно зарегистрирован!");
-    }
-
-    public void removeUser(User u) {
-        if (db.allUsers().contains(u)) {
-            db.allUsers().remove(u);
-            DbContext.saveUsers();   
-            System.out.println("✅ Пользователь успешно удален из системы!");
-        } else {
-            System.out.println("❌ Ошибка: Пользователь не найден!");
-        }
+        db.allUsers().add(u);
+        DbContext.saveUsers();
     }
 }

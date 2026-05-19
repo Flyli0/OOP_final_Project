@@ -1,7 +1,7 @@
 package config;
-import model.User;
+import model.*;
+
 import java.util.Map;
-import model.Admin;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,12 +12,6 @@ import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 import java.io.File;
-import model.Course;
-import model.Enrollment;
-import model.News;
-import model.ResearchProject;
-import model.Student;
-import model.Message; // ДОБАВЛЕНО АЗИЗОЙ
 
 
 public class DbContext {
@@ -28,8 +22,9 @@ public class DbContext {
 	private static List<User> users;
 	private static List<Student> students;
 	private static List<News> news;
-	private static List<Message> messages; 
+	private static List<Message> messages;
 	private static List<ResearchProject> pendingProjects;
+	private static List<Complaint> complaints;
 
 	private DbContext() {
 		path = new File("src/data").getAbsolutePath();
@@ -43,13 +38,13 @@ public class DbContext {
 
 		enrollments = (List<Enrollment>) DbContext.loadEnrollments();
 		enrollments = (List<Enrollment>) ValidateDb.validate(enrollments);
-	
+
 		news = (List<News>) DbContext.loadNews();
 		news = (List<News>) ValidateDb.validate(news);
-		
+
 		pendingProjects = (List<ResearchProject>) DbContext.loadPendingProjects();
 		pendingProjects = (List<ResearchProject>) ValidateDb.validate(pendingProjects);
-		
+
 		users = new ArrayList<User>();
 		users = (List<User>) DbContext.loadUsers();
 
@@ -58,6 +53,13 @@ public class DbContext {
 		if(messages == null) {
 			messages = new ArrayList<Message>();
 			DbContext.saveMessages();
+		}
+
+		// ТВОЙ БЛОК ИНИЦИАЛИЗАЦИИ ЖАЛОБ (Загрузка из файла при старте программы)
+		complaints = (List<Complaint>) DbContext.loadComplaints();
+		if(complaints == null) {
+			complaints = new ArrayList<Complaint>();
+			DbContext.saveComplaints();
 		}
 
 		//System.out.println(users);
@@ -135,17 +137,23 @@ public class DbContext {
 		DbContext.serialize(messages, "messages");
 		return true;
 	}
-	
+
 	public static boolean saveNews() {
 		DbContext.serialize(news, "news");
 		return true;
 	}
-	
+
 	public static boolean savePendingProjects() {
 		DbContext.serialize(pendingProjects, "pendingProjects");
 		return true;
 	}
-//			✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+	// ТВОЙ МЕТОД СОХРАНЕНИЯ ЖАЛОБ В ФАЙЛ complaints.txt
+	public static boolean saveComplaints() {
+		DbContext.serialize(complaints, "complaints");
+		return true;
+	}
+	//        ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏   ꧁ ༺LOAD༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
 		Object ret = DbContext.deserialize("users");
@@ -172,17 +180,23 @@ public class DbContext {
 		Object ret = DbContext.deserialize("messages");
 		return ret;
 	}
-	
+
 	public static Object loadNews() {
 		Object ret = DbContext.deserialize("news");
 		return ret;
 	}
-	
+
 	public static Object loadPendingProjects() {
 		Object ret = DbContext.deserialize("pendingProjects");
 		return ret;
 	}
-//		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+	// ТВОЙ МЕТОД ЗАГРУЗКИ ЖАЛОБ ИЗ ФАЙЛА
+	public static Object loadComplaints() {
+		Object ret = DbContext.deserialize("complaints");
+		return ret;
+	}
+//     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺LIST_GETTERS༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏𓊝﹏𓂁﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 
 	// COLLECTION GETTERS
 	public List<User> allUsers(){
@@ -205,15 +219,20 @@ public class DbContext {
 	public List<Message> allMessages(){
 		return this.messages;
 	}
-	
+
 	public List<News> allNews(){
 		return this.news;
 	}
-	
+
 	public List<ResearchProject> allPendingProjects(){
 		return this.pendingProjects;
 	}
-// 		✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+	// ТВОЙ ГЕТТЕР: Чтобы другие классы (например, Декан) могли получить список всех жалоб
+	public List<Complaint> allComplaints() {
+		return this.complaints;
+	}
+	//     ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏   ꧁ ༺ ADDERS ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
 	//TO ADD ELEMENTS TO A COLLECTION FROM OUTER METHODS
 	public void addUser(User u){
 		DbContext.users.add(u);
@@ -240,22 +259,27 @@ public class DbContext {
 		DbContext.messages.add(m);
 		DbContext.saveMessages();
 	}
-	
+
 	public void addNews(News n) {
 		DbContext.news.add(n);
 		DbContext.saveNews();
 	}
-	
+
 	public void pendProject(ResearchProject rp) {
 		DbContext.pendingProjects.add(rp);
 		DbContext.savePendingProjects();
 	}
-	
-// ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏	꧁ ༺ REMOVERS IF NEEDED ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
-	
+
+	// ТВОЙ АДДЕР: Добавляет жалобу в список и сразу автоматически сохраняет её в файл txt!
+	public void addComplaint(Complaint c) {
+		DbContext.complaints.add(c);
+		DbContext.saveComplaints();
+	}
+
+// ✎﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏ ꧁ ༺ REMOVERS IF NEEDED ༻ ꧂   ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
 	public void removePendingProject(ResearchProject rp) {
 		DbContext.pendingProjects.remove(rp);
 		DbContext.savePendingProjects();
 	}
 }
-
