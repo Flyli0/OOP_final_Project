@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import service.UsersManageService;
 
 public class Admin extends Employee {
-    private UsersManageService ums = new UsersManageService();
+    private transient UsersManageService ums = new UsersManageService();
 
     public Admin(String name, String surname, double salary, Date hireDate, String login, String password) {
         super(name, surname, salary, hireDate, login, password);
