@@ -25,25 +25,8 @@ public class Teacher extends Employee implements Serializable{
     	this.title = title;
     }
 
-    public void putMark(Student s, Course c, Mark m) {
-        // TODO: логика выставления оценки (Part C)
-        System.out.println("Mark " + m.getValue() + " put for student " + s.getName());
-    }
-
     public void sendComplaint(Student s, Complaint.UrgencyLevel ul) {
         // TODO: логика отправки жалобы
-    }
-
-    public void manageCourse(Course c) {
-        // TODO: логика управления курсом
-    }
-
-    public void viewStudents() {
-        // TODO: логика просмотра списка студентов
-    }
-
-    public void viewCourses() {
-        // TODO: логика просмотра курсов
     }
 
     public TeacherTitle getTitle() {

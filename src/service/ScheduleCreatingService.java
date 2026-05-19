@@ -44,7 +44,6 @@ public class ScheduleCreatingService {
     }
     
     public void printTeacherSchedule(Teacher teacher) {
-        // TODO implement here
         List<ScheduleEntry> schedule = teacher.getSchedule();
         if(schedule.isEmpty()) {
             System.out.println(teacher.getFirstName() + " has no scheduled lessons");
@@ -283,6 +282,7 @@ public class ScheduleCreatingService {
 
         System.out.println("Done: " + scheduled + "/" + (weeks * 2)
                 + " lessons scheduled for " + course.getCourseName() + ".");
+        
     }
 
     private void advanceToDayOfWeek(Calendar cal, int targetDayOfWeek) {

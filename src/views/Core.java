@@ -455,8 +455,11 @@ public class Core {
 
 		scs.buildSemesterSchedule(course, lectureTeacher, practiceTeacher,
 				new Date(), weeks, lectureDow, lectureHour, practiceDow, practiceHour);
+		db.saveUsers();
+		db.saveCourses();
+		db.saveEnrollments();
+		db.saveStudents();
 	}
-
 
 	/** Prompts the manager to pick a weekday. Returns Calendar constant or -1 on bad input. */
 	private static int pickDayOfWeek() throws IOException {
@@ -553,6 +556,7 @@ public class Core {
 			System.out.println("1> View my courses");
 			System.out.println("2> View my marks / transcript");
 			System.out.println("3> View my schedule");
+			System.out.println("4> Register for courses");
 			System.out.println("0> Logout");
 			System.out.print("Your choice: ");
 			String input = br.readLine().trim();
@@ -583,9 +587,10 @@ public class Core {
 					if(student.getSchedule() == null || student.getSchedule().isEmpty()) {
 						System.out.println("Your schedule is empty. It will populate once a Manager builds the semester schedule.");
 					} else {
-						student.getSchedule().forEach(se -> System.out.println("  " + se));
+						student.getSchedule().forEach(se -> System.out.println("  " + se.getDays() + "): " + se.getCourse()));
 					}
 					break;
+				case "4": registerForCourse();break;
 				case "0": return;
 				default: System.out.println("Unexistent option");
 			}
@@ -722,5 +727,30 @@ public class Core {
 		content = br.readLine();
 		News n = NewsService.publishNews(header, topic, content, currentUser); 
 		System.out.println("News: " + n.getId() + "is publised!!!");
+	}
+	
+	
+	public static void registerForCourse() throws IOException {
+		while(true) {
+			System.out.println("Choose course (type Name): \n!!!to Quit enter \"exit\"");
+			for(Course c: db.allCourses()) {
+				System.out.println(c.getCourseName());
+			}
+			String input = br.readLine();
+			if(input.toLowerCase().equals("exit")) {
+				break;
+			}
+			Course currentCourse = db.allCourses().stream().filter(c->c.getCourseName().equals(input)).findFirst().orElse(null);
+			if(EnrollmentService.getEnrollment(currentCourse)==null) {
+				System.out.println("This enrollment is closed!");
+			}
+			else {
+				Enrollment currentEnrollment = EnrollmentService.getEnrollment(currentCourse);
+				System.out.println("Enrollment is Found!");
+				EnrollmentService.enrollStudent((Student) Core.currentUser, currentEnrollment);
+				System.out.println("You : " + Core.currentUser.getSystemId() + " Enrolled on: " + currentCourse.getCourseName());
+				db.saveEnrollments();
+			}
+		}
 	}
 }

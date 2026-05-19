@@ -15,7 +15,7 @@ import config.DbContext;
 
 public class Test {
   public static void main(String[] args) throws IOException, ParseException {
-	/*	 
+	/*	*/ 
 	  Student s1 = new Student("w","www");
 	  
 	  ResearcherDecorator rs1 = new ResearcherDecorator(s1);
@@ -45,7 +45,7 @@ public class Test {
 	  DbContext.getInstance().addNews(n1);
 	  DbContext.getInstance().addNews(n2);
 	  DbContext.getInstance().addNews(n3);
-	*/
+	
    
 	  
 	  

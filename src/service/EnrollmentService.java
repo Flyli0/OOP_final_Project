@@ -41,6 +41,7 @@ public class EnrollmentService {
     		}
     		app.replace(s, b);
     	}
+    	DbContext.saveEnrollments();
     }
     
     public static Enrollment createEnrollment(Course c) {
