@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.sql.Date;
+
+import config.DbContext;
 import model.Complaint;
 
 public class Teacher extends Employee implements Serializable{
@@ -29,8 +31,12 @@ public class Teacher extends Employee implements Serializable{
         System.out.println("Mark " + m.getValue() + " put for student " + s.getName());
     }
 
-    public void sendComplaint(Student s, Complaint.UrgencyLevel ul) {
-        // TODO: логика отправки жалобы
+    public void sendComplaint(Student student, String message, UrgencyLevel urgency) {
+        Complaint complaint = new Complaint(this, student, message, urgency);
+
+        DbContext.getInstance().addComplaint(complaint);
+
+        System.out.println("Complaint successfully sent to manager/dean!");
     }
 
 

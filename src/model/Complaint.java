@@ -1,30 +1,29 @@
 package model;
 
-import java.util.List;
-import java.util.ArrayList;
+import java.io.Serializable;
 
-public class Complaint {
-
-    private List<Student> students;
+public class Complaint implements Serializable {
+    private Teacher teacher;
+    private Student student;
+    private String message;
     private UrgencyLevel urgency;
-    private String text;
-    private Teacher sender;
 
-    public Complaint() {
-        this.students = new ArrayList<>(); 
+    public Complaint(Teacher teacher, Student student, String message, UrgencyLevel urgency) {
+        this.teacher = teacher;
+        this.student = student;
+        this.message = message;
+        this.urgency = urgency;
     }
 
-    public void writeComplaint(String s) {
-        this.text = s;
-    }
+    public Teacher getTeacher() { return teacher; }
+    public Student getStudent() { return student; }
+    public String getMessage() { return message; }
+    public UrgencyLevel getUrgency() { return urgency; }
 
-    public void addStudent(Student s) {
-        this.students.add(s);
-    }
-
-    public enum UrgencyLevel {
-        LOW,
-        MEDIUM,
-        HIGH
+    @Override
+    public String toString() {
+        return "Complaint from " + teacher.getClass().getSimpleName() +
+                " to student " + student.getClass().getSimpleName() +
+                " [" + urgency + "]: " + message;
     }
 }

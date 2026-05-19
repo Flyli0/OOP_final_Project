@@ -1,11 +1,12 @@
 package views;
+import model.*;
 import service.AuthService;
 import service.ByCitations;
 import service.ByDate;
 import service.ByPages;
 import service.EnrollmentService;
 import service.MarkPuttingService;
-import service.MessageSendingService; // ДОБАВЛЕНО АЗИЗОЙ
+import service.MessageSendingService;
 import service.NewsService;
 import service.ScheduleCreatingService;
 
@@ -22,18 +23,6 @@ import java.util.List;
 import config.DbContext;
 import lang.LanguageManager;
 import service.AccountType;
-import model.Course;
-import model.Employee;
-import model.Enrollment;
-import model.Gender;
-import model.Manager;
-import model.News;
-import model.ResearchProject;
-import model.ResearcherDecorator;
-import model.Student;
-import model.Teacher;
-import model.TeacherTitle;
-import model.User;
 
 
 public class Core {
@@ -294,6 +283,7 @@ public class Core {
 			System.out.println("3>"+LanguageManager.get("research_menu"));
 			System.out.println("4>"+LanguageManager.get("view_courses"));
 			System.out.println("5>"+LanguageManager.get("view_students"));
+			System.out.println("6> Send Complaint");
 			System.out.println("0>"+LanguageManager.get("back"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
@@ -301,21 +291,49 @@ public class Core {
 				case "1": markPuttingMenu(teacher); break;
 				case "2": teacherScheduleMenu(teacher); break;
 				case "3": researchMenu(teacher); break;
-				case "4": viewCourses();
-				case "5": viewStudents();
+				case "4": viewCourses(); break;
+				case "5": viewStudents(); break;
+				case "6":
+
+					System.out.print("Enter Student ID: ");
+					String sid = br.readLine().trim();
+
+					Student student = null;
+					for (User u : db.allUsers()) {
+						if (u instanceof Student && u.getSystemId().equals(sid)) {
+							student = (Student) u;
+							break;
+						}
+					}
+
+					if(student == null) {
+						System.out.println("Student not found.");
+						break;
+					}
+					System.out.print("Enter message: ");
+					String msg = br.readLine();
+
+					System.out.print("Enter urgency (1 - LOW, 2 - MEDIUM, 3 - HIGH): ");
+					String urgInput = br.readLine().trim();
+					UrgencyLevel urgency = UrgencyLevel.LOW;
+					if(urgInput.equals("2")) urgency = UrgencyLevel.MEDIUM;
+					if(urgInput.equals("3")) urgency = UrgencyLevel.HIGH;
+
+					teacher.sendComplaint(student, msg, urgency);
+					break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
 	}
-	
+
 	private static void viewCourses() {
 		System.out.println(LanguageManager.get("cur_en_courses"));
 		for(Enrollment en: db.allEnrollments()) {
 			System.out.println(en.getCourse() + "\n");
 		}
 	}
-	
+
 	private static void viewStudents() {
 		System.out.println(LanguageManager.get("cur_en_students"));
 		for(Enrollment en: db.allEnrollments()) {

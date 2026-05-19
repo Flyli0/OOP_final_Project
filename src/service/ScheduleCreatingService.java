@@ -190,11 +190,6 @@ public class ScheduleCreatingService {
     }
 
 
-    /**
-     * Builds a weekly recurring schedule for a course: adds one LECTURE slot
-     * and one PRACTICE slot per week across the given number of weeks,
-     * starting from semesterStart.
-     */
     public void buildSemesterSchedule(Course course,
                                       Teacher lectureTeacher,
                                       Teacher practiceTeacher,
