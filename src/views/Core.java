@@ -438,16 +438,39 @@ public class Core {
 			System.out.println(LanguageManager.get("manage_users_menu"));
 			System.out.println("1>" + LanguageManager.get("add_user"));
 			System.out.println("2>" + LanguageManager.get("update_user"));
+			System.out.println("3>" + LanguageManager.get("delete_user"));
 			System.out.println("0>" + LanguageManager.get("back"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
 			switch(input) {
 				case "1": addUser(admin); break;
 				case "2": updateUser(admin); break;
+				case "3": deleteUser(admin); break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("unexistent_option"));
 			}
 		}
+	}
+
+	public static void deleteUser(Admin admin) throws IOException {
+		List<User> users = db.allUsers();
+		System.out.print(LanguageManager.get("enter_user_id"));
+		
+		String id = br.readLine().trim();
+
+		User userToDelete = users.stream()
+		.filter(u -> u.getSystemId().equals(id))
+		.findFirst()
+		.orElse(null);
+	
+		if(userToDelete == null) {
+			System.out.println(LanguageManager.get("user_not_found"));
+			return;
+		}
+		admin.deleteUser(userToDelete);
+		
+		Log log = new Log("Deleted user: " + userToDelete.getLogin(), Core.currentUser.getSystemId());	
+		db.addLog(log);
 	}
 
 
