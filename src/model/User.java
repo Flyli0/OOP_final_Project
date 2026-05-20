@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ public abstract class User implements ImUser, Serializable {
         this.id = ++idCounter;
         int current_year = new Date().getYear();
         this.system_id = current_year + "B0" + this.id;
+        this.journalNotifications = new ArrayList<String>();
     }
 
     public User(String name, String surname) {

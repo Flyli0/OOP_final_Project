@@ -155,7 +155,7 @@ public class Core {
 					case "2": professionalMenu(currentUser); break;
 					case "3": profile(); break;
 					case "4": researchMenu(currentUser); break;
-					case "5": subscribeJournal();
+					case "5": subscribeJournal(); break;
 					case "0": return;
 					default: System.out.println(LanguageManager.get("unexistent_option"));
 				}
@@ -836,6 +836,7 @@ public class Core {
 			System.out.println("3> " + LanguageManager.get("student.view_schedule"));
 			System.out.println("4> " + LanguageManager.get("student.register_courses"));
 			System.out.println("5> " + LanguageManager.get("student.research_menu"));
+			System.out.println("6>" + LanguageManager.get("research_journal"));
 			System.out.println("0> " + LanguageManager.get("common.logout"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
@@ -879,6 +880,7 @@ public class Core {
 					break;
 				case "4": registerForCourse();break;
 				case "5": researchMenu(currentUser); break;
+				case "6": subscribeJournal(); break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("student.invalid_option"));
 			}
@@ -1063,6 +1065,7 @@ public class Core {
 		                ));
 			}
 			else {
+				ResearchJournalObserver.addResearch(rp);
 				NewsService.publishResearch(rp);
 				DbContext.getInstance().removePendingProject(rp);
 				System.out.println(LanguageManager.get(

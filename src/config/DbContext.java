@@ -27,6 +27,8 @@ public class DbContext {
 	private static List<Complaint> complaints;
 	private static List<Log> logs;
 	private static List<Request> requests;
+	private static List<ResearchProject> published;
+	private static List<User> subscribers;
 
 	private DbContext() {
 		path = new File("src/data").getAbsolutePath();
@@ -46,6 +48,12 @@ public class DbContext {
 
 		news = (List<News>) DbContext.loadNews();
 		news = (List<News>) ValidateDb.validate(news);
+		
+		subscribers = (List<User>) DbContext.loadSubscribers();
+		subscribers = (List<User>) ValidateDb.validate(subscribers);
+		
+		published = (List<ResearchProject>) DbContext.loadPublished();
+		published = (List<ResearchProject>) ValidateDb.validate(news);
 
 		pendingProjects = (List<ResearchProject>) DbContext.loadPendingProjects();
 		pendingProjects = (List<ResearchProject>) ValidateDb.validate(pendingProjects);
@@ -130,6 +138,11 @@ public class DbContext {
 		DbContext.serialize(users, "users");
 		return true;
 	}
+	
+	public static boolean saveSubscribers() {
+		DbContext.serialize(subscribers, "subscribers");
+		return true;
+	}
 
 	public static boolean saveEnrollments() {
 		DbContext.serialize(enrollments, "enrollments");
@@ -162,6 +175,11 @@ public class DbContext {
 		return true;
 	}
 	
+	public static boolean savePublishedProjects() {
+		DbContext.serialize(published, "published");
+		return true;
+	}
+	
 	public static boolean saveRequests() {
 		DbContext.serialize(requests, "requests");
 		return true;
@@ -181,6 +199,16 @@ public class DbContext {
 	// LOAD METHODS (ADD FOR A NEW COLLECTIONS)
 	public static Object loadUsers() {
 		Object ret = DbContext.deserialize("users");
+		return ret;
+	}
+	
+	public static Object loadPublished() {
+		Object ret = DbContext.deserialize("published");
+		return ret;
+	}
+	
+	public static Object loadSubscribers() {
+		Object ret = DbContext.deserialize("subscribers");
 		return ret;
 	}
 
@@ -236,6 +264,14 @@ public class DbContext {
 	public List<User> allUsers(){
 		return this.users;
 	}
+	
+	public List<User> allSubscribers(){
+		return this.subscribers;
+	}
+	
+	public List<ResearchProject> allPublished(){
+		return this.published;
+	}
 
 	public List<Enrollment> allEnrollments(){
 		return this.enrollments;
@@ -278,6 +314,16 @@ public class DbContext {
 	public void addUser(User u){
 		DbContext.users.add(u);
 		DbContext.saveUsers();
+	}
+	
+	public void addSubscriber(User u) {
+		DbContext.subscribers.add(u);
+		DbContext.saveSubscribers();
+	}
+	
+	public void addPublished(ResearchProject rp) {
+		DbContext.published.add(rp);
+		DbContext.savePublishedProjects();
 	}
 
 	public void addEnrollment(Enrollment en) {

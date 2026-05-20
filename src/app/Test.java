@@ -16,11 +16,9 @@ import config.DbContext;
 public class Test {
   public static void main(String[] args) throws IOException, ParseException {
 	/*	
-	  Student s1 = new Student("w","www");
 	  
-	  ResearcherDecorator rs1 = new ResearcherDecorator(s1);
-	  rs1.addProject(new ResearchProject("Shiza soseda",10));
-	  rs1.pendProject("Shiza soseda");
+	  
+	  
 	  
 	  Student s2 = new Student("r","rrr");
 	  Student s3 = new Student("k","kkk");
@@ -54,7 +52,10 @@ public class Test {
 	  System.out.println("STUDENTS"+DbContext.getInstance().loadStudents());
 	  System.out.println("NEWS"+DbContext.getInstance().loadNews());
 	  */
-	  
+	  Student s1 = new Student("w","www");
+	  ResearcherDecorator rs1 = new ResearcherDecorator(s1);
+	  rs1.addProject(new ResearchProject("Shiza soseda 2 epic return",10));
+	  rs1.pendProject("Shiza soseda 2 epic return");
 	  Core.run();
   }
 }
