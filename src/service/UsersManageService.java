@@ -50,4 +50,13 @@ public class UsersManageService {
         db.allUsers().add(u);
         DbContext.saveUsers();
     }
+
+    public void deleteUser(User u) {
+        if (!db.allUsers().contains(u)) {
+            System.out.println("❌ User not found!");
+            return;
+        }
+        db.allUsers().remove(u);
+        DbContext.saveUsers();
+    }
 }

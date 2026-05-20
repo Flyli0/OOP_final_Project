@@ -23,4 +23,8 @@ public class Admin extends Employee {
     public void addUser(User u) {
         ums.addUser(u);
     }
+
+    public void deleteUser(User u) {
+        ums.deleteUser(u);
+    }
 }
