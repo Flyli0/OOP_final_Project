@@ -129,6 +129,12 @@ public abstract class User implements ImUser, Serializable {
     	}
     }
     
+    public void viewNotifications(){
+    	for(String str: this.journalNotifications) {
+    		System.out.println(str);
+    	}
+    }
+    
     public void setGender(Gender g) {
     	this.gender = g;
     }

@@ -35,7 +35,7 @@ public class DbContext {
 		courses = (List<Course>) DbContext.loadCourses();
 		courses = (List<Course>) ValidateDb.validate(courses);
 		
-		requests = (List<Request>) DbContext.loadrequests();
+		requests = (List<Request>) DbContext.loadRequests();
 		requests = (List<Request>) ValidateDb.validate(courses);
 
 		students = (List<Student>) DbContext.loadStudents();

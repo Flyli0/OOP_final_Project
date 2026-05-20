@@ -11,47 +11,38 @@ import model.User;
  */
 public class ResearchJournalObserver {
 
+    private static List<ResearchProject> researchProjects;
+    private static List<User> subscribers;
     
-    public ResearchJournalObserver() {
+    private ResearchJournalObserver() {
+    	researchProjects = new ArrayList<ResearchProject>();
+    	subscribers = new ArrayList<User>();
     }
 
-    private List<ResearchProject> researchProjects;
-
-    private List<User> subscribers;
-
-    
-    public void addSubscriber(User u) {
+    public static void addSubscriber(User u) {
         subscribers.add(u);
     }
    
-
-    public void removeSubscriber(User u) {
+    public static void removeSubscriber(User u) {
         if(subscribers.contains(u)){
             subscribers.remove(u);
         } else {
             System.out.println("User is not a subscriber.");
-        } 
-
-        
+        }     
     }
 
-   
-    public void notify( String message) {
+    public static void notify( String message) {
         for(User subscriber : subscribers) {
             subscriber.update(message);
-        }
-        
+        }  
     }
-
     
-    public List<User> getSubscribers() {
+    public static List<User> getSubscribers() {
         return subscribers;
     }
 
-    
     public void addResearch(ResearchProject rp) {
         researchProjects.add(rp);
         notify("New research project added: " + rp.getTopic());
     }
-
 }

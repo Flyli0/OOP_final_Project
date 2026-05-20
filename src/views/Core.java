@@ -8,6 +8,7 @@ import service.EnrollmentService;
 import service.MarkPuttingService;
 import service.MessageSendingService;
 import service.NewsService;
+import service.ResearchJournalObserver;
 import service.ScheduleCreatingService;
 
 import java.io.BufferedReader;
@@ -145,6 +146,7 @@ public class Core {
 				System.out.println("2>" + LanguageManager.get("pro_menu"));
 				System.out.println("3>" + LanguageManager.get("profile"));
 				System.out.println("4>" + LanguageManager.get("res_menu"));
+				System.out.println("5>" + LanguageManager.get("research_journal"));
 				System.out.println("0>" + LanguageManager.get("Logout"));
 				System.out.print(LanguageManager.get("Your_choice"));
 				String input = br.readLine().trim();
@@ -153,6 +155,7 @@ public class Core {
 					case "2": professionalMenu(currentUser); break;
 					case "3": profile(); break;
 					case "4": researchMenu(currentUser); break;
+					case "5": subscribeJournal();
 					case "0": return;
 					default: System.out.println(LanguageManager.get("unexistent_option"));
 				}
@@ -160,6 +163,21 @@ public class Core {
 		} else if(currentUser instanceof Student) {
 			studentMenu((Student) currentUser);
 		}
+	}
+	
+	private static void subscribeJournal() throws IOException {
+		while(true) {
+			System.out.println(LanguageManager.get("r_j_choose"));
+			String in = br.readLine();
+			switch(in) {
+			case "1": ResearchJournalObserver.addSubscriber(currentUser); break;
+			case "2": ResearchJournalObserver.removeSubscriber(currentUser);break;
+			case "3": currentUser.viewNotifications();
+			case "0": return;
+		}
+	}
+		
+		
 	}
 	//--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_-PROFILE-_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_--_-_
 	private static void profile() throws IOException {
@@ -763,6 +781,7 @@ public class Core {
 			System.out.println("4> " + LanguageManager.get("research.print_by_pages"));
 			System.out.println("5> " + LanguageManager.get("research.view_hindex"));
 			System.out.println("6> " + LanguageManager.get("research.close_project"));
+			System.out.println("7> " + LanguageManager.get("research.pend_project_to_news"));
 			System.out.println("0> " + LanguageManager.get("back"));
 			System.out.print(LanguageManager.get("Your_choice"));
 			String input = br.readLine().trim();
@@ -795,6 +814,10 @@ public class Core {
 					System.out.print(LanguageManager.get("research.project_topic")); String topic = br.readLine();
 					if(topic.isBlank()) { System.out.println(LanguageManager.get("research.topic_empty")); break; }
 					r.closeProject(topic);
+					break;
+				case "7":
+					System.out.println(LanguageManager.get("research.project_topic"));
+					r.pendProject(br.readLine());
 					break;
 				case "0": return;
 				default: System.out.println(LanguageManager.get("research.invalid_option"));
